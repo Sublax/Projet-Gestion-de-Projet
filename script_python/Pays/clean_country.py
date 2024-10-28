@@ -24,7 +24,7 @@ def standardisation(df,nom_col):
 # Importations csv
 #=============================
 current_dir = os.path.dirname(os.path.abspath(__file__))
-countries_path = os.path.join(current_dir, '../../data/raw/Pays/data.csv')
+countries_path = os.path.join(current_dir, '../../data/raw/Pays/countries.csv')
 df = pd.read_csv(countries_path)
 
 print(os.path.abspath(__file__))
@@ -34,6 +34,6 @@ print(os.path.abspath(__file__))
 df.drop("Code",inplace=True, axis=1)
 df = standardisation(df,"Name")
 #Seulement 1 pays est retiré par la standardisation.
-countries_save_path = os.path.join(current_dir, '../../data/processed/Pays/data.csv')
+countries_save_path = os.path.join(current_dir, '../../data/processed/Pays/countries.csv')
 
 df.to_csv(countries_save_path,index_label="id_country")

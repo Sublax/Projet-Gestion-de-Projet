@@ -45,7 +45,7 @@ def clean_dataworld(df,ValueName):
 # ====================================================================================
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-countries_path = os.path.join(current_dir, '../../data/raw/Pays/countries.csv')
+countries_path = os.path.join(current_dir, '../../data/processed/Pays/countries.csv')
 cooking_path = os.path.join(current_dir,'../../data/raw/Agroalimentaire/Cooking.csv')
 
 countries = pd.read_csv(countries_path)
@@ -84,6 +84,9 @@ result_agro = standardisation(result_agro,"Country Name")
 
 #Enfin, on remplace les noms des pays par leur id dans la table country :
 result_agro = result_agro.merge(countries,left_on="Country Name", right_on="Name",how="left")
+pd.set_option('display.max_columns', None)
+
+
 result_agro = result_agro.drop(["Name","Country Name"],axis=1).rename(columns={'id':'pays_id'})
 result_agro = result_agro[result_agro["id_country"].notna()]
 

@@ -9,8 +9,8 @@ import os
 # Importations csv
 #=============================
 current_dir = os.path.dirname(os.path.abspath(__file__))
-countries_path = os.path.join(current_dir, '..', 'countries.csv')
-public_transport_path = os.path.join(current_dir,'public_transport.csv')
+countries_path = os.path.join(current_dir, '../../data/processed/Pays/countries.csv')
+public_transport_path = os.path.join(current_dir,'../../data/raw/Transport/public_transport.csv')
 countries = pd.read_csv(countries_path)
 result_transport = pd.read_csv(public_transport_path)
 
@@ -40,7 +40,9 @@ result_transport = standardisation(result_transport,"Entity")
 #Enfin, on remplace les noms des pays par leur id dans la table country :
 result_transport = result_transport.merge(countries,left_on="Entity", right_on="Name",how="left")
 result_transport = result_transport.drop(["Name","Entity"],axis=1).rename(columns={'id':'pays_id'})
+
 #=============================
 # Résultat
 #=============================
-result_transport.to_csv("result_transport.csv", index_label="id_transport")
+countries_save_path = os.path.join(current_dir, '../../data/processed/Transport/result_transport.csv')
+result_transport.to_csv(countries_save_path, index_label="id_transport")

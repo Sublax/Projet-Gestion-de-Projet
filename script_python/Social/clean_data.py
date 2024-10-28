@@ -12,27 +12,26 @@ import sys
 #=============================
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
+eco_path = os.path.join(current_dir, '../../data/raw/Social/global_gdp.csv')
+wage_path = os.path.join(current_dir, '../../data/raw/Social/minimum_wage.csv')
 
-eco_path = os.path.join(current_dir, 'global_gdp.csv')
-wage_path = os.path.join(current_dir, 'minimum_wage.csv')
-
-countries_path = os.path.join(current_dir, '..', 'countries.csv')
-agro_path = os.path.join(current_dir,'..','Agroalimentaire','global-food-prices.csv')
+countries_path = os.path.join(current_dir, '../../data/processed/Pays/countries.csv')
+agro_path = os.path.join(current_dir,'../../data/raw/Agroalimentaire/global-food-prices.csv')
 
 countries = pd.read_csv(countries_path)
 agro = pd.read_csv(agro_path)
 
-arrival_path = os.path.join(current_dir, 'arrivaltourists.csv')
+arrival_path = os.path.join(current_dir, '../../data/raw/Social/arrivaltourists.csv')
 df_arrival = pd.read_csv(arrival_path)
 
-elect_path = os.path.join(current_dir, 'access_elect.csv')
+elect_path = os.path.join(current_dir, '../../data/raw/Social/access_elect.csv')
 elect = pd.read_csv(elect_path, encoding="ISO-8859-1")
 
 
-class_path = os.path.join(current_dir, 'PrimaryClassEnrollment.csv')
+class_path = os.path.join(current_dir, '../../data/raw/Social/PrimaryClassEnrollment.csv')
 classenrollment = pd.read_csv(class_path, encoding="ISO-8859-1")
 
-class2_path = os.path.join(current_dir, 'SecondaryClassEnrollment.csv')
+class2_path = os.path.join(current_dir, '../../data/raw/Social/SecondaryClassEnrollment.csv')
 
 
 #=============================
@@ -181,8 +180,9 @@ result_education = standardisation(result_education, "Entity")
 result_education = result_education.merge(countries,left_on="Entity", right_on="Name",how="left")
 result_education = result_education.drop(["Name","Entity"],axis=1).rename(columns={'id':'pays_id'})
 
-#On exporte en csv : 
-result_education.to_csv("result_educ.csv", index_label="id_educ")
+result_education_save_path = os.path.join(current_dir,'../../data/processed/Education/result_educ.csv')
+#On exporte en csv :
+result_education.to_csv(result_education_save_path, index_label="id_educ")
 
 #==========================
 # Resultats Economy
@@ -200,5 +200,7 @@ result_economy = standardisation(result_economy,"Entity")
 result_economy = result_economy.merge(countries,left_on="Entity", right_on="Name",how="left")
 result_economy = result_economy.drop(["Name","Entity"],axis=1).rename(columns={'id':'pays_id'})
 
-#On exporte en csv : 
-result_economy.to_csv("result_eco_social.csv", index_label="id_social")
+#On exporte en csv :
+result_economy_save_path = os.path.join(current_dir,'../../data/processed/Social/result_eco_social.csv')
+
+result_economy.to_csv(result_economy_save_path, index_label="id_social")
