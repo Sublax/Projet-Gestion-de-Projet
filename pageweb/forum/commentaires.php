@@ -43,7 +43,6 @@ if(isset($_GET['id_pays'])){
     }else{
         echo 'Vous devez être connecté pour poster un commentaire !';
     }
-
     // -- Partie Insertion base de données
     if(isset($_POST["commentaire"])){
         $commentaire = htmlspecialchars($_POST['commentaire']);
@@ -64,7 +63,9 @@ if(isset($_GET['id_pays'])){
         echo '<p> Aucun commentaire sur ce pays pour le moment ! :)</p>';
     }else{
         while($ligne = $stmt->fetch()){
-            echo '<p> '. $ligne['date'] .' Commentaire écrit par '.$ligne['nom_utilisateur'] . ' :</p>';
+            //On formate pour montrer seulement la date, heure:min
+            $date_formate = date("d/m/Y H:i", strtotime($ligne['date']));
+            echo '<p> '. $date_formate.' Commentaire écrit par '.$ligne['nom_utilisateur'] . ' :</p>';
             echo '<p>' .$ligne["avis"] . '</p>';
             echo '<br> <br>';
         }
