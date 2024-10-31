@@ -5,45 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
     <link rel="stylesheet" href="../styles/style_max.css">
-    <script>
-        function validateForm() {
-            // Récupérer les valeurs des champs
-            const username = document.forms["registerForm"]["username"].value;
-            const firstName = document.forms["registerForm"]["first_name"].value;
-            const lastName = document.forms["registerForm"]["last_name"].value;
-            const email = document.forms["registerForm"]["email"].value;
-            const location = document.forms["registerForm"]["location"].value;
-            const password = document.forms["registerForm"]["password"].value;
-            const confirmPassword = document.forms["registerForm"]["confirm_password"].value;
-
-            // Vérifier si les champs sont vides
-            if (username === "" || firstName === "" || lastName === "" || email === "" || location === "" || password === "" || confirmPassword === "") {
-                alert("Veuillez remplir tous les champs.");
-                return false;
-            }
-
-            // Vérifier si les mots de passe sont égaux
-            if (password !== confirmPassword) {
-                alert("Les mots de passe ne correspondent pas.");
-                return false;
-            }
-
-            return true;
-        }
-    </script>
 </head>
 <body>
     <div class="register-container">
         <img src="logo.png" alt="Logo" class="logo">
         <h2>Créez votre compte !</h2>
-        <form name="registerForm" action="process_register.php" method="post" onsubmit="return validateForm()">
-            <input type="text" name="username" placeholder="Nom d'utilisateur" required>
-            <div class="name-fields">
-                <input type="text" name="first_name" placeholder="Prénom" required>
-                <input type="text" name="last_name" placeholder="Nom de famille" required>
+
+        <?php
+        // Variables pour stocker les erreurs
+        $errors = [];
+        
+        // Vérifier si le formulaire a été soumis
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Récupérer les valeurs du formulaire
+            $username = $_POST['username'] ?? '';
+            $firstName = $_POST['first_name'] ?? '';
+            $lastName = $_POST['last_name'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $location = $_POST['location'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            // Vérification des champs vides
+            if (empty($username) || empty($firstName) || empty($lastName) || empty($email) || empty($location) || empty($password) || empty($confirmPassword)) {
+                $errors[] = "Veuillez remplir tous les champs.";
+            }
+
+            // Vérification si les mots de passe correspondent
+            if ($password !== $confirmPassword) {
+                $errors[] = "Les mots de passe ne correspondent pas.";
+            }
+
+            // Afficher les erreurs ou traiter les données
+            if (empty($errors)) {
+                // Traiter les données (par exemple, les insérer dans la base de données)
+                echo "<p>Inscription réussie !</p>";
+                // Rediriger ou exécuter le code d'enregistrement ici
+                // header("Location: success_page.php");
+            }
+        }
+        ?>
+
+        <!-- Afficher les erreurs -->
+        <?php if (!empty($errors)): ?>
+            <div class="errors">
+                <?php foreach ($errors as $error): ?>
+                    <p><?php echo htmlspecialchars($error); ?></p>
+                <?php endforeach; ?>
             </div>
-            <input type="email" name="email" placeholder="Adresse e-mail" required>
-            <input type="text" name="location" placeholder="Localisation" required>
+        <?php endif; ?>
+
+        <!-- Formulaire d'inscription -->
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <input type="text" name="username" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+            <div class="name-fields">
+                <input type="text" name="first_name" placeholder="Prénom" value="<?php echo htmlspecialchars($firstName ?? ''); ?>" required>
+                <input type="text" name="last_name" placeholder="Nom de famille" value="<?php echo htmlspecialchars($lastName ?? ''); ?>" required>
+            </div>
+            <input type="email" name="email" placeholder="Adresse e-mail" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+            <input type="text" name="location" placeholder="Localisation" value="<?php echo htmlspecialchars($location ?? ''); ?>" required>
             <input type="password" name="password" placeholder="Mot de passe" required>
             <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required>
             <button type="submit" class="register-button">S’inscrire</button>
