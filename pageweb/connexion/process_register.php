@@ -1,81 +1,66 @@
 <?php
-// Activer l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 include '../bd.php';
 
-// Initialiser un tableau pour stocker les erreurs
-$errors = [];
-$form_data = []; // Tableau pour stocker les données du formulaire
+function verify(){
+    //Fonction qui vérifie que les variables existent bien
+    if(isset($_POST['username'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['location'],$_POST["password"],$_POST['confirm_password'])){
+        return TRUE;
+    }else{
+        return FALSE;
+    }
+}
+
+function save($u,$fn,$ln,$e,$l,$p){
+    // Fonction qui sauvegarde les données
+    //Pas besoin d'utiliser verify() car notre fonction sera appelé après avoir déjà effectué un test
+    $bdd = getBD();
+    $stmt = $bdd->prepare('SELECT mail FROM clients WHERE mail=:mail');
+    $stmt->execute([
+        ':mail' => $e,
+    ]);
+    $stmt2 = $bdd->prepare('SELECT nom_utilisateur FROM clients WHERE nom_utilisateur=:username');
+    $stmt2->execute([
+        ':username' => $u,
+    ]);
+    if($stmt->rowCount() > 0 || $stmt2->rowCount() > 0){
+        $_SESSION['errorMessage'] = "Un compte possède déjà ce nom d'utilisateur ou l'adresse mail.";
+        header("Location: ./login.php");
+    }else{
+        /*éviter les injections SQL :
+        à la place de concatener on utilise execute()*/
+        $sql = 'INSERT INTO clients (nom_utilisateur, nom, prenom, mail, localisation, mdp) VALUES (?, ?, ?, ?, ?, ?)';
+        $stmt = $bdd->prepare($sql);
+        // On hashe le mdp avant de l'envoyer dans la bdd :
+        $hash_mdp = password_hash($p, PASSWORD_DEFAULT);
+        $stmt->execute([$u, $fn, $ln, $e, $l, $hash_mdp]);
+        $_SESSION['successMessage'] = "Le compte est créé !";
+        header("Location: ./login.php");
+        exit();
+    }
+}
 
 // Vérifier si le formulaire a été soumis
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupérer les valeurs du formulaire
-    $username = $_POST['username'] ?? '';
-    $firstName = $_POST['first_name'] ?? '';
-    $lastName = $_POST['last_name'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $location = $_POST['location'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
-
-    // Stocker les valeurs dans form_data pour les conserver en cas d'erreur
-    $form_data = [
-        'username' => $username,
-        'first_name' => $firstName,
-        'last_name' => $lastName,
-        'email' => $email,
-        'location' => $location,
-    ];
-
-    // Vérification des champs vides
-    if (empty($username) || empty($firstName) || empty($lastName) || empty($email) || empty($location) || empty($password) || empty($confirmPassword)) {
-        $errors[] = "Veuillez remplir tous les champs.";
+if($_SERVER["REQUEST_METHOD"] == "POST" && verify()){
+    $username = $_POST['username'] ;
+    $firstName = $_POST['first_name'] ;
+    $lastName = $_POST['last_name'] ;
+    $email = $_POST['email'] ;
+    $location = $_POST['location'] ;
+    $password = $_POST['password'] ;
+    $confirmPassword = $_POST['confirm_password'] ;
+    if((empty($username) || empty($firstName)
+    || empty($lastName) || empty($email) || empty($location) || empty($password) 
+    || empty($confirmPassword)) || $password != $confirmPassword){
+        //Si champs invalident => On redirige
+        echo "<meta http-equiv='refresh' content='0;url= ./register.php?username=".$username."&first_name=".$firstName."&last_name=".$lastName."&email=".$email."&location=".$location."'/>";
+    }else{
+        // Sinon on save les données
+        save($username,$firstName,$lastName,$email,$location,$password);
     }
-
-    // Vérification si les mots de passe correspondent
-    if ($password !== $confirmPassword) {
-        $errors[] = "Les mots de passe ne correspondent pas.";
-    }
-
-    // Vérifier si le nom_utilisateur ou le mail existe déjà
-    if (empty($errors)) {
-        $conn = getBD();
-        $sql_check = "SELECT COUNT(*) FROM clients WHERE nom_utilisateur = ? OR mail = ?";
-        $stmt_check = $conn->prepare($sql_check);
-        $stmt_check->execute([$username, $email]);
-        $existingUser = $stmt_check->fetchColumn();
-
-        if ($existingUser > 0) {
-            $errors[] = "Nom d'utilisateur ou email déjà utilisé. Veuillez en choisir un autre.";
-        } else {
-            // Hachage du mot de passe et insertion
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO clients (nom_utilisateur, nom, prenom, mail, localisation, mdp) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$username, $firstName, $lastName, $email, $location, $hashedPassword]);
-
-            // Vérifier si l'insertion a réussi
-            if ($stmt) {
-                $_SESSION['success'] = "Inscription réussie !";
-                header("Location: login.php");
-                exit();
-            } else {
-                $errors[] = "Erreur lors de l'inscription.";
-            }
-        }
-        $conn = null;
-    }
-}
-
-// Rediriger en cas d'erreurs
-if (!empty($errors)) {
-    $_SESSION['errors'] = $errors;
-    $_SESSION['form_data'] = $form_data;
-    header("Location: register.php");
+}else{
+    die("Vous n'avez pas accès à cette page.");
     exit();
 }
+
 ?>
