@@ -1,42 +1,18 @@
 <?php
-// Activer l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 
-// Initialiser un tableau pour stocker les erreurs
-$errors = [];
+// Verificar si hay datos previamente enviados en la sesión
+$username = $_SESSION['form_data']['username'] ?? '';
+$firstName = $_SESSION['form_data']['first_name'] ?? '';
+$lastName = $_SESSION['form_data']['last_name'] ?? '';
+$email = $_SESSION['form_data']['email'] ?? '';
+$location = $_SESSION['form_data']['location'] ?? '';
 
-// Vérifier si le formulaire a été soumis
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupérer les valeurs du formulaire
-    $username = $_POST['username'] ?? '';
-    $firstName = $_POST['first_name'] ?? '';
-    $lastName = $_POST['last_name'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $location = $_POST['location'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
+// Verificar si hay errores en la sesión
+$errors = $_SESSION['errors'] ?? [];
 
-    // Vérification des champs vides
-    if (empty($username) || empty($firstName) || empty($lastName) || empty($email) || empty($location) || empty($password) || empty($confirmPassword)) {
-        $errors[] = "Veuillez remplir tous les champs.";
-    }
-
-    // Vérification si les mots de passe correspondent
-    if ($password !== $confirmPassword) {
-        $errors[] = "Les mots de passe ne correspondent pas.";
-    }
-
-    // Si aucune erreur, rediriger pour traiter l'inscription
-    if (empty($errors)) {
-        // Exemple d'un message de succès ou une redirection
-        $_SESSION['success'] = "Inscription réussie !";
-        header("Location: process_register.php");
-        exit();
-    }
-}
+// Limpiar los datos de la sesión después de mostrarlos
+unset($_SESSION['form_data'], $_SESSION['errors']);
 ?>
 
 <!DOCTYPE html>
@@ -63,13 +39,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <!-- Formulaire d'inscription -->
         <form action="process_register.php" method="post">
-            <input type="text" name="username" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+            <input type="text" name="username" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($username); ?>" required>
             <div class="name-fields">
-                <input type="text" name="first_name" placeholder="Prénom" value="<?php echo htmlspecialchars($firstName ?? ''); ?>" required>
-                <input type="text" name="last_name" placeholder="Nom de famille" value="<?php echo htmlspecialchars($lastName ?? ''); ?>" required>
+                <input type="text" name="first_name" placeholder="Prénom" value="<?php echo htmlspecialchars($firstName); ?>" required>
+                <input type="text" name="last_name" placeholder="Nom de famille" value="<?php echo htmlspecialchars($lastName); ?>" required>
             </div>
-            <input type="email" name="email" placeholder="Adresse e-mail" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
-            <input type="text" name="location" placeholder="Localisation" value="<?php echo htmlspecialchars($location ?? ''); ?>" required>
+            <input type="email" name="email" placeholder="Adresse e-mail" value="<?php echo htmlspecialchars($email); ?>" required>
+            <input type="text" name="location" placeholder="Localisation" value="<?php echo htmlspecialchars($location); ?>" required>
             <input type="password" name="password" placeholder="Mot de passe" required>
             <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required>
             <button type="submit" class="register-button">S’inscrire</button>
