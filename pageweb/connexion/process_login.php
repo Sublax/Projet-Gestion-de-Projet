@@ -29,7 +29,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             $_SESSION['username'] = $user['nom_utilisateur'];
             $_SESSION['prenom'] = $user['prenom']; // Stocker le prénom dans la session
 
-            header("Location: index.php"); // Rediriger vers la page d'accueil
+            header("Location: ../index.php"); // Rediriger vers la page d'accueil
             exit();
         } else {
             // Mot de passe incorrect

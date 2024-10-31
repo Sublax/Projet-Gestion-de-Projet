@@ -1,3 +1,44 @@
+<?php
+// Activer l'affichage des erreurs pour le débogage
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+session_start();
+
+// Initialiser un tableau pour stocker les erreurs
+$errors = [];
+
+// Vérifier si le formulaire a été soumis
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Récupérer les valeurs du formulaire
+    $username = $_POST['username'] ?? '';
+    $firstName = $_POST['first_name'] ?? '';
+    $lastName = $_POST['last_name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $location = $_POST['location'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    // Vérification des champs vides
+    if (empty($username) || empty($firstName) || empty($lastName) || empty($email) || empty($location) || empty($password) || empty($confirmPassword)) {
+        $errors[] = "Veuillez remplir tous les champs.";
+    }
+
+    // Vérification si les mots de passe correspondent
+    if ($password !== $confirmPassword) {
+        $errors[] = "Les mots de passe ne correspondent pas.";
+    }
+
+    // Si aucune erreur, rediriger pour traiter l'inscription
+    if (empty($errors)) {
+        // Exemple d'un message de succès ou une redirection
+        $_SESSION['success'] = "Inscription réussie !";
+        header("Location: process_register.php");
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,44 +52,9 @@
         <img src="logo.png" alt="Logo" class="logo">
         <h2>Créez votre compte !</h2>
 
-        <?php
-        // Variables pour stocker les erreurs
-        $errors = [];
-        
-        // Vérifier si le formulaire a été soumis
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Récupérer les valeurs du formulaire
-            $username = $_POST['username'] ?? '';
-            $firstName = $_POST['first_name'] ?? '';
-            $lastName = $_POST['last_name'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $location = $_POST['location'] ?? '';
-            $password = $_POST['password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
-
-            // Vérification des champs vides
-            if (empty($username) || empty($firstName) || empty($lastName) || empty($email) || empty($location) || empty($password) || empty($confirmPassword)) {
-                $errors[] = "Veuillez remplir tous les champs.";
-            }
-
-            // Vérification si les mots de passe correspondent
-            if ($password !== $confirmPassword) {
-                $errors[] = "Les mots de passe ne correspondent pas.";
-            }
-
-            // Afficher les erreurs ou traiter les données
-            if (empty($errors)) {
-                // Traiter les données (par exemple, les insérer dans la base de données)
-                echo "<p>Inscription réussie !</p>";
-                // Rediriger ou exécuter le code d'enregistrement ici
-                // header("Location: success_page.php");
-            }
-        }
-        ?>
-
         <!-- Afficher les erreurs -->
         <?php if (!empty($errors)): ?>
-            <div class="errors">
+            <div class="errors" style="color: red;">
                 <?php foreach ($errors as $error): ?>
                     <p><?php echo htmlspecialchars($error); ?></p>
                 <?php endforeach; ?>
@@ -56,7 +62,7 @@
         <?php endif; ?>
 
         <!-- Formulaire d'inscription -->
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <form action="process_register.php" method="post">
             <input type="text" name="username" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
             <div class="name-fields">
                 <input type="text" name="first_name" placeholder="Prénom" value="<?php echo htmlspecialchars($firstName ?? ''); ?>" required>

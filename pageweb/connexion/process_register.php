@@ -1,9 +1,13 @@
 <?php
-// Incluir le fichier de connexion
 include '../bd.php';
+session_start();
 
 // Récupérer la connexion à la base de données
-$conn = getBD();
+try {
+    $conn = getBD();
+} catch (PDOException $e) {
+    die("Erreur de connexion à la base de données : " . $e->getMessage());
+}
 
 // Récupérer les données du formulaire
 $nom_utilisateur = $_POST['username'];
@@ -11,7 +15,7 @@ $nom = $_POST['first_name'];
 $prenom = $_POST['last_name'];
 $mail = $_POST['email'];
 $localisation = $_POST['location'];
-$mdp = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hachage du mot de passe
+$mdp = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
 // Vérifier si le nom_utilisateur ou le mail existe déjà
 $sql_check = "SELECT COUNT(*) FROM clients WHERE nom_utilisateur = ? OR mail = ?";
@@ -20,23 +24,23 @@ $stmt_check->execute([$nom_utilisateur, $mail]);
 $existingUser = $stmt_check->fetchColumn();
 
 if ($existingUser > 0) {
-    echo "Nom d'utilisateur ou email déjà utilisé. Veuillez en choisir un autre.";
-} else {
-    // Préparer la requête SQL pour insérer les données dans la table clients
-    $sql = "INSERT INTO clients (nom_utilisateur, nom, prenom, mail, localisation, mdp) VALUES (?, ?, ?, ?, ?, ?)";
+    $_SESSION['error'] = "Nom d'utilisateur ou email déjà utilisé. Veuillez en choisir un autre.";
+    header("Location: register.php");
+    exit();
+}
 
-    // Utiliser une requête préparée pour éviter les injections SQL
+// Préparer la requête SQL pour insérer les données dans la table clients
+try {
+    $sql = "INSERT INTO clients (nom_utilisateur, nom, prenom, mail, localisation, mdp) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$nom_utilisateur, $nom, $prenom, $mail, $localisation, $mdp]);
 
-    // Vérifier si l'insertion a réussi
-    if ($stmt) {
-        echo "Inscription réussie !";
-        header("Location: login.php"); // Rediriger vers la page de connexion après l'inscription
-        exit();
-    } else {
-        echo "Erreur lors de l'inscription.";
-    }
+    // Si l'insertion réussit, rediriger vers la page de connexion
+    $_SESSION['success'] = "Inscription réussie !";
+    header("Location: login.php");
+    exit();
+} catch (PDOException $e) {
+    echo "Erreur lors de l'inscription : " . $e->getMessage();
 }
 
 // Fermer la connexion

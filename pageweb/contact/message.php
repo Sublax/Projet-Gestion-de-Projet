@@ -1,6 +1,6 @@
 <?php
 // Incluir el archivo de conexión
-include 'bd.php';
+include '../bd.php';
 session_start();
 
 // Vérifier si l'utilisateur est connecté
@@ -35,7 +35,7 @@ $stmt->bindParam(':date', $date);
 // Exécuter la requête
 if ($stmt->execute()) {
     echo "Message envoyé avec succès !";
-    header("Location: index.php?message=Message envoyé avec succès");
+    header("Location: ../index.php?message=Message envoyé avec succès");
     exit();
 } else {
     echo "Erreur lors de l'envoi du message.";
