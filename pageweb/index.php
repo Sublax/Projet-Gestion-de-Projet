@@ -8,7 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projet</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/style_max.css">
 </head>
 <body>
 <?php
@@ -40,7 +40,7 @@ if (isset($_SESSION['client'])) {
     if (isset($_SESSION['client'])) {
         echo '<a href="questionnaire.php" class="start-button">Essaye le questionnaire !</a>';
     } else {
-        echo '<a href="login.php" class="start-button">Essaye le questionnaire !</a>';
+        echo '<a href="/connexion/login.php" class="start-button">Essaye le questionnaire !</a>';
     }
     ?>
     </div>
@@ -74,7 +74,7 @@ if (isset($_SESSION['client'])) {
     <h1> Une question ? Contactez-nous !</h1>
         <div class="question">
         <?php if (isset($_SESSION['client'])): ?>
-            <form action="message.php" method="post">
+            <form action="./contact/message.php" method="post">
                 <label for="n">Nom:</label>
                 <input type="text" id="n" name="n" value="<?php echo $prenom; ?>" readonly><br><br>
 
@@ -91,7 +91,7 @@ if (isset($_SESSION['client'])) {
             </form>
         <?php else: ?>
             <p>Pour envoyer un message, vous devez être connecté.</p>
-            <a href="login.php?message=Vous devez être connecté pour envoyer un message">Se connecter</a>
+            <a href="./connexion/login.php">Se connecter</a>
         <?php endif; ?>
         </div>
     </div>
