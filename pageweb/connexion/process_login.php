@@ -1,6 +1,6 @@
 <?php
 // Incluir el archivo de conexión
-include 'bd.php';
+include '../bd.php';
 session_start();
 
 // Vérifier si les champs du formulaire sont remplis
@@ -37,7 +37,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         }
     } else {
         // Utilisateur non trouvé
-        echo "Nom d'utilisateur incorrect.";
+        echo "Informations incorrectes.";
     }
 } else {
     echo "Veuillez remplir tous les champs.";

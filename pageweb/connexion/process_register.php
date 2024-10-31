@@ -1,6 +1,6 @@
 <?php
 // Incluir le fichier de connexion
-include 'bd.php';
+include '../bd.php';
 
 // Récupérer la connexion à la base de données
 $conn = getBD();

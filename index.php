@@ -91,7 +91,7 @@ if (isset($_SESSION['client'])) {
             </form>
         <?php else: ?>
             <p>Pour envoyer un message, vous devez être connecté.</p>
-            <a href="login.php?message=Vous devez être connecté pour envoyer un message">Se connecter</a>
+            <a href="connexion/login.php">Se connecter</a>
         <?php endif; ?>
         </div>
     </div>
