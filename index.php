@@ -27,9 +27,9 @@ if (isset($_SESSION['client'])) {
             <ul>
                 <li><a href="questionnaire.php">Questionnaire</a></li>
                 <li><a href="graph.php">Graphiques &amp; Graphs</a></li>
-                <li><a href="forum.php">Forum</a></li>
+                <li><a href="forum/forum.php">Forum</a></li>
                 <li><a href="index.php"><img src="logo.png" alt="Logo" class="logo"></a></li>
-                <li><a href="info.php">Informations</a></li>
+                <li><a href="informations/informations.php">Informations</a></li>
                 <li><a href="data.php">Sources données</a></li>
                 <li><a href="options.php">Options</a></li>
             </ul>
@@ -40,7 +40,7 @@ if (isset($_SESSION['client'])) {
     if (isset($_SESSION['client'])) {
         echo '<a href="questionnaire.php" class="start-button">Essaye le questionnaire !</a>';
     } else {
-        echo '<a href="login.php" class="start-button">Essaye le questionnaire !</a>';
+        echo '<a href="connexion/login.php" class="start-button">Essaye le questionnaire !</a>';
     }
     ?>
     </div>
@@ -74,7 +74,7 @@ if (isset($_SESSION['client'])) {
     <h1> Une question ? Contactez-nous !</h1>
         <div class="question">
         <?php if (isset($_SESSION['client'])): ?>
-            <form action="message.php" method="post">
+            <form action="contact/message.php" method="post">
                 <label for="n">Nom:</label>
                 <input type="text" id="n" name="n" value="<?php echo $prenom; ?>" readonly><br><br>
 
