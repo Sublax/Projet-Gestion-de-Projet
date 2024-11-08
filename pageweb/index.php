@@ -52,7 +52,7 @@ if (isset($_SESSION['client'])) {
     <!-- Background Video Section -->
     <div class="video-background">
         <video autoplay muted loop id="backgroundVideo">
-            <source src="map_video.mp4" type="video/mp4">
+            <source src="./images/map_video.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         <!-- Essaye le questionnaire logic -->
