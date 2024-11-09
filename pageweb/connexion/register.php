@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="register-container">
-        <img src="logo.png" alt="Logo" class="logo">
+        <img src="../images/logo.png" alt="Logo" class="logo">
         <h2>Créez votre compte !</h2>
 
 
@@ -32,6 +32,13 @@
             <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required>
             <button type="submit" class="register-button">S’inscrire</button>
             <a href="./login.php" class="back-button">Retour</a>
+            <?php
+    if (isset($_SESSION['errorMessage'])) {
+        echo "<div style='color: red;'>" . htmlspecialchars($_SESSION['errorMessage']) . "</div>";
+        unset($_SESSION['errorMessage']);
+        
+    }
+?>
         </form>
     </div>
 </body>

@@ -25,7 +25,7 @@ function save($u,$fn,$ln,$e,$l,$p){
     ]);
     if($stmt->rowCount() > 0 || $stmt2->rowCount() > 0){
         $_SESSION['errorMessage'] = "Un compte possède déjà ce nom d'utilisateur ou l'adresse mail.";
-        header("Location: ./login.php");
+        header("Location: ./register.php");
     }else{
         /*éviter les injections SQL :
         à la place de concatener on utilise execute()*/

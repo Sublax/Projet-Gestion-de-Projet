@@ -14,7 +14,6 @@ if (!isset($_SESSION['client'])) {
 $id_client = $_SESSION['client'];
 $message = isset($_POST['msg']) ? trim($_POST['msg']) : '';
 $objet = isset($_POST['objet']) ? trim($_POST['objet']) : '';
-$date = date('Y-m-d H:i:s'); // Obtenemos la fecha y hora actual
 
 // Vérifier que le message n'est pas vide
 if (empty($message) || empty($objet)) {
@@ -26,11 +25,10 @@ if (empty($message) || empty($objet)) {
 $conn = getBD();
 
 // Préparer la requête SQL pour insérer les données dans la table messages_contact
-$sql = "INSERT INTO messages_contact (id_client, message, date) VALUES (:id_client, :message, :date)";
+$sql = "INSERT INTO messages_contact (id_client, message, date) VALUES (:id_client, :message, NOW())";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':id_client', $id_client);
 $stmt->bindParam(':message', $message);
-$stmt->bindParam(':date', $date);
 
 // Exécuter la requête
 if ($stmt->execute()) {

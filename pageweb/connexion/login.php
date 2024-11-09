@@ -6,25 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
     <link rel="stylesheet" href="../styles/styles.css">
+    <script type="module" src="../components/bundle.js"></script>
 </head>
 <body>
     
     <div class="login-container">
-        <img src="logo.png" alt="Logo" class="logo">
+        <img src="../images/logo.png" alt="Logo" class="logo">
         <form action="process_login.php" method="post">
-            <input type="text" name="username" placeholder="Enter username" required>
-            <input type="password" name="password" placeholder="Enter password" required>
+        <md-outlined-text-field name="username" placeholder="Nom d'utilisateur" label="Nom utilisateur" required>
+        </md-outlined-text-field>
+</br></br>
+        <md-outlined-text-field name="password" type="password" placeholder="Enter password" label="Password" required>
+        </md-outlined-text-field>
+</br></br>
             <button type="submit" class="login-button">Connexion</button>
             <a href="./register.php" class="signup-button">S’inscrire</a>
-<?php
-    if (isset($_SESSION['errorMessage'])) {
-        echo "<div style='color: red;'>" . htmlspecialchars($_SESSION['errorMessage']) . "</div>";
-        
-    }
-    if (isset($_SESSION['successMessage'])) {
-        echo "<div style='color: green;'>" . htmlspecialchars($_SESSION['successMessage']) . "</div>";
-    }
-?>
+        <?php
+            if (isset($_SESSION['successMessage'])) {
+                echo "<div style='color: green;'>" . htmlspecialchars($_SESSION['successMessage']) . "</div>";
+                unset($_SESSION['successMessage']);
+            }
+        ?>
+
             <p><a href="../index.php">Une simple visite sans inscription ?</a></p>
         </form>
     </div>

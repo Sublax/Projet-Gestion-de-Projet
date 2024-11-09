@@ -33,7 +33,7 @@ if (isset($_SESSION['client'])) {
         <p>Statistiques & Graphs</p>
     </div>
     <div class="menu-item logo">
-        <img src="images/images_ced/icone3.png" alt="Logo">
+        <img src="../images/logo.png" alt="Logo">
     </div>
     <div class="menu-item">
         <img src="images/images_ced/icone4.png" alt="Icone Informations">
@@ -52,7 +52,7 @@ if (isset($_SESSION['client'])) {
     <!-- Background Video Section -->
     <div class="video-background">
         <video autoplay muted loop id="backgroundVideo">
-            <source src="./images/map_video.mp4" type="video/mp4">
+            <source src="./images/map2.mp4" type="video/mp4">
             Votre navigateur ne supporte pas le contenu.
         </video>
         <!-- Essaye le questionnaire logic -->
