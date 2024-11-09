@@ -53,7 +53,7 @@ if (isset($_SESSION['client'])) {
     <div class="video-background">
         <video autoplay muted loop id="backgroundVideo">
             <source src="./images/map_video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
+            Votre navigateur ne supporte pas le contenu.
         </video>
         <!-- Essaye le questionnaire logic -->
     <?php
@@ -83,12 +83,12 @@ if (isset($_SESSION['client'])) {
 
         <div class="testimonial-section">
         <div class="testimonial">
-            <img src="user-icon.png" alt="User Icon" class="user-icon">
+            <img src="./images/default_user.jpg" alt="User Icon" class="user-icon">
             <h3>A visité : France</h3>
             <p>Très joli pays, je ne regrette pas mon voyage, merci !</p>
         </div>
         <div class="testimonial">
-            <img src="user-icon.png" alt="User Icon" class="user-icon">
+            <img src="./images/default_user.jpg" alt="User Icon" class="user-icon">
             <h3>A visité : Thaïlande</h3>
             <p>Un pays sans commune mesure. Un vrai spectacle du début à la fin. Les massages thaïlandais sont les meilleurs, mais je déconseille quand même Pattaya.</p>
         </div>

@@ -40,39 +40,44 @@ session_start();
             <p>Options</p>
         </div>
         </header>
-        
-    <div class="container">
+    <?php
+    if(isset($_SESSION['client'])){    
+    echo '<div class="container">';
 
-        <!-- Profile content -->
-        <div class="profile">
-            <?php
+        echo'<div class="profile">';
             // Photo
             echo "<div class='profile-photo'>
                     <p>".htmlspecialchars($_SESSION['username'])."</p>
                     <p>'s photo</p>
                     </div>";
                 
-
             // Username
             echo "<div class='username'
                     <h1>". htmlspecialchars($_SESSION['username']) ."</h1>
                     </div>";
-            ?>
-
-                <div class="stats">
-                    <div class="stat-box">
+            echo "
+                <div class='stats'>
+                    <div class='stat-box'>
                         <p>Posts</p>
                         <p>3</p>
                     </div>
-                    <div class="stat-box">
+                    <div class='stat-box'>
                         <p>Pays visités</p>
                         <p>10</p>
                     </div>
                 </div>
-                <textarea placeholder="Écrivez votre biographie..."></textarea>
-                <button class="logout-button">Déconnexion</button>
+                <textarea placeholder='Écrivez votre biographie...'></textarea>
+                <button class='logout-button'>Déconnexion</button>
             </div>
         </div>
-    </div>
+    </div>";
+    }else{
+        echo "<p>Vous n'avez pas encore de profil !</p>";
+        echo "<p><a href='../connexion/register.php'> Créez-en un ! </a></p>";
+
+    }
+            ?>
+
+
 </body>
 </html>
