@@ -23,8 +23,8 @@
             <a href="./register.php" class="signup-button">S’inscrire</a>
         <?php
             if (isset($_SESSION['successMessage'])) {
-                echo "<div style='color: green;'>" . htmlspecialchars($_SESSION['successMessage']) . "</div>";
-                unset($_SESSION['successMessage']);
+                echo "<div style='color: green;font-weight:bold;font-size:17px'>" . htmlspecialchars($_SESSION['successMessage']) . "</div>";
+                unset($_SESSION["successMessage"]);
             }
         ?>
 
