@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
     <link rel="stylesheet" href="../styles/styles.css">
-    <script type="module" src="../components/bundle.js"></script>
 
 </head>
 <body>
@@ -57,21 +56,21 @@
         $location = $_GET['location'] ?? '';
         ?>
         <form action="./process_register.php" method="post">
-        <md-outlined-text-field name="username" placeholder="Nom d'utilisateur" label="Nom utilisateur" value="<?php echo htmlspecialchars($username); ?>"  required></md-outlined-text-field>
-            <div class="name-fields">
-                <md-outlined-text-field name="first_name" placeholder="Prénom" label="Prénom" value="<?php echo htmlspecialchars($firstName); ?>" required></md-outlined-text-field>
-                <md-outlined-text-field name="last_name" placeholder="Nom de famille" label="Nom" value="<?php echo htmlspecialchars($lastName); ?>" required></md-outlined-text-field>
-            </div>
-            <md-outlined-text-field type="email" name="email" placeholder="Adresse e-mail" label="Adresse mail" value="<?php echo htmlspecialchars($email); ?>" required></md-outlined-text-field>
-
+        <input type="text" name="username" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($username); ?>" required>
+        <div class="name-fields">
+            <input type="text" name="first_name" placeholder="Prénom" value="<?php echo htmlspecialchars($firstName); ?>" required>
+            <input type="text" name="last_name" placeholder="Nom de famille" value="<?php echo htmlspecialchars($lastName); ?>" required>
+        </div>
+            <input type="email" name="email" placeholder="Adresse e-mail" value="<?php echo htmlspecialchars($email); ?>" required>
             
             <label for="country">Sélectionnez votre pays :</label>
+            <div class="select">
             <select name="country" id="country" required>
             <option value="">-- Sélectionnez un pays --</option>
             </select>
-            <md-outlined-text-field name="password" type="password" placeholder="Enter password" label="Password" required>
-            </md-outlined-text-field>
-            <md-outlined-text-field type="password" name="confirm_password" placeholder="Confirmer le mot de passe" label="Confirmation mot de passe" required></md-outlined-text-field>
+            </div>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required>
             <button type="submit" class="register-button">S’inscrire</button>
             <a href="./login.php" class="back-button">Retour</a>
             <?php
