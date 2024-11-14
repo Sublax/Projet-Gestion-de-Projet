@@ -1,5 +1,4 @@
 
-
 header {
     background-color: #fff;
     padding: 10px;
@@ -602,6 +601,8 @@ footer {
 }
 
 /* Input Fields */
+.login-container input[type="text"],
+.login-container input[type="password"],
 .register-container input[type="text"],
 .register-container input[type="email"],
 .register-container input[type="password"] {
