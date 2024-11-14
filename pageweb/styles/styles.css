@@ -105,6 +105,12 @@ body {
     margin: 10px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Suaviza la transición */
+}
+
+.section:hover {
+    background-color: #f0f0f0; /* Cambia el color de fondo al pasar el ratón */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Aumenta la sombra */
 }
 .testimonial-section {
     display: flex;
