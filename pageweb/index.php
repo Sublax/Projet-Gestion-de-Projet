@@ -106,7 +106,8 @@ if (isset($_SESSION['client'])) {
                 <label for="msg">Message:</label>
                 <textarea id="msg" name="msg" rows="4" cols="50" required></textarea><br><br>
 
-                <input type="submit" value="Envoyer">
+                <input type="submit" onclick="confirmSendMessage()" value="Envoyer">
+                <p id="messageConfirmation"></p>
             </form>
         <?php else: ?>
             <p>Pour envoyer un message, vous devez être connecté.</p>
@@ -117,4 +118,20 @@ if (isset($_SESSION['client'])) {
     </main>
 
 </body>
+<footer>
+    <p>&copy; 2024 Payspédia. Tous droits réservés.</p>
+</footer>
 </html>
+
+
+<script>
+function confirmSendMessage() {
+  let text;
+  if (confirm("Voulez-vous envoyer ce message ?") == true) {
+    text = "Message envoyé ! Vous recevrez une réponse au plus tôt par e-mail.";
+  } else {
+    text = "";
+  }
+  document.getElementById("messageConfirmation").innerHTML = text;
+}
+</script>

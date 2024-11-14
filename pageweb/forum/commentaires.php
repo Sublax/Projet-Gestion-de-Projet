@@ -74,4 +74,7 @@ if(isset($_GET['id_pays'])){
     ?>
 </section>
 </body>
+<footer>
+    <p>&copy; 2024 Payspédia. Tous droits réservés.</p>
+</footer>
 </html>

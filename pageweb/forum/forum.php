@@ -56,4 +56,7 @@ $bdd = getBD();
     }
 </script>
 </body>
+<footer>
+    <p>&copy; 2024 Payspédia. Tous droits réservés.</p>
+</footer>
 </html>

@@ -9,7 +9,7 @@
     <script type="module" src="../components/bundle.js"></script>
 </head>
 <body>
-    
+<div id="particles-js"></div>
     <div class="login-container">
         <img src="../images/logo.png" alt="Logo" class="logo">
         <form action="process_login.php" method="post">
@@ -31,5 +31,8 @@
             <p><a href="../index.php">Une simple visite sans inscription ?</a></p>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../styles/particles.js"></script>
+
 </body>
 </html>
