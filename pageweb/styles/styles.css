@@ -547,6 +547,7 @@ footer {
 
 .menu-item.logo {
     position: relative;
+    left: 50px;
     bottom: -20px; /* Pour centrer le logo par rapport aux autres éléments */
     border-radius: 80%;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);

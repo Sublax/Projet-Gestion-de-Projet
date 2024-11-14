@@ -8,7 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projet</title>
-    <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
 <?php
@@ -25,29 +25,41 @@ if (isset($_SESSION['client'])) {
     <header>
     <div class="menu-bar">
     <div class="menu-item">
-        <img src="../images/images_ced/icone1.png" alt="Icone Questionnaire">
+    <?php
+        if (isset($_SESSION['client'])) {
+            echo '<a href="questionnaire.php"</a>';
+        } else {
+            echo '<a href="connexion/login.php" </a>';
+        }
+        ?><img src="images/images_ced/icone1.png" alt="Icone Questionnaire">
         <p>Questionnaire</p>
     </div>
     <div class="menu-item">
-        <img src="images/images_ced/icone2.png" alt="Icone Statistiques & Graphs">
+    <a href="graph.php"><img src="images/images_ced/icone2.png" alt="Icone Statistiques & Graphs">
         <p>Statistiques & Graphs</p>
     </div>
+    <div class="menu-item">
+    <a href="forum/forum.php"><img src="images/images_ced/icone7.png" alt="Forum"></a>
+       <p>Forum</p>
+   </div>
     <div class="menu-item logo">
-        <img src="../images/logo.png" alt="Logo">
+    <a href="index.php"><img src="images/images_ced/icone3.png" alt="Logo">
+        
     </div>
     <div class="menu-item">
-        <img src="images/images_ced/icone4.png" alt="Icone Informations">
+    <a href="informations/informations.php"><img src="images/images_ced/icone4.png" alt="Icone Informations">
         <p>Informations</p>
     </div>
     <div class="menu-item">
-        <img src="images/images_ced/icone5.png" alt="Icone Sources données">
+    <a href="informations/sources.php"><img src="images/images_ced/icone5.png" alt="Icone Sources données">
         <p>Sources données</p>
     </div>
     <div class="menu-item">
-        <img src="images/images_ced/icone6.png" alt="Icone Options">
-        <p>Options</p>
+    <a href="profil.php"><img src="images/images_ced/icone6.png" alt="Icone Options">
+        <p>Profil</p>
     </div>
     </header>
+
 
     <!-- Background Video Section -->
     <div class="video-background">

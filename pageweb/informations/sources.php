@@ -7,16 +7,45 @@
     <link rel="stylesheet" href="../styles/style_ced.css">
 </head>
 <body>
-    <header>
-        <!--<div class="menu">
-            <img src="logo.png" alt="Logo du site">
-        </div>-->
-        <div class="menu">
-            <!-- Ici tu pourras ajouter la barre de menu -->
-            <p style="font-weight: bold; font-size: 1.2em;">Prochaine barre de menu</p>
-        </div>
+        <!-- Menu superieur -->
+        <header>
+            <div class="menu-bar">
+            <div class="menu-item">
+            <?php
+                if (isset($_SESSION['client'])) {
+                    echo '<a href="../questionnaire.php"</a>';
+                } else {
+                    echo '<a href="../connexion/login.php" </a>';
+                }
+                ?><img src="../images/images_ced/icone1.png" alt="Icone Questionnaire">
+                <p>Questionnaire</p>
+            </div>
+            <div class="menu-item">
+            <a href="../graph.php"><img src="../images/images_ced/icone2.png" alt="Icone Statistiques & Graphs">
+                <p>Statistiques & Graphs</p>
+            </div>
+            <div class="menu-item">
+            <a href="../forum/forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
+               <p>Forum</p>
+           </div>
+            <div class="menu-item logo">
+            <a href="../index.php"><img src="../images/images_ced/icone3.png" alt="Logo">
+                
+            </div>
+            <div class="menu-item">
+            <a href="informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations">
+                <p>Informations</p>
+            </div>
+            <div class="menu-item">
+            <a href="sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données">
+                <p>Sources données</p>
+            </div>
+            <div class="menu-item">
+            <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options">
+                <p>Profil</p>
+            </div>
+            </header>
         
-    </header>
 
     <main>
         <section class="sources">
