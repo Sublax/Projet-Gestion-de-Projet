@@ -104,7 +104,7 @@ session_start();
     <h1> Une question ? Contactez-nous !</h1>
         <div class="question">
         <?php if (isset($_SESSION['client'])): ?>
-            <form action="contact/message.php" method="post">
+            <form id= "sendMessageForm" action="contact/message.php" method="post">
 
                 <label for="objet">Objet:</label>
                 <input type="text" id="objet" name="objet" required><br><br>
@@ -113,7 +113,13 @@ session_start();
                 <textarea id="msg" name="msg" rows="4" cols="50" required></textarea><br><br>
 
                 <input type="submit" onclick="confirmSendMessage()" value="Envoyer">
-                <p id="messageConfirmation"></p>
+                <p> 
+                <?php
+                if(isset($_SESSION["messageSendTrue"])){
+                    echo '<p id="messageSendTrue"> Message envoyé ! </p>';
+                    unset($_SESSION["messageSendTrue"]);
+                }
+                ?></p>
             </form>
         <?php else: ?>
             <p>Pour envoyer un message, vous devez être connecté.</p>
@@ -129,15 +135,8 @@ session_start();
 </footer>
 </html>
 
-
 <script>
 function confirmSendMessage() {
-  let text;
-  if (confirm("Voulez-vous envoyer ce message ?") == true) {
-    text = "Message envoyé ! Vous recevrez une réponse au plus tôt par e-mail.";
-  } else {
-    text = "";
-  }
-  document.getElementById("messageConfirmation").innerHTML = text;
+confirm("Voulez-vous envoyer ce message ?")
 }
 </script>
