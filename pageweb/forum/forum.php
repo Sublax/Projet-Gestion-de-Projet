@@ -59,7 +59,10 @@ $bdd = getBD();
 <section class="forum">
     <h1>Forum - Liste des pays</h1>
     <p>Exprimez-vous !</p>
+    <div class="field">
     <input type="text" id="recherchePays" placeholder="Rechercher un pays..." onkeyup="filterCountries()">
+    <div class="line"></div>
+    </div>
     <?php 
     $sql = 'SELECT id_pays,nom_pays FROM pays';
     $stmt = $bdd->query($sql);
