@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,14 +13,7 @@ session_start();
     <header>
     <div class="menu-bar">
     <div class="menu-item">
-    <?php
-        if (isset($_SESSION['client'])) {
-            echo '<a href="questionnaire.php">';
-        } else {
-            echo '<a href="connexion/login.php">';
-        }
-        ?>
-        <img src="images/images_ced/icone1.png" alt="Icone Questionnaire">
+    <a href="questionnaire.php">        <img src="images/images_ced/icone1-.png" alt="Icone Questionnaire">
         </a>
         <p>Questionnaire</p>
     </div>
@@ -56,24 +46,12 @@ session_start();
 
     <!-- Background Video Section -->
     <div class="video-background">
-
         <video autoplay muted loop id="backgroundVideo">
             <source src="./images/map2.mp4" type="video/mp4">
             Votre navigateur ne supporte pas le contenu.
         </video>
         <!-- Essaye le questionnaire logic -->
-    <?php
-    if (isset($_SESSION['client'])) {
-        echo '<div class="hero">';
-        echo '<a href="questionnaire.html" class="start-button">Essaye le questionnaire !</a>';
-        echo '</div>';
-    } else {
-        echo '<div class="hero">';
-        echo '<a href="connexion/login.php" class="start-button">Essaye le questionnaire !</a>';
-        echo '</div>';
-    }
-    ?>
-    </div>
+    <div class="hero"><a href="questionnaire.html" class="start-button">Essaye le questionnaire !</a></div>    </div>
 
     <!-- Contenu principal -->
     <main>
@@ -103,8 +81,7 @@ session_start();
     <div class="contact-section">
     <h1> Une question ? Contactez-nous !</h1>
         <div class="question">
-        <?php if (isset($_SESSION['client'])): ?>
-            <form action="contact/message.php" method="post">
+                    <form action="contact/message.php" method="post">
 
                 <label for="objet">Objet:</label>
                 <input type="text" id="objet" name="objet" required><br><br>
@@ -115,11 +92,7 @@ session_start();
                 <input type="submit" onclick="confirmSendMessage()" value="Envoyer">
                 <p id="messageConfirmation"></p>
             </form>
-        <?php else: ?>
-            <p>Pour envoyer un message, vous devez être connecté.</p>
-            <a href="connexion/login.php">Se connecter</a>
-        <?php endif; ?>
-        </div>
+                </div>
     </div>
     </main>
 

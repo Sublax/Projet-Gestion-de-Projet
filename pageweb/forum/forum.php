@@ -1,6 +1,9 @@
 <?php 
 include "../bd.php";
 $bdd = getBD();
+session_start();
+
+
 ?>
 
 <!DOCTYPE html>
