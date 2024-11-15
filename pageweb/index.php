@@ -11,16 +11,7 @@ session_start();
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-<?php
-// Vérifier si l'utilisateur est connecté
-if (isset($_SESSION['client'])) {
-    $prenom = isset($_SESSION['prenom']) ? htmlspecialchars($_SESSION['prenom']) : '';
-    $email = isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : ''; // Supposant que l'email est stocké dans la session
-    echo "Connexion réussie, $prenom !";
-} else {
-    echo "Veuillez vous connecter pour accéder à toutes les fonctionnalités.";
-}
-?>
+
     <!-- Menu superieur -->
     <header>
     <div class="menu-bar">
