@@ -12,6 +12,10 @@ h1 {
     color: #333;
 }
 
+#messageSendTrue{
+    color: green;
+}
+
 #recherchePays {
     background: 0;
     border: 0;
@@ -131,7 +135,6 @@ body {
     height: 40px;
 }
 .hero {
-    background-image: url('path_to_image.jpg'); /* Replace with the correct path */
     background-size: cover;
     background-position: center;
     height: 1100px;
