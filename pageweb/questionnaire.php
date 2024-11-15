@@ -5,15 +5,13 @@
     <title>Questionnaire</title>
     <link rel="stylesheet" href="styles/styles.css">
     <style>
-        h2{
+        h2 {
             justify-self: center;
             margin-top: 80px;
         }
-
-        p{
+        p {
             justify-self: center;
         }
-
         .step-container {
             display: flex;
             justify-content: center;
@@ -32,14 +30,23 @@
             font-weight: bold;
             cursor: pointer;
         }
+
         .step.active {
-            background-color: #4CAF50; /* Active color */
+            border: 2px solid #4CAF50; /* Border for the active step */
         }
-        .step.completed {
-            background-color: #4CAF50; /* Green for completed */
+
+        .step.green {
+            background-color: #4CAF50; /* Green for fully completed page */
         }
-        .step.incomplete {
-            background-color: #e53935; /* Red for incomplete */
+
+        .step.yellow {
+            background-color: #FFEB3B; /* Yellow for partially completed page */
+            color: black; /* Black text for better readability on yellow */
+        }
+
+        .step.red {
+            background-color: #e53935; /* Red for pages with no questions answered */
+        
         }
         .questionnaire-section { display: none; }
         .questionnaire-section.active { display: block; }
@@ -49,93 +56,325 @@
 <body>
     <!-- Menu superieur -->
     <header>
-    <div class="menu-bar">
-    <div class="menu-item">
-    <?php
-        if (isset($_SESSION['client'])) {
-            echo '<a href="questionnaire.php">';
-        } else {
-            echo '<a href="connexion/login.php">';
-        }
-        ?>
-        <img src="images/images_ced/icone1.png" alt="Icone Questionnaire">
-        </a>
-        <p>Questionnaire</p>
-    </div>
-    <div class="menu-item">
-    <a href="graph.php"><img src="images/images_ced/icone2.png" alt="Icone Statistiques & Graphs"></a>
-        <p>Statistiques & Graphs</p>
-    </div>
-    <div class="menu-item">
-    <a href="forum/forum.php"><img src="images/images_ced/icone7.png" alt="Forum"></a>
-       <p>Forum</p>
-   </div>
-    <div class="menu-item logo">
-    <a href="index.php"><img src="images/images_ced/icone3.png" alt="Logo"></a>
-        
-    </div>
-    <div class="menu-item">
-    <a href="informations/informations.php"><img src="images/images_ced/icone4.png" alt="Icone Informations"></a>
-        <p>Informations</p>
-    </div>
-    <div class="menu-item">
-    <a href="informations/sources.php"><img src="images/images_ced/icone5.png" alt="Icone Sources données"></a>
-        <p>Sources données</p>
-    </div>
-    <div class="menu-item">
-    <a href="profil.php"><img src="images/images_ced/icone6.png" alt="Icone Options"></a>
-        <p>Profil</p>
-    </div>
+        <div class="menu-bar">
+        <div class="menu-item">
+        <?php
+            if (isset($_SESSION['client'])) {
+                echo '<a href="questionnaire.php">';
+            } else {
+                echo '<a href="connexion/login.php">';
+            }
+            ?>
+            <img src="images/images_ced/icone1.png" alt="Icone Questionnaire">
+            </a>
+            <p>Questionnaire</p>
+        </div>
+        <div class="menu-item">
+        <a href="graph.php"><img src="images/images_ced/icone2.png" alt="Icone Statistiques & Graphs"></a>
+            <p>Statistiques & Graphs</p>
+        </div>
+        <div class="menu-item">
+        <a href="forum/forum.php"><img src="images/images_ced/icone7.png" alt="Forum"></a>
+           <p>Forum</p>
+        </div>
+        <div class="menu-item logo">
+        <a href="index.php"><img src="images/images_ced/icone3.png" alt="Logo"></a>
+            
+        </div>
+        <div class="menu-item">
+        <a href="informations/informations.php"><img src="images/images_ced/icone4.png" alt="Icone Informations"></a>
+            <p>Informations</p>
+        </div>
+        <div class="menu-item">
+        <a href="informations/sources.php"><img src="images/images_ced/icone5.png" alt="Icone Sources données"></a>
+            <p>Sources données</p>
+        </div>
+        <div class="menu-item">
+        <a href="profil.php"><img src="images/images_ced/icone6.png" alt="Icone Options"></a>
+            <p>Profil</p>
+        </div>
     </header>
 
     <div class="container">
         <h2 id="form_beginning">Début du questionnaire</h2>
         <p id="form_beginning">Le temps de réponse est d'environ x minutes.</p>
         <form action="graphs_stats.php" method="POST" id="questionnaireForm">
+            
             <!-- Page 1 -->
-            <div class="questionnaire-section active">
-                <div class="question">
-                    <label for="question1">Question 1: Quel est votre niveau de satisfaction ?</label>
-                    <div class="options">
-                        <input type="radio" id="q1_option1" name="question1" value="Très insatisfait" required>
-                        <label for="q1_option1">Très insatisfait</label><br>
-                        <input type="radio" id="q1_option2" name="question1" value="Insatisfait">
-                        <label for="q1_option2">Insatisfait</label><br>
-                        <input type="radio" id="q1_option3" name="question1" value="Neutre">
-                        <label for="q1_option3">Neutre</label><br>
-                        <input type="radio" id="q1_option4" name="question1" value="Satisfait">
-                        <label for="q1_option4">Satisfait</label><br>
-                        <input type="radio" id="q1_option5" name="question1" value="Très satisfait">
-                        <label for="q1_option5">Très satisfait</label><br>
-                    </div>
-                </div>
-            </div>
+<div class="questionnaire-section active">
+    <!-- Question 1 -->
+    <div class="question">
+        <label for="question1">Question 1: Quel est votre niveau de satisfaction ?</label>
+        <div class="options">
+            <input type="radio" id="q1_option1" name="question1" value="Très insatisfait" required>
+            <label for="q1_option1">Très insatisfait</label><br>
+            <input type="radio" id="q1_option2" name="question1" value="Insatisfait">
+            <label for="q1_option2">Insatisfait</label><br>
+            <input type="radio" id="q1_option3" name="question1" value="Neutre">
+            <label for="q1_option3">Neutre</label><br>
+            <input type="radio" id="q1_option4" name="question1" value="Satisfait">
+            <label for="q1_option4">Satisfait</label><br>
+            <input type="radio" id="q1_option5" name="question1" value="Très satisfait">
+            <label for="q1_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="question">
+        <label for="question2">Question 2: À quel point êtes-vous satisfait de notre service client ?</label>
+        <div class="options">
+            <input type="radio" id="q2_option1" name="question2" value="Très insatisfait" required>
+            <label for="q2_option1">Très insatisfait</label><br>
+            <input type="radio" id="q2_option2" name="question2" value="Insatisfait">
+            <label for="q2_option2">Insatisfait</label><br>
+            <input type="radio" id="q2_option3" name="question2" value="Neutre">
+            <label for="q2_option3">Neutre</label><br>
+            <input type="radio" id="q2_option4" name="question2" value="Satisfait">
+            <label for="q2_option4">Satisfait</label><br>
+            <input type="radio" id="q2_option5" name="question2" value="Très satisfait">
+            <label for="q2_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="question">
+        <label for="question3">Question 3: Comment évalueriez-vous la qualité de nos produits ?</label>
+        <div class="options">
+            <input type="radio" id="q3_option1" name="question3" value="Très insatisfait" required>
+            <label for="q3_option1">Très insatisfait</label><br>
+            <input type="radio" id="q3_option2" name="question3" value="Insatisfait">
+            <label for="q3_option2">Insatisfait</label><br>
+            <input type="radio" id="q3_option3" name="question3" value="Neutre">
+            <label for="q3_option3">Neutre</label><br>
+            <input type="radio" id="q3_option4" name="question3" value="Satisfait">
+            <label for="q3_option4">Satisfait</label><br>
+            <input type="radio" id="q3_option5" name="question3" value="Très satisfait">
+            <label for="q3_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <!-- Question 4 -->
+    <div class="question">
+        <label for="question4">Question 4: Recommanderiez-vous notre entreprise à vos amis ou collègues ?</label>
+        <div class="options">
+            <input type="radio" id="q4_option1" name="question4" value="Très insatisfait" required>
+            <label for="q4_option1">Très insatisfait</label><br>
+            <input type="radio" id="q4_option2" name="question4" value="Insatisfait">
+            <label for="q4_option2">Insatisfait</label><br>
+            <input type="radio" id="q4_option3" name="question4" value="Neutre">
+            <label for="q4_option3">Neutre</label><br>
+            <input type="radio" id="q4_option4" name="question4" value="Satisfait">
+            <label for="q4_option4">Satisfait</label><br>
+            <input type="radio" id="q4_option5" name="question4" value="Très satisfait">
+            <label for="q4_option5">Très satisfait</label><br>
+        </div>
+    </div>
+</div>
+
 
             <!-- Page 2 -->
-            <div class="questionnaire-section">
-                <div class="question">
-                    <label for="question2">Question 2: Quelle est votre fréquence de voyage ?</label>
-                    <div class="options">
-                        <input type="radio" id="q2_option1" name="question2" value="Jamais" required>
-                        <label for="q2_option1">Jamais</label><br>
-                        <input type="radio" id="q2_option2" name="question2" value="Rarement">
-                        <label for="q2_option2">Rarement</label><br>
-                        <input type="radio" id="q2_option3" name="question2" value="Parfois">
-                        <label for="q2_option3">Parfois</label><br>
-                        <input type="radio" id="q2_option4" name="question2" value="Souvent">
-                        <label for="q2_option4">Souvent</label><br>
-                        <input type="radio" id="q2_option5" name="question2" value="Très souvent">
-                        <label for="q2_option5">Très souvent</label><br>
-                    </div>
-                </div>
-            </div>
+<div class="questionnaire-section">
+    <div class="question">
+        <label for="question5">Question 5: Quelle est votre opinion sur notre politique de prix ?</label>
+        <div class="options">
+            <input type="radio" id="q5_option1" name="question5" value="Très insatisfait" required>
+            <label for="q5_option1">Très insatisfait</label><br>
+            <input type="radio" id="q5_option2" name="question5" value="Insatisfait">
+            <label for="q5_option2">Insatisfait</label><br>
+            <input type="radio" id="q5_option3" name="question5" value="Neutre">
+            <label for="q5_option3">Neutre</label><br>
+            <input type="radio" id="q5_option4" name="question5" value="Satisfait">
+            <label for="q5_option4">Satisfait</label><br>
+            <input type="radio" id="q5_option5" name="question5" value="Très satisfait">
+            <label for="q5_option5">Très satisfait</label><br>
+        </div>
+    </div>
 
-            <!-- Step indicator -->
-            <div class="step-container" id="stepContainer">
-                <!-- JavaScript will populate this -->
-            </div>
-            
-            <!-- Submit Button (hidden by default) -->
+    <div class="question">
+        <label for="question6">Question 6: Est-ce que nos horaires vous conviennent ?</label>
+        <div class="options">
+            <input type="radio" id="q6_option1" name="question6" value="Très insatisfait" required>
+            <label for="q6_option1">Très insatisfait</label><br>
+            <input type="radio" id="q6_option2" name="question6" value="Insatisfait">
+            <label for="q6_option2">Insatisfait</label><br>
+            <input type="radio" id="q6_option3" name="question6" value="Neutre">
+            <label for="q6_option3">Neutre</label><br>
+            <input type="radio" id="q6_option4" name="question6" value="Satisfait">
+            <label for="q6_option4">Satisfait</label><br>
+            <input type="radio" id="q6_option5" name="question6" value="Très satisfait">
+            <label for="q6_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question7">Question 7: Comment décririez-vous notre facilité de navigation sur le site web ?</label>
+        <div class="options">
+            <input type="radio" id="q7_option1" name="question7" value="Très insatisfait" required>
+            <label for="q7_option1">Très insatisfait</label><br>
+            <input type="radio" id="q7_option2" name="question7" value="Insatisfait">
+            <label for="q7_option2">Insatisfait</label><br>
+            <input type="radio" id="q7_option3" name="question7" value="Neutre">
+            <label for="q7_option3">Neutre</label><br>
+            <input type="radio" id="q7_option4" name="question7" value="Satisfait">
+            <label for="q7_option4">Satisfait</label><br>
+            <input type="radio" id="q7_option5" name="question7" value="Très satisfait">
+            <label for="q7_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question8">Question 8: À quel point êtes-vous satisfait de la rapidité de notre service ?</label>
+        <div class="options">
+            <input type="radio" id="q8_option1" name="question8" value="Très insatisfait" required>
+            <label for="q8_option1">Très insatisfait</label><br>
+            <input type="radio" id="q8_option2" name="question8" value="Insatisfait">
+            <label for="q8_option2">Insatisfait</label><br>
+            <input type="radio" id="q8_option3" name="question8" value="Neutre">
+            <label for="q8_option3">Neutre</label><br>
+            <input type="radio" id="q8_option4" name="question8" value="Satisfait">
+            <label for="q8_option4">Satisfait</label><br>
+            <input type="radio" id="q8_option5" name="question8" value="Très satisfait">
+            <label for="q8_option5">Très satisfait</label><br>
+        </div>
+    </div>
+</div>
+
+            <!-- Page 3 -->
+<div class="questionnaire-section">
+    <div class="question">
+        <label for="question9">Question 9: Êtes-vous satisfait de la variété de nos produits ?</label>
+        <div class="options">
+            <input type="radio" id="q9_option1" name="question9" value="Très insatisfait" required>
+            <label for="q9_option1">Très insatisfait</label><br>
+            <input type="radio" id="q9_option2" name="question9" value="Insatisfait">
+            <label for="q9_option2">Insatisfait</label><br>
+            <input type="radio" id="q9_option3" name="question9" value="Neutre">
+            <label for="q9_option3">Neutre</label><br>
+            <input type="radio" id="q9_option4" name="question9" value="Satisfait">
+            <label for="q9_option4">Satisfait</label><br>
+            <input type="radio" id="q9_option5" name="question9" value="Très satisfait">
+            <label for="q9_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question10">Question 10: Comment évalueriez-vous l'ergonomie de notre interface ?</label>
+        <div class="options">
+            <input type="radio" id="q10_option1" name="question10" value="Très insatisfait" required>
+            <label for="q10_option1">Très insatisfait</label><br>
+            <input type="radio" id="q10_option2" name="question10" value="Insatisfait">
+            <label for="q10_option2">Insatisfait</label><br>
+            <input type="radio" id="q10_option3" name="question10" value="Neutre">
+            <label for="q10_option3">Neutre</label><br>
+            <input type="radio" id="q10_option4" name="question10" value="Satisfait">
+            <label for="q10_option4">Satisfait</label><br>
+            <input type="radio" id="q10_option5" name="question10" value="Très satisfait">
+            <label for="q10_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question11">Question 11: Est-ce que nos services répondent à vos attentes ?</label>
+        <div class="options">
+            <input type="radio" id="q11_option1" name="question11" value="Très insatisfait" required>
+            <label for="q11_option1">Très insatisfait</label><br>
+            <input type="radio" id="q11_option2" name="question11" value="Insatisfait">
+            <label for="q11_option2">Insatisfait</label><br>
+            <input type="radio" id="q11_option3" name="question11" value="Neutre">
+            <label for="q11_option3">Neutre</label><br>
+            <input type="radio" id="q11_option4" name="question11" value="Satisfait">
+            <label for="q11_option4">Satisfait</label><br>
+            <input type="radio" id="q11_option5" name="question11" value="Très satisfait">
+            <label for="q11_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question12">Question 12: À quel point êtes-vous satisfait de nos délais de livraison ?</label>
+        <div class="options">
+            <input type="radio" id="q12_option1" name="question12" value="Très insatisfait" required>
+            <label for="q12_option1">Très insatisfait</label><br>
+            <input type="radio" id="q12_option2" name="question12" value="Insatisfait">
+            <label for="q12_option2">Insatisfait</label><br>
+            <input type="radio" id="q12_option3" name="question12" value="Neutre">
+            <label for="q12_option3">Neutre</label><br>
+            <input type="radio" id="q12_option4" name="question12" value="Satisfait">
+            <label for="q12_option4">Satisfait</label><br>
+            <input type="radio" id="q12_option5" name="question12" value="Très satisfait">
+            <label for="q12_option5">Très satisfait</label><br>
+        </div>
+    </div>
+</div>
+
+            <!-- Page 4 -->
+<div class="questionnaire-section">
+    <div class="question">
+        <label for="question13">Question 13: Comment évalueriez-vous notre transparence ?</label>
+        <div class="options">
+            <input type="radio" id="q13_option1" name="question13" value="Très insatisfait" required>
+            <label for="q13_option1">Très insatisfait</label><br>
+            <input type="radio" id="q13_option2" name="question13" value="Insatisfait">
+            <label for="q13_option2">Insatisfait</label><br>
+            <input type="radio" id="q13_option3" name="question13" value="Neutre">
+            <label for="q13_option3">Neutre</label><br>
+            <input type="radio" id="q13_option4" name="question13" value="Satisfait">
+            <label for="q13_option4">Satisfait</label><br>
+            <input type="radio" id="q13_option5" name="question13" value="Très satisfait">
+            <label for="q13_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question14">Question 14: Est-ce que notre équipe répond efficacement à vos besoins ?</label>
+        <div class="options">
+            <input type="radio" id="q14_option1" name="question14" value="Très insatisfait" required>
+            <label for="q14_option1">Très insatisfait</label><br>
+            <input type="radio" id="q14_option2" name="question14" value="Insatisfait">
+            <label for="q14_option2">Insatisfait</label><br>
+            <input type="radio" id="q14_option3" name="question14" value="Neutre">
+            <label for="q14_option3">Neutre</label><br>
+            <input type="radio" id="q14_option4" name="question14" value="Satisfait">
+            <label for="q14_option4">Satisfait</label><br>
+            <input type="radio" id="q14_option5" name="question14" value="Très satisfait">
+            <label for="q14_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question15">Question 15: Comment décririez-vous notre engagement envers la durabilité ?</label>
+        <div class="options">
+            <input type="radio" id="q15_option1" name="question15" value="Très insatisfait" required>
+            <label for="q15_option1">Très insatisfait</label><br>
+            <input type="radio" id="q15_option2" name="question15" value="Insatisfait">
+            <label for="q15_option2">Insatisfait</label><br>
+            <input type="radio" id="q15_option3" name="question15" value="Neutre">
+            <label for="q15_option3">Neutre</label><br>
+            <input type="radio" id="q15_option4" name="question15" value="Satisfait">
+            <label for="q15_option4">Satisfait</label><br>
+            <input type="radio" id="q15_option5" name="question15" value="Très satisfait">
+            <label for="q15_option5">Très satisfait</label><br>
+        </div>
+    </div>
+
+    <div class="question">
+        <label for="question16">Question 16: Quelle est votre satisfaction générale envers notre entreprise ?</label>
+        <div class="options">
+            <input type="radio" id="q16_option1" name="question16" value="Très insatisfait" required>
+            <label for="q16_option1">Très insatisfait</label><br>
+            <input type="radio" id="q16_option2" name="question16" value="Insatisfait">
+            <label for="q16_option2">Insatisfait</label><br>
+            <input type="radio" id="q16_option3" name="question16" value="Neutre">
+            <label for="q16_option3">Neutre</label><br>
+            <input type="radio" id="q16_option4" name="question16" value="Satisfait">
+            <label for="q16_option4">Satisfait</label><br>
+            <input type="radio" id="q16_option5" name="question16" value="Très satisfait">
+            <label for="q16_option5">Très satisfait</label><br>
+        </div>
+    </div>
+</div>
+
+            <!-- Step indicator and submit button -->
+            <div class="step-container" id="stepContainer"></div>
             <div id="submitSection" style="display: none;">
                 <input type="submit" value="Envoyer" class="gradient-button">
             </div>
@@ -144,66 +383,74 @@
 
     <script>
         let currentPage = 0;
-        const sections = document.querySelectorAll(".questionnaire-section");
-        const stepContainer = document.getElementById("stepContainer");
+const sections = document.querySelectorAll(".questionnaire-section"); // Select all pages
+const stepContainer = document.getElementById("stepContainer");
 
-        function createStepIndicators() {
-            sections.forEach((_, index) => {
-                const step = document.createElement("div");
-                step.classList.add("step");
-                step.textContent = index + 1;
-                step.addEventListener("click", () => goToPage(index)); // Makes bubbles clickable
-                stepContainer.appendChild(step);
-            });
-            updateStepIndicator(currentPage);
-        }
+function createStepIndicators() {
+    sections.forEach((_, index) => {
+        const step = document.createElement("div");
+        step.classList.add("step");
+        step.textContent = index + 1; // Label each step with a page number
+        step.addEventListener("click", () => goToPage(index)); // Make each step clickable to navigate pages
+        stepContainer.appendChild(step); // Append the step to the step container
+    });
+    updateStepIndicator(currentPage);
+}
 
-        function updateStepIndicator(pageIndex) {
-            const steps = document.querySelectorAll(".step");
-            steps.forEach((step, index) => {
-                step.classList.toggle("active", index === pageIndex);
-                if (isQuestionAnswered(index)) {
-                    step.classList.add("completed");
-                    step.classList.remove("incomplete");
-                } else {
-                    step.classList.add("incomplete");
-                    step.classList.remove("completed");
-                }
-            });
-        }
+function updateStepIndicator(pageIndex) {
+    const steps = document.querySelectorAll(".step");
+    steps.forEach((step, index) => {
+        step.classList.toggle("active", index === pageIndex); // Highlight the active step
+        const completionStatus = getPageCompletionStatus(index);
+        step.classList.remove("green", "yellow", "red"); // Remove any previous status classes
+        step.classList.add(completionStatus); // Add new status class based on the number of answers
+    });
+}
 
-        function isQuestionAnswered(pageIndex) {
-            const section = sections[pageIndex];
-            const inputs = section.querySelectorAll("input[type='radio']");
-            return Array.from(inputs).some(input => input.checked);
-        }
+function getPageCompletionStatus(pageIndex) {
+    const section = sections[pageIndex];
+    const inputs = section.querySelectorAll("input[type='radio']");
+    const totalQuestions = section.querySelectorAll(".question").length;
+    const answeredQuestions = Array.from(inputs).filter(input => input.checked).length;
 
-        function showPage(pageIndex) {
-            sections.forEach((section, index) => {
-                section.classList.toggle("active", index === pageIndex);
-            });
-            document.getElementById("submitSection").style.display = pageIndex === sections.length - 1 ? "block" : "none";
-            updateStepIndicator(pageIndex);
-        }
+    if (answeredQuestions === 0) {
+        return "red"; // No questions answered
+    } else if (answeredQuestions === totalQuestions) {
+        return "green"; // All questions answered
+    } else {
+        return "yellow"; // Some questions answered
+    }
+}
 
-        function changePage(step) {
-            currentPage += step;
-            showPage(currentPage);
-        }
+function showPage(pageIndex) {
+    sections.forEach((section, index) => {
+        section.classList.toggle("active", index === pageIndex); // Display only the current page
+    });
+    document.getElementById("submitSection").style.display = pageIndex === sections.length - 1 ? "block" : "none"; // Show submit button on last page
+    updateStepIndicator(pageIndex);
+}
 
-        function goToPage(pageIndex) {
-            currentPage = pageIndex;
-            showPage(currentPage);
-        }
+function changePage(step) {
+    currentPage += step;
+    if (currentPage >= 0 && currentPage < sections.length) {
+        showPage(currentPage); // Update page based on step
+    }
+}
 
-        // Initialize form display
-        createStepIndicators();
-        showPage(currentPage);
+function goToPage(pageIndex) {
+    currentPage = pageIndex;
+    showPage(currentPage); // Navigate directly to the specified page
+}
 
-        // Add event listeners to radio buttons to update step indicator when answered
-        document.querySelectorAll("input[type='radio']").forEach(radio => {
-            radio.addEventListener("change", () => updateStepIndicator(currentPage));
-        });
+// Initialize form display
+createStepIndicators(); // Create navigation steps based on number of pages
+showPage(currentPage); // Show the first page on load
+
+// Add event listeners to radio buttons to update step indicators when a question is answered
+document.querySelectorAll("input[type='radio']").forEach(radio => {
+    radio.addEventListener("change", () => updateStepIndicator(currentPage));
+});
+
     </script>
 </body>
 </html>
