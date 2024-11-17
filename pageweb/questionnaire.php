@@ -155,10 +155,10 @@ session_start();
     </div>
 </div>
 
-            <!-- Page 3 -->
+    <!-- Page 3 -->
 <div class="questionnaire-section">
     <div class="question">
-        <label for="question9">Question 9: Êtes-vous satisfait de la variété de nos produits ?</label>
+        <label for="question9">Question 4: Êtes-vous satisfait de la variété de nos produits ?</label>
         <div class="options">
             <input type="radio" id="q9_option1" name="question9" value="Très insatisfait" required>
             <label for="q9_option1">Très insatisfait</label><br>
