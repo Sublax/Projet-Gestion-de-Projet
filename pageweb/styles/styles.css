@@ -40,8 +40,8 @@ h1 {
     margin: 0 auto;
   
     .line {
-      width: 10%;
-      height: 3px;
+      width: 50%;
+      height: 5px;
       position: relative;
       bottom: -8px;
       background: #bdc3c7;

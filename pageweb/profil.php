@@ -12,10 +12,6 @@ session_start();
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 
-<?php
-session_start();
-?>
-
 
 <body>
     <!-- Menu superieur -->

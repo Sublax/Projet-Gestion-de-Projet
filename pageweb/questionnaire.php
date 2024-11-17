@@ -109,69 +109,12 @@ session_start();
 <div class="questionnaire-section active">
     <!-- Question 1 -->
     <div class="question">
-        <label for="question1">Question 1: Quel est votre niveau de satisfaction ?</label>
+        <label for="question1">Question 1: Afin de débuter le questionnaire, souhaiteriez-vous plutôt vivre dans un nouveau pays ou y voyager ?</label>
         <div class="options">
             <input type="radio" id="q1_option1" name="question1" value="Très insatisfait" required>
-            <label for="q1_option1">Très insatisfait</label><br>
+            <label for="q1_option1">Je souhaite y vivre</label><br>
             <input type="radio" id="q1_option2" name="question1" value="Insatisfait">
-            <label for="q1_option2">Insatisfait</label><br>
-            <input type="radio" id="q1_option3" name="question1" value="Neutre">
-            <label for="q1_option3">Neutre</label><br>
-            <input type="radio" id="q1_option4" name="question1" value="Satisfait">
-            <label for="q1_option4">Satisfait</label><br>
-            <input type="radio" id="q1_option5" name="question1" value="Très satisfait">
-            <label for="q1_option5">Très satisfait</label><br>
-        </div>
-    </div>
-
-    <!-- Question 2 -->
-    <div class="question">
-        <label for="question2">Question 2: À quel point êtes-vous satisfait de notre service client ?</label>
-        <div class="options">
-            <input type="radio" id="q2_option1" name="question2" value="Très insatisfait" required>
-            <label for="q2_option1">Très insatisfait</label><br>
-            <input type="radio" id="q2_option2" name="question2" value="Insatisfait">
-            <label for="q2_option2">Insatisfait</label><br>
-            <input type="radio" id="q2_option3" name="question2" value="Neutre">
-            <label for="q2_option3">Neutre</label><br>
-            <input type="radio" id="q2_option4" name="question2" value="Satisfait">
-            <label for="q2_option4">Satisfait</label><br>
-            <input type="radio" id="q2_option5" name="question2" value="Très satisfait">
-            <label for="q2_option5">Très satisfait</label><br>
-        </div>
-    </div>
-
-    <!-- Question 3 -->
-    <div class="question">
-        <label for="question3">Question 3: Comment évalueriez-vous la qualité de nos produits ?</label>
-        <div class="options">
-            <input type="radio" id="q3_option1" name="question3" value="Très insatisfait" required>
-            <label for="q3_option1">Très insatisfait</label><br>
-            <input type="radio" id="q3_option2" name="question3" value="Insatisfait">
-            <label for="q3_option2">Insatisfait</label><br>
-            <input type="radio" id="q3_option3" name="question3" value="Neutre">
-            <label for="q3_option3">Neutre</label><br>
-            <input type="radio" id="q3_option4" name="question3" value="Satisfait">
-            <label for="q3_option4">Satisfait</label><br>
-            <input type="radio" id="q3_option5" name="question3" value="Très satisfait">
-            <label for="q3_option5">Très satisfait</label><br>
-        </div>
-    </div>
-
-    <!-- Question 4 -->
-    <div class="question">
-        <label for="question4">Question 4: Recommanderiez-vous notre entreprise à vos amis ou collègues ?</label>
-        <div class="options">
-            <input type="radio" id="q4_option1" name="question4" value="Très insatisfait" required>
-            <label for="q4_option1">Très insatisfait</label><br>
-            <input type="radio" id="q4_option2" name="question4" value="Insatisfait">
-            <label for="q4_option2">Insatisfait</label><br>
-            <input type="radio" id="q4_option3" name="question4" value="Neutre">
-            <label for="q4_option3">Neutre</label><br>
-            <input type="radio" id="q4_option4" name="question4" value="Satisfait">
-            <label for="q4_option4">Satisfait</label><br>
-            <input type="radio" id="q4_option5" name="question4" value="Très satisfait">
-            <label for="q4_option5">Très satisfait</label><br>
+            <label for="q1_option2">Je souhaite y voyager</label><br>
         </div>
     </div>
 </div>
@@ -180,66 +123,34 @@ session_start();
             <!-- Page 2 -->
 <div class="questionnaire-section">
     <div class="question">
-        <label for="question5">Question 5: Quelle est votre opinion sur notre politique de prix ?</label>
+        <label for="question5">Question 2: Accordez vous de l'importance à l'utilisation des énergies propres (électricité, gaz contrairement au charbon et d'autres combustibles polluants) pour la cuisine ?</label>
         <div class="options">
             <input type="radio" id="q5_option1" name="question5" value="Très insatisfait" required>
-            <label for="q5_option1">Très insatisfait</label><br>
+            <label for="q5_option1">Très important</label><br>
             <input type="radio" id="q5_option2" name="question5" value="Insatisfait">
-            <label for="q5_option2">Insatisfait</label><br>
+            <label for="q5_option2">Important</label><br>
             <input type="radio" id="q5_option3" name="question5" value="Neutre">
             <label for="q5_option3">Neutre</label><br>
             <input type="radio" id="q5_option4" name="question5" value="Satisfait">
-            <label for="q5_option4">Satisfait</label><br>
+            <label for="q5_option4">Peu important</label><br>
             <input type="radio" id="q5_option5" name="question5" value="Très satisfait">
-            <label for="q5_option5">Très satisfait</label><br>
+            <label for="q5_option5">Pas du tout important</label><br>
         </div>
     </div>
 
     <div class="question">
-        <label for="question6">Question 6: Est-ce que nos horaires vous conviennent ?</label>
+        <label for="question3">Question 3: Dans quelle mesure êtes-vous d'accord avec l'affirmation suivante : "Le coût d'une alimentation saine est un obstacle pour maintenir une diète équilibrée"</label>
         <div class="options">
             <input type="radio" id="q6_option1" name="question6" value="Très insatisfait" required>
-            <label for="q6_option1">Très insatisfait</label><br>
+            <label for="q6_option1">Tout à fait d'accord</label><br>
             <input type="radio" id="q6_option2" name="question6" value="Insatisfait">
-            <label for="q6_option2">Insatisfait</label><br>
+            <label for="q6_option2">Plûtot d'accord</label><br>
             <input type="radio" id="q6_option3" name="question6" value="Neutre">
             <label for="q6_option3">Neutre</label><br>
             <input type="radio" id="q6_option4" name="question6" value="Satisfait">
-            <label for="q6_option4">Satisfait</label><br>
+            <label for="q6_option4">Plutôt en désaccord</label><br>
             <input type="radio" id="q6_option5" name="question6" value="Très satisfait">
-            <label for="q6_option5">Très satisfait</label><br>
-        </div>
-    </div>
-
-    <div class="question">
-        <label for="question7">Question 7: Comment décririez-vous notre facilité de navigation sur le site web ?</label>
-        <div class="options">
-            <input type="radio" id="q7_option1" name="question7" value="Très insatisfait" required>
-            <label for="q7_option1">Très insatisfait</label><br>
-            <input type="radio" id="q7_option2" name="question7" value="Insatisfait">
-            <label for="q7_option2">Insatisfait</label><br>
-            <input type="radio" id="q7_option3" name="question7" value="Neutre">
-            <label for="q7_option3">Neutre</label><br>
-            <input type="radio" id="q7_option4" name="question7" value="Satisfait">
-            <label for="q7_option4">Satisfait</label><br>
-            <input type="radio" id="q7_option5" name="question7" value="Très satisfait">
-            <label for="q7_option5">Très satisfait</label><br>
-        </div>
-    </div>
-
-    <div class="question">
-        <label for="question8">Question 8: À quel point êtes-vous satisfait de la rapidité de notre service ?</label>
-        <div class="options">
-            <input type="radio" id="q8_option1" name="question8" value="Très insatisfait" required>
-            <label for="q8_option1">Très insatisfait</label><br>
-            <input type="radio" id="q8_option2" name="question8" value="Insatisfait">
-            <label for="q8_option2">Insatisfait</label><br>
-            <input type="radio" id="q8_option3" name="question8" value="Neutre">
-            <label for="q8_option3">Neutre</label><br>
-            <input type="radio" id="q8_option4" name="question8" value="Satisfait">
-            <label for="q8_option4">Satisfait</label><br>
-            <input type="radio" id="q8_option5" name="question8" value="Très satisfait">
-            <label for="q8_option5">Très satisfait</label><br>
+            <label for="q6_option5">Pas du tout d'accord</label><br>
         </div>
     </div>
 </div>

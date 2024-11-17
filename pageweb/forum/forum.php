@@ -2,8 +2,6 @@
 include "../bd.php";
 $bdd = getBD();
 session_start();
-
-
 ?>
 
 <!DOCTYPE html>
@@ -67,12 +65,18 @@ session_start();
     <div class="line"></div>
     </div>
     <?php 
-    $sql = 'SELECT id_pays,nom_pays FROM pays';
+    $sql = '
+    SELECT p.id_pays, p.nom_pays, COUNT(avis.id_avis) AS nb_avis
+    FROM pays p
+    LEFT JOIN avis ON p.id_pays = avis.id_pays
+    GROUP BY p.id_pays, p.nom_pays
+    ORDER BY p.nom_pays';
     $stmt = $bdd->query($sql);
     while($ligne = $stmt -> fetch()){
         echo '<div class="country_list">';
         echo '<div class="section_pays">';
         echo '<a href="commentaires.php?id_pays=' . $ligne['id_pays'] . '"> ' .$ligne['nom_pays'] . '</a>';        
+        echo '<span class="nbre_avis"> (' . $ligne['nb_avis'] . ' posts)</span>';
         echo '</div>';
         echo '</div>';
     }
