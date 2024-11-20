@@ -8,7 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sources des données</title>
-    <link rel="stylesheet" href="../styles/style_ced.css">
+    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
         <!-- Menu superieur -->

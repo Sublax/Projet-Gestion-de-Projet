@@ -36,7 +36,7 @@ session_start();
        <p>Forum</p>
    </div>
     <div class="menu-item logo">
-    <a href="index.php"><img src="images/images_ced/icone3.png" alt="Logo"></a>
+    <a href="index.php"><img src="images/images_ced/logo.png" alt="Logo"></a>
         
     </div>
     <div class="menu-item">
@@ -104,15 +104,16 @@ session_start();
     <h1> Une question ? Contactez-nous !</h1>
         <div class="question">
         <?php if (isset($_SESSION['client'])): ?>
-            <form id= "sendMessageForm" action="contact/message.php" method="post">
+            <form id= "sendMessageForm" class ="contact-form" action="contact/message.php" method="post">
 
                 <label for="objet">Objet:</label>
                 <input type="text" id="objet" name="objet" required><br><br>
-
+                </input>
                 <label for="msg">Message:</label>
-                <textarea id="msg" name="msg" rows="4" cols="50" required></textarea><br><br>
+                <textarea id="msg" name="msg" rows="4" cols="45" required></textarea><br><br>
 
-                <input type="submit" onclick="confirmSendMessage()" value="Envoyer">
+                <input type="submit"  onclick="confirmSendMessage()" value="Envoyer">
+                </input>
                 <p> 
                 <?php
                 if(isset($_SESSION["messageSendTrue"])){

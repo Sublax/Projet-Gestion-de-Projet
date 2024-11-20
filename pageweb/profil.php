@@ -87,7 +87,7 @@ session_start();
     </div>";
     }else{
         echo "<p>Vous n'avez pas encore de profil !</p>";
-        echo "<p><a href='../connexion/register.php'> Créez-en un ! </a></p>";
+        echo "<p><a href='connexion/register.php'> Créez-en un ! </a></p>";
 
     }
             ?>
