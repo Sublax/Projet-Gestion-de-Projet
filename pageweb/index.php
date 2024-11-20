@@ -48,7 +48,7 @@ session_start();
         <p>Sources données</p>
     </div>
     <div class="menu-item">
-    <a href="profil.php"><img src="images/images_ced/icone6.png" alt="Icone Options"></a>
+    <a href="utilisateur/profil.php"><img src="images/images_ced/icone6.png" alt="Icone Options"></a>
         <p>Profil</p>
     </div>
     </header>

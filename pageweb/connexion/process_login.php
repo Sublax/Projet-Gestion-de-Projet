@@ -27,7 +27,8 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             // Mot de passe correct, démarrer la session
             $_SESSION['client'] = $user['id_client'];
             $_SESSION['username'] = $user['nom_utilisateur'];
-            $_SESSION['prenom'] = $user['prenom']; // Stocker le prénom dans la session
+            $_SESSION['prenom'] = $user['prenom'];
+            $_SESSION['location'] = $user["localisation"];
 
             header("Location: ../index.php"); // Rediriger vers la page d'accueil
             exit();
