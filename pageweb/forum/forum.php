@@ -11,6 +11,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/styles.css">
     <title>Forum - Où partir</title>
+    <script src="./forum_script.js"></script>
 </head>
 
 
@@ -55,6 +56,7 @@ session_start();
         <p>Profil</p>
     </div>
     </header>
+    <!-- FIN Menu superieur -->
 
 
 <section class="forum">
@@ -64,6 +66,7 @@ session_start();
     <input type="text" id="recherchePays" placeholder="Rechercher un pays..." onkeyup="filterCountries()">
     <div class="line"></div>
     </div>
+    <button>Populaire</button>
     <?php 
     $sql = '
     SELECT p.id_pays, p.nom_pays, COUNT(avis.id_avis) AS nb_avis
@@ -82,27 +85,6 @@ session_start();
     }
     ?>
 </section>
-
-
-<script>
-    function filterCountries() {
-        // Récupération de la valeur de l'input et conversion en minuscule
-        let input = document.getElementById('recherchePays').value.toLowerCase();
-        // Sélection de tous les éléments de pays
-        let countries = document.getElementsByClassName('country_list');
-        
-        // Boucle sur chaque pays pour vérifier s'il correspond à la recherche
-        for (let i = 0; i < countries.length; i++) {
-            let countryName = countries[i].getElementsByClassName('section_pays')[0].innerText.toLowerCase();
-            // Affiche ou cache les pays selon la correspondance
-            if (countryName.includes(input)) {
-                countries[i].style.display = "";
-            } else {
-                countries[i].style.display = "none";
-            }
-        }
-    }
-</script>
 </body>
 <footer>
     <p>&copy; 2024 Payspédia. Tous droits réservés.</p>
