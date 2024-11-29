@@ -22,7 +22,7 @@ $bdd = getBD();
             <div class="menu-item">
             <?php
             if (isset($_SESSION['client'])) {
-                echo '<a href="../questionnaire.php">';
+                echo '<a href="../dataviz/questionnaire.php">';
             } else {
                 echo '<a href="../connexion/login.php">';
             }
@@ -40,19 +40,19 @@ $bdd = getBD();
                <p>Forum</p>
            </div>
             <div class="menu-item logo">
-            <a href="../index.php"><img src="../images/images_ced/icone3.png" alt="Logo"></a>
+            <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
                 
             </div>
             <div class="menu-item">
-            <a href="informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
+            <a href="../informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
                 <p>Informations</p>
             </div>
             <div class="menu-item">
-            <a href="sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
+            <a href="../sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
                 <p>Sources données</p>
             </div>
             <div class="menu-item">
-            <a href="./profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
+            <a href="profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
                 <p>Profil</p>
             </div>
             </header>
