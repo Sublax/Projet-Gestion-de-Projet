@@ -29,18 +29,23 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             $_SESSION['username'] = $user['nom_utilisateur'];
             $_SESSION['prenom'] = $user['prenom'];
             $_SESSION['location'] = $user["localisation"];
-
-            header("Location: ../index.php"); // Rediriger vers la page d'accueil
-            exit();
+            
+            echo "1";
+            exit;
+            //header("Location: ../index.php"); // Rediriger vers la page d'accueil
+            //exit();
         } else {
             // Mot de passe incorrect
             echo "Mot de passe incorrect.";
+            exit;
         }
     } else {
         // Utilisateur non trouvé
         echo "Informations incorrectes.";
+        exit;
     }
 } else {
     echo "Veuillez remplir tous les champs.";
+    exit;
 }
 ?>
