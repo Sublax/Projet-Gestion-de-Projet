@@ -30,14 +30,55 @@ if(isset($_GET['id_pays'])){
     <title>Forum - <?php echo '' . $nom_pays .'' ?></title>
 </head>
 <body>
+<header>
+    <div class="menu-bar">
+    <div class="menu-item">
+    <?php
+        if (isset($_SESSION['client'])) {
+            echo '<a href="../questionnaire.php">';
+        } else {
+            echo '<a href="../connexion/login.php">';
+        }
+        ?>
+        <img src="../images/images_ced/icone1.png" alt="Icone Questionnaire">
+        </a>
+        <p>Questionnaire</p>
+    </div>
+    <div class="menu-item">
+    <a href="graph.php"><img src="../images/images_ced/icone2.png" alt="Icone Statistiques & Graphs"></a>
+        <p>Statistiques & Graphs</p>
+    </div>
+    <div class="menu-item">
+    <a href="forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
+       <p>Forum</p>
+   </div>
+    <div class="menu-item logo">
+    <a href="../index.php"><img src="../images/images_ced/icone3.png" alt="Logo"></a>
+        
+    </div>
+    <div class="menu-item">
+    <a href="../informations/informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
+        <p>Informations</p>
+    </div>
+    <div class="menu-item">
+    <a href="../informations/sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
+        <p>Sources données</p>
+    </div>
+    <div class="menu-item">
+    <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
+        <p>Profil</p>
+    </div>
+    </header>
+
+
 <section class="forum">
 <h1> Bienvenue sur le forum <?php echo '' . $nom_pays .'' ?> </h1>   
     <?php
     // -- Partie Affichage du formulaire
-    if(isset($_SESSION['id_client'])){
-        $id_client = $_SESSION['id_client'];
+    if(isset($_SESSION['client'])){
+        $id_client = $_SESSION['client'];
         echo '<form action="" method="POST">
-        <input type="text" id="commentaire" name="commentaire" placeholder="Ajoutez votre commentaire">
+        <input type="text" class="recherchePays id="commentaire" name="commentaire" placeholder="Ajoutez votre commentaire">
         <button type="submit">Envoyer</button>
         </form>';
     }else{
@@ -74,4 +115,7 @@ if(isset($_GET['id_pays'])){
     ?>
 </section>
 </body>
+<footer>
+    <p>&copy; 2024 Payspédia. Tous droits réservés.</p>
+</footer>
 </html>

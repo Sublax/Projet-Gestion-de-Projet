@@ -4,7 +4,7 @@ include '../bd.php';
 
 function verify(){
     //Fonction qui vérifie que les variables existent bien
-    if(isset($_POST['username'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['location'],$_POST["password"],$_POST['confirm_password'])){
+    if(isset($_POST['username'],$_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['country'],$_POST["password"],$_POST['confirm_password'])){
         return TRUE;
     }else{
         return FALSE;
@@ -34,7 +34,7 @@ function save($u,$fn,$ln,$e,$l,$p){
         // On hashe le mdp avant de l'envoyer dans la bdd :
         $hash_mdp = password_hash($p, PASSWORD_DEFAULT);
         $stmt->execute([$u, $fn, $ln, $e, $l, $hash_mdp]);
-        $_SESSION['successMessage'] = "Le compte est créé !";
+        $_SESSION['successMessage'] = "Le compte a été créé !";
         header("Location: ./login.php");
         exit();
     }
@@ -46,7 +46,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && verify()){
     $firstName = $_POST['first_name'] ;
     $lastName = $_POST['last_name'] ;
     $email = $_POST['email'] ;
-    $location = $_POST['location'] ;
+    $location = $_POST['country'] ;
     $password = $_POST['password'] ;
     $confirmPassword = $_POST['confirm_password'] ;
     if((empty($username) || empty($firstName)

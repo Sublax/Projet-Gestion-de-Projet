@@ -32,8 +32,8 @@ $stmt->bindParam(':message', $message);
 
 // Exécuter la requête
 if ($stmt->execute()) {
-    echo "Message envoyé avec succès !";
-    header("Location: ../index.php?message=Message envoyé avec succès");
+    $_SESSION['messageSendTrue'] = "Votre message a été envoyé avec succès !";
+    header("Location: ../index.php");
     exit();
 } else {
     echo "Erreur lors de l'envoi du message.";

@@ -1,3 +1,4 @@
+
 header {
     background-color: #fff;
     padding: 10px;
@@ -11,6 +12,55 @@ h1 {
     color: #333;
 }
 
+#messageSendTrue{
+    color: green;
+}
+
+
+#recherchePays {
+    background: 0;
+    border: 0;
+    outline: none;
+    width: 120px;
+    max-width: 400px;
+    transition: padding 0.3s 0.2s ease;
+  
+    &:focus {
+      padding-bottom: 5px;
+    }
+&:focus + .line {
+    &:after {
+        transform: scaleX(1);
+      }
+    }
+  }
+  
+  .field {
+    position: relative;
+    transform: translateY(-20px);
+    margin: 0 auto;
+  
+    .line {
+      width: 10%;
+      height: 3px;
+      position: relative;
+      bottom: -8px;
+      background: #bdc3c7;
+  
+      &:after {
+        content: " ";
+        position: relative;
+        float: right;
+        width: 100%;
+        height: 3px;
+        
+        transform: scalex(0);
+        transition: transform 0.3s ease;
+        
+        background: #1abc9c;
+      }
+    }
+  }
 .user-icon{
     width: 50px;
     height: 50px;
@@ -24,6 +74,7 @@ h1 {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-top: 80px;
 }
 
 .forum p {
@@ -65,6 +116,16 @@ body {
     background-color: #333;
     color: white;
 }
+
+#particles-js{
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: 50% 50%;
+    position: fixed;
+    top: 0px;
+    z-index:1;
+}
 .nav-icons {
     display: flex;
     justify-content: center;
@@ -76,7 +137,6 @@ body {
     height: 40px;
 }
 .hero {
-    background-image: url('path_to_image.jpg'); /* Replace with the correct path */
     background-size: cover;
     background-position: center;
     height: 1100px;
@@ -93,6 +153,12 @@ body {
     margin: 10px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Suaviza la transición */
+}
+
+.section:hover {
+    background-color: #f0f0f0; /* Cambia el color de fondo al pasar el ratón */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Aumenta la sombra */
 }
 .testimonial-section {
     display: flex;
@@ -107,9 +173,13 @@ body {
     border-radius: 8px;
     text-align: center;
 }
+.testimonial:hover {
+    background-color: #f0f0f0; /* Cambia el color de fondo al pasar el ratón */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Aumenta la sombra */
+}
 .contact-section {
     padding: 20px;
-    background-color: #ffffff;
+    background-color: #f0f0f0;
     margin: 10px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -121,14 +191,6 @@ body {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
-}
-.contact-form button {
-    background-color: #6200ea;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 /* Container for the questionnaire */
@@ -159,10 +221,10 @@ margin-bottom: 100px;
 
 /* Question Styling */
 .question {
-background-color: #f9f9f9;
 border: 1px solid #ddd;
 border-radius: 8px;
 padding: 15px;
+padding-right: 30px;
 margin-bottom: 50px;
 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -175,6 +237,7 @@ color: #333;
 margin-bottom: 6px;
 }
 
+
 /* Options Styling */
 .options {
 display: flex;
@@ -182,6 +245,7 @@ flex-direction: column;
 }
 
 .options input[type="radio"] {
+color: #1abc9c;
 display: none;
 }
 
@@ -255,6 +319,8 @@ padding: 20px;
 border-radius: 12px;
 background-color: #f9f9f9;
 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+margin:50px;
+margin-top: 80px;
 }
 
 .profile-photo {
@@ -471,11 +537,6 @@ footer {
     color: #007bff;
 }
 
-.description {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 1em;
-}
 
 .pubDate {
     font-size: 0.8em;
@@ -540,6 +601,8 @@ footer {
 
 .menu-item.logo {
     position: relative;
+    width: 50px; /* Ajustez cette taille selon vos préférences */
+    height: 50px; /* Utilisez la même dimension pour uniformiser */
     bottom: -20px; /* Pour centrer le logo par rapport aux autres éléments */
     border-radius: 80%;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -548,7 +611,6 @@ footer {
 }
 /* Container Styles for Login and Register */
 .login-container{
-    width: 100%;
     max-width: 1200px;
     background-color: #fff;
     border-radius: 8px;
@@ -557,7 +619,9 @@ footer {
     text-align: center;
     justify-self: center;
     justify-items: center;
-    margin-top: 140px;
+    margin: 100px auto;
+    position:relative;
+    z-index: 10;
 }
 
 .register-container {
@@ -570,14 +634,17 @@ footer {
     text-align: center;
     justify-self: center;
     justify-items: center;
-    margin-top: 0px;
+    margin: 100px auto;
+    position:relative;
+    z-index: 10;
+
 }
 
 /* Logo Styling */
 .login-container img.logo,
 .register-container img.logo {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 150px;
     margin-bottom: 20px;
 }
 
@@ -633,14 +700,14 @@ a.back-button {
 /* Gradient Button for Connexion and S’inscrire */
 button.login-button,
 button.register-button {
-    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    background: linear-gradient(45deg, #EA00FF, #07BDFF);
     color: #fff;
     border: none;
 }
 
 button.login-button:hover,
 button.register-button:hover {
-    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    background: linear-gradient(45deg, #07BDFF, #EA00FF);
 }
 
 /* Black Button for Retour and S’inscrire in Login */

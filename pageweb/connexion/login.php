@@ -6,30 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
     <link rel="stylesheet" href="../styles/styles.css">
-    <script type="module" src="../components/bundle.js"></script>
 </head>
 <body>
-    
+<div id="particles-js"></div>
     <div class="login-container">
         <img src="../images/logo.png" alt="Logo" class="logo">
         <form action="process_login.php" method="post">
-        <md-outlined-text-field name="username" placeholder="Nom d'utilisateur" label="Nom utilisateur" required>
-        </md-outlined-text-field>
-</br></br>
-        <md-outlined-text-field name="password" type="password" placeholder="Enter password" label="Password" required>
-        </md-outlined-text-field>
-</br></br>
+            <input type="text" name="username" placeholder="Entrez votre nom d'utilisateur" required>
+            <input type="password" name="password" placeholder="Entrez votre mot de passe" required>
             <button type="submit" class="login-button">Connexion</button>
             <a href="./register.php" class="signup-button">S’inscrire</a>
         <?php
             if (isset($_SESSION['successMessage'])) {
-                echo "<div style='color: green;'>" . htmlspecialchars($_SESSION['successMessage']) . "</div>";
-                unset($_SESSION['successMessage']);
+                echo "<div style='color: green;font-weight:bold;font-size:17px'>" . htmlspecialchars($_SESSION['successMessage']) . "</div>";
+                unset($_SESSION["successMessage"]);
             }
         ?>
 
             <p><a href="../index.php">Une simple visite sans inscription ?</a></p>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../styles/particles.js"></script>
+
 </body>
 </html>
