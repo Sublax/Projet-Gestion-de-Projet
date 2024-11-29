@@ -609,6 +609,15 @@ footer {
     padding: 10px;
     background-color: #f4f4f4;
 }
+.menu-item.logo img {
+    width: 150%; /* La imagen será más grande que el contenedor */
+    height: 150%; /* La imagen será más grande que el contenedor */
+    object-fit: cover; /* Asegura que la imagen no se deforme */
+    position: absolute; /* Permite ajustar la posición dentro del contenedor */
+    top: 50%; /* Posición vertical centrada */
+    left: 50%; /* Posición horizontal centrada */
+    transform: translate(-50%, -50%); /* Ajusta la posición para centrar perfectamente */
+}
 /* Container Styles for Login and Register */
 .login-container{
     max-width: 1200px;

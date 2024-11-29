@@ -35,7 +35,7 @@ session_start();
                <p>Forum</p>
            </div>
             <div class="menu-item logo">
-            <a href="../index.php"><img src="../images/images_ced/icone3.png" alt="Logo"></a>
+            <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
                 
             </div>
             <div class="menu-item">
