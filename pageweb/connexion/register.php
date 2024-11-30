@@ -48,7 +48,7 @@
         <h2>Créez votre compte !</h2>
 
 
-        <?php
+<?php
         session_start();
         $username = $_GET['username'] ?? '';
         $firstName = $_GET['first_name'] ?? '';
