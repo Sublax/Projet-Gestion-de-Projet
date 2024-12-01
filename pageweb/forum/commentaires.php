@@ -35,7 +35,7 @@ if(isset($_GET['id_pays'])){
     <div class="menu-item">
     <?php
         if (isset($_SESSION['client'])) {
-            echo '<a href="../dataviz/questionnaire.php">';
+            echo '<a href="../questionnaire.php">';
         } else {
             echo '<a href="../connexion/login.php">';
         }
@@ -65,7 +65,7 @@ if(isset($_GET['id_pays'])){
         <p>Sources données</p>
     </div>
     <div class="menu-item">
-    <a href="../utilisateur/profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
+    <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
         <p>Profil</p>
     </div>
     </header>

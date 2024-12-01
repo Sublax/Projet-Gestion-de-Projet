@@ -6,18 +6,6 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-
-.messageErreur {
-    color: red;
-    font-weight: bold;
-    font-size: 17px;
-    font-family: Arial, sans-serif;
-}
-
-.graphique {
-    width: 800px;;
-}
-
 h1 {
     text-align: center;
     margin-top: 20px;
@@ -463,10 +451,28 @@ main {
     margin-bottom: 20px;
 }
 
+.category {
+    background-color: #f9f9f9; /* Couleur de fond légèrement différente pour chaque carte */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgb(0, 0, 0);
+    margin-bottom: 20px; /* Espace entre les cartes */
+}
+
 .category h2 {
     margin-top: 20px;
-    font-size: 1.3em;
+    font-size: 1.2em;
+    margin-bottom: 10px;
     color: #333;
+}
+
+.category ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.category li {
+    margin-bottom: 5px;
 }
 
 ul {

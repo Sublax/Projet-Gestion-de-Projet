@@ -22,7 +22,7 @@ session_start();
     <div class="menu-item">
     <?php
         if (isset($_SESSION['client'])) {
-            echo '<a href="../dataviz/questionnaire.php">';
+            echo '<a href="../questionnaire.php">';
         } else {
             echo '<a href="../connexion/login.php">';
         }
@@ -52,7 +52,7 @@ session_start();
         <p>Sources données</p>
     </div>
     <div class="menu-item">
-    <a href="../utilisateur/profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
+    <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
         <p>Profil</p>
     </div>
     </header>
@@ -66,22 +66,55 @@ session_start();
     <input type="text" id="recherchePays" placeholder="Rechercher un pays..." onkeyup="filterCountries()">
     <div class="line"></div>
     </div>
-    <button>Populaire</button>
+
+    <form method="post">
+        <button type="submit" name="populaire">Populaire</button>
+    </form>
+
     <?php 
-    $sql = '
-    SELECT p.id_pays, p.nom_pays, COUNT(avis.id_avis) AS nb_avis
-    FROM pays p
-    LEFT JOIN avis ON p.id_pays = avis.id_pays
-    GROUP BY p.id_pays, p.nom_pays
-    ORDER BY p.nom_pays';
-    $stmt = $bdd->query($sql);
-    while($ligne = $stmt -> fetch()){
-        echo '<div class="country_list">';
-        echo '<div class="section_pays">';
-        echo '<a href="commentaires.php?id_pays=' . $ligne['id_pays'] . '"> ' .$ligne['nom_pays'] . '</a>';        
-        echo '<span class="nbre_avis"> (' . $ligne['nb_avis'] . ' posts)</span>';
-        echo '</div>';
-        echo '</div>';
+    if (isset($_POST['populaire'])) {
+        $sql = '
+        SELECT p.id_pays, p.nom_pays, COUNT(avis.id_avis) AS nb_avis, MAX(avis.date) AS dernier_post
+        FROM pays p
+        LEFT JOIN avis ON p.id_pays = avis.id_pays
+        GROUP BY p.id_pays, p.nom_pays
+        ORDER BY nb_avis DESC
+        LIMIT 5'; 
+        $stmt = $bdd->query($sql);
+        $pays_populaire = $stmt->fetch();
+        if ($pays_populaire) {
+            echo '<div class="country_list">';
+            echo '<div class="section_pays">';
+            echo '<a href="commentaires.php?id_pays=' . $pays_populaire['id_pays'] . '">' . $pays_populaire['nom_pays'] . '</a>';
+            
+            if (!empty($pays_populaire['dernier_post'])) {
+                $date_formate = date("d/m/Y H:i", strtotime($pays_populaire['dernier_post']));
+                echo '<em> dernier post : ' . $date_formate . '</em>';
+            }
+            echo '<span class="nbre_avis"> (' . $pays_populaire['nb_avis'] . ' posts)</span>';
+            echo '</div>';
+            echo '</div>';
+        }
+    } else {
+        $sql = '
+        SELECT p.id_pays, p.nom_pays, COUNT(avis.id_avis) AS nb_avis, MAX(avis.date) AS dernier_post
+        FROM pays p
+        LEFT JOIN avis ON p.id_pays = avis.id_pays
+        GROUP BY p.id_pays, p.nom_pays
+        ORDER BY p.nom_pays';
+        $stmt = $bdd->query($sql);
+        while($ligne = $stmt -> fetch()){
+            echo '<div class="country_list">';
+            echo '<div class="section_pays">';
+            echo '<a href="commentaires.php?id_pays=' . $ligne['id_pays'] . '"> ' .$ligne['nom_pays'] . '</a>';   
+        if (!empty($ligne['dernier_post'])) {
+            $date_formate = date("d/m/Y H:i", strtotime($ligne['dernier_post']));
+            echo '<em> dernier post : ' . $date_formate . '</em>';
+        }     
+            echo '<span class="nbre_avis"> (' . $ligne['nb_avis'] . ' posts </span>';
+            echo '</div>';
+            echo '</div>';
+        }
     }
     ?>
 </section>
