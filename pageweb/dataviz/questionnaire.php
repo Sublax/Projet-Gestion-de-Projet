@@ -104,7 +104,7 @@ session_start();
     <div class="container">
         <h2 id="form_beginning">Début du questionnaire</h2>
         <p id="form_beginning">Le temps de réponse est d'environ x minutes.</p>
-        <form action="graphs_stats.php" method="POST" id="questionnaireForm">
+        <form action="run_generate_map.php" method="POST" id="questionnaireForm">
             
             <!-- Page 1 -->
 <div class="questionnaire-section active">
