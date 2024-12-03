@@ -1,27 +1,27 @@
 <?php
-// Incluir la conexión a la base de datos
+// Inclure la connexion à la base de données
 require_once 'bd.php';
 
 function getTableData($tableName) {
     try {
-        // Conexión a la base de datos
+        // Connexion à la base de données
         $bdd = getBD();
 
-        // Obtener los datos de la tabla `pays` (id_pays y nom_pays)
+        // Obtenir les données de la table `pays` (id_pays et nom_pays)
         $queryPays = $bdd->query("SELECT id_pays, nom_pays FROM pays");
-        $pays = $queryPays->fetchAll(PDO::FETCH_KEY_PAIR); // Asociar id_pays con nom_pays
+        $pays = $queryPays->fetchAll(PDO::FETCH_KEY_PAIR); // Associer id_pays avec nom_pays
 
-        // Verificar que la tabla existe
+        // Vérifier si la table existe
         $query = $bdd->query("SHOW TABLES LIKE '$tableName'");
         if ($query->rowCount() == 0) {
-            throw new Exception("La tabla especificada no existe.");
+            throw new Exception("La table spécifiée n'existe pas.");
         }
 
-        // Obtener las columnas de la tabla especificada
+        // Obtenir les colonnes de la table spécifiée
         $columnsQuery = $bdd->query("SHOW COLUMNS FROM $tableName");
         $columns = $columnsQuery->fetchAll(PDO::FETCH_COLUMN);
 
-        // Detectar la columna del identificador del país
+        // Détecter la colonne identifiant le pays
         $countryIdColumn = null;
         foreach (['id_pays', 'id_country'] as $possibleColumn) {
             if (in_array($possibleColumn, $columns)) {
@@ -31,10 +31,10 @@ function getTableData($tableName) {
         }
 
         if (!$countryIdColumn) {
-            throw new Exception("No se encontró una columna de identificación del país en la tabla $tableName.");
+            throw new Exception("Aucune colonne d'identification du pays n'a été trouvée dans la table $tableName.");
         }
 
-        // Detectar la columna del año
+        // Détecter la colonne de l'année
         $yearColumn = null;
         foreach (['annee', 'Year'] as $possibleYearColumn) {
             if (in_array($possibleYearColumn, $columns)) {
@@ -44,19 +44,19 @@ function getTableData($tableName) {
         }
 
         if (!$yearColumn) {
-            throw new Exception("No se encontró una columna de año en la tabla $tableName.");
+            throw new Exception("Aucune colonne d'année n'a été trouvée dans la table $tableName.");
         }
 
-        // Obtener los datos de la tabla especificada
+        // Obtenir les données de la table spécifiée
         $stmt = $bdd->query("SELECT * FROM $tableName");
         $tableData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Reemplazar el identificador del país por el nombre del país
+        // Remplacer l'identifiant du pays par le nom du pays
         $result = [];
         foreach ($tableData as $row) {
             if (isset($row[$countryIdColumn]) && isset($pays[$row[$countryIdColumn]])) {
-                $row['nom_pays'] = $pays[$row[$countryIdColumn]]; // Agregar el nombre del país
-                unset($row[$countryIdColumn]); // Opcional: eliminar la columna del identificador del país
+                $row['nom_pays'] = $pays[$row[$countryIdColumn]]; // Ajouter le nom du pays
+                unset($row[$countryIdColumn]); // Optionnel : supprimer la colonne identifiant le pays
             }
             $result[] = $row;
         }
@@ -70,14 +70,14 @@ function getTableData($tableName) {
     }
 }
 
-// Verificar si el script fue accedido directamente
+// Vérifier si le script a été directement accédé
 if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
-    // Si fue accedido directamente desde el navegador
+    // Si le script a été accédé directement depuis le navigateur
     if (isset($_GET['table'])) {
         header('Content-Type: application/json');
         echo json_encode(getTableData($_GET['table']));
     } else {
         header('Content-Type: application/json');
-        echo json_encode(["error" => "No se especificó una tabla."]);
+        echo json_encode(["error" => "Aucune table spécifiée."]);
     }
 }
