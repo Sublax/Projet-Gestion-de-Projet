@@ -56,7 +56,7 @@ $bdd = getBD();
                 <p>Profil</p>
             </div>
             </header>
-   
+
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_biography'])) {
         if (isset($_SESSION['client']) && isset($_POST['biographie'])) {
@@ -111,7 +111,22 @@ $bdd = getBD();
     </div>
     <div class='stat-box'>
         <p>Pays visités</p>
-        <p>10</p>
+        <p>
+        <?php
+        if(isset($_SESSION['username'])){
+            $username = $_SESSION['username'];
+            $stmt = $bdd->prepare('SELECT nb_pays_visite
+            FROM info_clients
+            INNER JOIN clients ON info_clients.id_client = clients.id_client
+            WHERE clients.nom_utilisateur = :username');
+            $stmt->execute([
+                ':username' => $username
+            ]);
+            $nbPaysVisite = $stmt->fetchColumn();
+            echo $nbPaysVisite;
+        }
+        ?>
+        </p>
     </div>
     <div class='stat-box'>
         <p>Vient de : </p>

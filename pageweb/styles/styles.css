@@ -28,6 +28,10 @@ h1 {
     margin-left: 50px;
 }
 
+.stat-box{
+    margin-left: 30px;
+}
+
 #recherchePays {
     background: 0;
     border: 0;
