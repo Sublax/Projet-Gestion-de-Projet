@@ -28,11 +28,11 @@ $bdd = getBD();
   <button type="button" id="applyFilter">Appliquer</button>
 </form>
 <div class="graphique">
-  <canvas id="myChart"></canvas> <!-- Taille réduite -->
+  <canvas id="myChart"></canvas> 
 </div>
 
 <div class="graphique">
-  <canvas id="secondChart"></canvas> <!-- Taille réduite -->
+  <canvas id="secondChart"></canvas> 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

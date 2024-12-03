@@ -65,8 +65,13 @@ session_start();
     } else {
         echo '<div class="articles-grid">';
         $excerpt_length = 100;
+        $article_count = 0; // Compteur pour limiter les articles
 
         foreach ($rss_content->channel->item as $item) {
+            if ($article_count >= 12) {
+                break; // Quitte la boucle après 3 articles
+            }
+
             $title = $item->title;
             $link = $item->link;
             $description = $item->description;
@@ -92,7 +97,10 @@ session_start();
             echo '<a href="' . $link . '" target="_blank" class="read-more">Lire la suite</a>';
             echo '<p class="pubDate">' . $pubDate . '</p>';
             echo '</div></div>';
+
+            $article_count++; // Incrémente le compteur après chaque article affiché
         }
+        echo '</div>';
     }
     ?>
 </main>

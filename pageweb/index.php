@@ -33,8 +33,8 @@ session_start();
     </div>
     <div class="menu-item">
     <a href="forum/forum.php"><img src="images/images_ced/icone7.png" alt="Forum"></a>
-       <p>Forum</p>
-   </div>
+        <p>Forum</p>
+    </div>
     <div class="menu-item logo">
     <a href="index.php"><img src="images/images_ced/logo.png" alt="Logo"></a>
         
@@ -54,14 +54,12 @@ session_start();
     </header>
 
 
-    <!-- Background Video Section -->
     <div class="video-background">
 
         <video autoplay muted loop id="backgroundVideo">
             <source src="./images/map2.mp4" type="video/mp4">
             Votre navigateur ne supporte pas le contenu.
         </video>
-        <!-- Essaye le questionnaire logic -->
     <?php
     if (isset($_SESSION['client'])) {
         echo '<div class="hero">';
@@ -79,12 +77,20 @@ session_start();
     <main>
         <div class="section">
         <h2>Qui sommes-nous ?</h2>
-        <p>Nous sommes un groupe de 4 étudiants en Licence MIASHS et nous voulons proposer à quiconque de pouvoir simplifier sa recherche de voyage en permettant de donner un avis externe selon vos goûts. Nous affichons aussi des statistiques et graphiques permettant de se faire sa propre idée d'où partir. Les sources sont à votre disposition dans la page “Source données”.</p>
+        <p>Nous sommes un groupe de 4 étudiants en Licence MIASHS, tous originaire de pays différents et nous voulons proposer à quiconque de pouvoir simplifier sa recherche de voyage en permettant de donner un avis externe selon vos goûts.
+        Nous affichons aussi des statistiques et graphiques permettant de se faire sa propre idée d'où partir.
+        Les sources des données sont à votre disposition dans la page “Source données”.
+    </p>
         </div>
 
         <div class="section">
         <h2>Notre objectif</h2>
-        <p>Ce site web est à but non-lucratif, nous voulons donner un accès gratuit à un regroupement d’information sur des destinations dans le monde. Afin de ne plus perdre de temps à faire des recherches, nous souhaitons vous accompagner dans cette démarche. Nous axons avant tout, notre travail sur la fiabilité et la sécurité.</p>
+        <p>Ce site web est à but non-lucratif, nous voulons donner un accès gratuit à un regroupement d’information sur des destinations dans le monde.
+            Afin de ne plus perdre de temps à faire des recherches, nous souhaitons vous accompagner dans cette démarche. 
+            Nous axons avant tout, notre travail sur la fiabilité et la sécurité.
+            Le questionnaire vous permet de vous indiquez à titre informatif quel pays peut vous correspondre, bien sûr, il existe des biais dans nos données,
+            nous vous conseillons tout de même de faire vos propres recherches ou de consulter les avis des autres utilisateurs sur le forum.
+        </p>
         </div>
 
         <div class="testimonial-section">

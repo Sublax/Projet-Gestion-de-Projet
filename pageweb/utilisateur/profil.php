@@ -58,6 +58,22 @@ $bdd = getBD();
             </header>
    
     <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_biography'])) {
+        if (isset($_SESSION['client']) && isset($_POST['biographie'])) {
+            $biography = trim($_POST['biographie']);
+            $clientId = $_SESSION['client'];
+    
+            // Mettre à jour la biographie dans la base de données
+            $stmt = $bdd->prepare('UPDATE info_clients SET biographie = :biography WHERE id_client = :id');
+            $stmt->execute([
+                ':biography' => $biography,
+                ':id' => $clientId,
+            ]);
+    
+        } else {
+            echo "<p>Erreur : Vous devez être connecté pour modifier votre biographie.</p>";
+        }
+    }
     if(isset($_SESSION['client'])){    
     echo '<div class="container">';
 
@@ -104,15 +120,25 @@ $bdd = getBD();
 </div>
 
 <!-- Modifier la biographie -->
-<textarea placeholder='Écrivez votre biographie...'></textarea>
+<form method="POST" action="profil.php">
+    <textarea id ='biography' name="biographie" placeholder="Écrivez votre biographie..."><?php 
+        // Afficher la biographie actuelle s'il y en a une
+        if (isset($_SESSION['client'])) {
+            $stmt = $bdd->prepare('SELECT biographie FROM info_clients WHERE id_client = :id');
+            $stmt->execute([':id' => $_SESSION['client']]);
+            $currentBiography = $stmt->fetchColumn();
+            echo htmlspecialchars($currentBiography);
+        }
+    ?></textarea>
+    <button id ="save" type="submit" name="save_biography" >Sauvegarder</button>
+</form>
 <button class='logout-button'> <a href="../connexion/deconnection.php">Déconnexion </a></button> 
 </div>
 </div>
 </div>
     <?php
     }else{
-        echo "<p>Vous n'avez pas encore de profil !</p>";
-        echo "<p><a href='../connexion/register.php'> Créez-en un ! </a></p>";
+        echo "<p class= 'creaprofil' >Vous n'avez pas encore de profil ?<a href='../connexion/register.php'> Créez-en un ! </a><a href='../connexion/login.php'> Ou connectez-vous </a></p>";
     }
             ?>
 

@@ -22,7 +22,7 @@ session_start();
     <div class="menu-item">
     <?php
         if (isset($_SESSION['client'])) {
-            echo '<a href="../questionnaire.php">';
+            echo '<a href="../dataviz/questionnaire.php">';
         } else {
             echo '<a href="../connexion/login.php">';
         }
@@ -111,7 +111,7 @@ session_start();
             $date_formate = date("d/m/Y H:i", strtotime($ligne['dernier_post']));
             echo '<em> dernier post : ' . $date_formate . '</em>';
         }     
-            echo '<span class="nbre_avis"> (' . $ligne['nb_avis'] . ' posts </span>';
+            echo '<span class="nbre_avis"> (' . $ligne['nb_avis'] . ' posts ) </span>';
             echo '</div>';
             echo '</div>';
         }
