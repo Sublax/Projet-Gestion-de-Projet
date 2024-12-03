@@ -55,6 +55,7 @@
         $lastName = $_GET['last_name'] ?? '';
         $email = $_GET['email'] ?? '';
         $location = $_GET['location'] ?? '';
+        $visitedCountry = $_GET["visitedCountry"] ?? '';
         ?>
         <form action="./process_register.php" method="post">
         <input type="text" name="username" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($username); ?>" required>
@@ -65,10 +66,12 @@
             <input type="email" name="email" placeholder="Adresse e-mail" value="<?php echo htmlspecialchars($email); ?>" required>
             
             <label for="country">Sélectionnez votre pays :</label>
+            <label class= "numberOfVisitedCountry" id="numberInputRegister" for="numberInput">Nombre de pays visité : </label>
             <div class="select">
             <select name="country" id="country" required>
             <option value="">-- Sélectionnez un pays --</option>
             </select>
+            <input class="numberOfVisitedCountry" type="number" id="numberInput" name="visitedCountry" value="<?php echo htmlspecialchars($visitedCountry); ?>" >
             </div>
             <input type="password" name="password" placeholder="Mot de passe" required>
             <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required>

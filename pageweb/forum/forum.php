@@ -22,7 +22,7 @@ session_start();
     <div class="menu-item">
     <?php
         if (isset($_SESSION['client'])) {
-            echo '<a href="../questionnaire.php">';
+            echo '<a href="../dataviz/questionnaire.php">';
         } else {
             echo '<a href="../connexion/login.php">';
         }

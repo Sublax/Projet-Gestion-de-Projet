@@ -12,10 +12,21 @@ h1 {
     color: #333;
 }
 
+.messageErreur{
+    color: red;
+}
+
 #messageSendTrue{
     color: green;
 }
 
+#numberInputRegister{
+    margin-left: 150px;
+}
+
+.numberOfVisitedCountry{
+    margin-left: 50px;
+}
 
 #recherchePays {
     background: 0;
