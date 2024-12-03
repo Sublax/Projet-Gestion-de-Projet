@@ -103,7 +103,9 @@ session_start();
             <!-- QUESTIONNAIRE -->
     <div class="container">
         <h2 id="form_beginning">Début du questionnaire</h2>
-        <p id="form_beginning">Le temps de réponse est d'environ x minutes.</p>
+        <p id="form_beginning">Le temps de réponse moyen est de <strong>- de 5 minutes</strong>.Vos réponses sont traitées <strong>anonymement</strong>, et vos résultats le seront aussi.
+        <br> Attention, vous ne pouvez pas stocker plusieurs tentatives dans votre profil. <strong>Une seule</strong> sera stockée.
+        <br>Si vous avez des questions n'hésitez pas à contacter <a href="mailto:corentin.labat-jarleton@etu.univ-montp3.fr">corentin.labat-jarleton@etu.univ-montp3.fr</a></p>
         <form action="run_generate_map.php" method="POST" id="questionnaireForm">
             
             <!-- Page 1 -->
@@ -168,6 +170,8 @@ session_start();
             <label for="q4_option1">Oui</label><br>
             <input type="radio" id="q4_option2" name="question4" value="Non">
             <label for="q4_option2">Non</label><br>
+            <input type="radio" id="q4_option3" name="question4" value="Ne sait pas">
+            <label for="q4_option2">Ne sait pas</label><br>
         </div>
     </div>
 
@@ -282,7 +286,7 @@ session_start();
 <div class="questionnaire-section">
     <!-- Question 11 -->
     <div class="question">
-        <label for="question11">Question 11: À quel point est-il important pour vous le taux de chômage du pays qui vous accueille ?</label>
+        <label for="question11">Question 11: À quel point le taux de chômage dans votre pays de destination, est-il important pour vous ?</label>
         <div class="options">
             <input type="radio" id="q11_option1" name="question11" value="Très important" required>
             <label for="q11_option1">Très important</label><br>
@@ -299,7 +303,7 @@ session_start();
 
     <!-- Question 12 -->
     <div class="question">
-        <label for="question12">Question 12: Quelles sont vos priorités en matière de conditions sociales dans un pays ?</label>
+        <label for="question12">Question 12: Quelles sont vos prioritées en matière de conditions sociales dans un pays ?</label>
         <div class="options">
             <input type="radio" id="q12_option1" name="question12" value="Revenu élevé" required>
             <label for="q12_option1">Revenu élevé</label><br>
@@ -314,7 +318,7 @@ session_start();
 
     <!-- Question 13 -->
     <div class="question">
-        <label for="question13">Question 13: Quelle sensibilité présentez-vous concernant les changements de température ?</label>
+        <label for="question13">Question 13: À quel point êtes-vous sensibles aux changements de température ?</label>
         <div class="options">
             <input type="radio" id="q13_option1" name="question13" value="Très sensible" required>
             <label for="q13_option1">Très sensible</label><br>
