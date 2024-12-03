@@ -378,6 +378,7 @@ color: #333;
 
 /* Biography Textarea */
 textarea {
+display : inline-block;
 width: 100%;
 height: 60px;
 border-radius: 8px;
@@ -786,4 +787,14 @@ a.back-button:hover {
     top: 0;
     left: 0;
     z-index: -1; /* Places the video behind the button */
+}
+.creaprofil{
+    
+    margin-top: 100px;
+}
+#biographie{
+    display : inline-block;
+    margin-left: 10px;
+    height : 40px;
+
 }
