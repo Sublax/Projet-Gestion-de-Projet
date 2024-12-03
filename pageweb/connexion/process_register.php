@@ -44,8 +44,8 @@ function save($u,$fn,$ln,$e,$l,$p,$v){
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if($result){
             $id_client = $result["id_client"];
-            $stmt2 = $bdd->prepare('INSERT INTO info_clients (id_client,nb_posts,nb_pays_visite) VALUES (?, ?, ?)');
-            $stmt2->execute([$id_client,0,$v]);
+            $stmt2 = $bdd->prepare('INSERT INTO info_clients (id_client,nb_posts,nb_pays_visite,biographie) VALUES (?, ?, ?, ?)');
+            $stmt2->execute([$id_client,0,$v,""]);
         }else{
             die("Erreur d'enregistrement.");
         }

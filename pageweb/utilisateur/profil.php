@@ -59,12 +59,12 @@ $bdd = getBD();
    
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_biography'])) {
-        if (isset($_SESSION['client']) && isset($_POST['biography'])) {
-            $biography = trim($_POST['biography']);
+        if (isset($_SESSION['client']) && isset($_POST['biographie'])) {
+            $biography = trim($_POST['biographie']);
             $clientId = $_SESSION['client'];
     
             // Mettre à jour la biographie dans la base de données
-            $stmt = $bdd->prepare('UPDATE clients SET biography = :biography WHERE id_client = :id');
+            $stmt = $bdd->prepare('UPDATE info_clients SET biographie = :biography WHERE id_client = :id');
             $stmt->execute([
                 ':biography' => $biography,
                 ':id' => $clientId,
@@ -121,10 +121,10 @@ $bdd = getBD();
 
 <!-- Modifier la biographie -->
 <form method="POST" action="profil.php">
-    <textarea id ='biography' name="biography" placeholder="Écrivez votre biographie..."><?php 
+    <textarea id ='biography' name="biographie" placeholder="Écrivez votre biographie..."><?php 
         // Afficher la biographie actuelle s'il y en a une
         if (isset($_SESSION['client'])) {
-            $stmt = $bdd->prepare('SELECT biography FROM clients WHERE id_client = :id');
+            $stmt = $bdd->prepare('SELECT biographie FROM info_clients WHERE id_client = :id');
             $stmt->execute([':id' => $_SESSION['client']]);
             $currentBiography = $stmt->fetchColumn();
             echo htmlspecialchars($currentBiography);
