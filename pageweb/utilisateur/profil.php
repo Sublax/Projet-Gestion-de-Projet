@@ -44,11 +44,11 @@ $bdd = getBD();
                 
             </div>
             <div class="menu-item">
-            <a href="../informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
+            <a href="../informations/informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
                 <p>Informations</p>
             </div>
             <div class="menu-item">
-            <a href="../sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
+            <a href="../informations/sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
                 <p>Sources données</p>
             </div>
             <div class="menu-item">
