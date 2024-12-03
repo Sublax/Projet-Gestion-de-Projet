@@ -17,16 +17,46 @@ function getTableData($tableName) {
             throw new Exception("La tabla especificada no existe.");
         }
 
+        // Obtener las columnas de la tabla especificada
+        $columnsQuery = $bdd->query("SHOW COLUMNS FROM $tableName");
+        $columns = $columnsQuery->fetchAll(PDO::FETCH_COLUMN);
+
+        // Detectar la columna del identificador del país
+        $countryIdColumn = null;
+        foreach (['id_pays', 'id_country'] as $possibleColumn) {
+            if (in_array($possibleColumn, $columns)) {
+                $countryIdColumn = $possibleColumn;
+                break;
+            }
+        }
+
+        if (!$countryIdColumn) {
+            throw new Exception("No se encontró una columna de identificación del país en la tabla $tableName.");
+        }
+
+        // Detectar la columna del año
+        $yearColumn = null;
+        foreach (['annee', 'Year'] as $possibleYearColumn) {
+            if (in_array($possibleYearColumn, $columns)) {
+                $yearColumn = $possibleYearColumn;
+                break;
+            }
+        }
+
+        if (!$yearColumn) {
+            throw new Exception("No se encontró una columna de año en la tabla $tableName.");
+        }
+
         // Obtener los datos de la tabla especificada
         $stmt = $bdd->query("SELECT * FROM $tableName");
         $tableData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Reemplazar id_pays por nom_pays en los datos
+        // Reemplazar el identificador del país por el nombre del país
         $result = [];
         foreach ($tableData as $row) {
-            if (isset($row['id_pays']) && isset($pays[$row['id_pays']])) {
-                $row['nom_pays'] = $pays[$row['id_pays']]; // Agregar el nombre del país
-                unset($row['id_pays']); // Opcional: eliminar id_pays si ya no es necesario
+            if (isset($row[$countryIdColumn]) && isset($pays[$row[$countryIdColumn]])) {
+                $row['nom_pays'] = $pays[$row[$countryIdColumn]]; // Agregar el nombre del país
+                unset($row[$countryIdColumn]); // Opcional: eliminar la columna del identificador del país
             }
             $result[] = $row;
         }

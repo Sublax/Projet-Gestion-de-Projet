@@ -22,7 +22,7 @@ function getAllTables() {
 
         // Exclure les tables 'avis' et 'clients'
         return array_filter($tables, function ($table) {
-            return !in_array($table, ['avis', 'clients','messages_contact']);
+            return !in_array($table, ['avis', 'clients','messages_contact','info_clients']);
         });
     } catch (PDOException $e) {
         return ["error" => $e->getMessage()];
@@ -62,7 +62,7 @@ $selectedYear = null;
 if (isset($_GET['table']) && $_GET['table'] !== '') {
     $tableName = $_GET['table']; // Table sélectionnée par l'utilisateur
     $columns = getTableColumns($tableName);
-    $yearColumn = in_array('Year', $columns) ? 'Year' : 'annee';
+    $yearColumn = in_array('Year', $columns) ? 'Year' : 'annee';  // Sélectionner la colonne d'année
     $years = getUniqueYears($tableName, $yearColumn);
 
     if (isset($_GET['year']) && $_GET['year'] !== '') {
@@ -153,7 +153,9 @@ if (isset($_GET['table']) && $_GET['table'] !== '') {
                 <label for="columnSelect">Sélectionnez un indicateur :</label>
                 <select id="columnSelect" name="column">
                     <?php foreach ($columns as $column): ?>
-                        <?php if (!in_array($column, ['id_pays', 'nom_pays', 'annee', 'Year'])): ?>
+                        <?php 
+                        // Filtrar columnas que no son identificadores
+                        if (!preg_match('/^id_/i', $column) && !in_array($column, ['id_pays', 'nom_pays', 'annee', 'Year'])): ?>
                             <option value="<?= htmlspecialchars($column) ?>"><?= htmlspecialchars($column) ?></option>
                         <?php endif; ?>
                     <?php endforeach; ?>
@@ -187,7 +189,7 @@ if (isset($_GET['table']) && $_GET['table'] !== '') {
                 .map(input => input.value);
 
             const filteredData = <?= json_encode(getTableData($tableName)); ?>.filter(row =>
-                selectedCountries.includes(row.nom_pays) && row.annee == <?= json_encode($selectedYear); ?>
+                selectedCountries.includes(row.nom_pays) && row.<?= htmlspecialchars($yearColumn); ?> == <?= json_encode($selectedYear); ?>
             );
 
             const labels = filteredData.map(row => row.nom_pays);
