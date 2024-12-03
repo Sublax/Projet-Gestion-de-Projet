@@ -1,5 +1,4 @@
 <?php
-// Incluir el archivo de conexión
 include '../bd.php';
 session_start();
 
@@ -12,8 +11,8 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // Connexion à la base de données
     $conn = getBD();
 
-    // Préparer la requête SQL pour vérifier les informations de l'utilisateur
-    $sql = "SELECT * FROM clients WHERE nom_utilisateur = :username";
+    // Préparer la requête SQL pour vérifier les informations de l'utilisateur (soit username soit mail)
+    $sql = "SELECT * FROM clients WHERE nom_utilisateur = :username OR mail = :username";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':username', $username);
     $stmt->execute();
@@ -21,7 +20,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // Vérifier si l'utilisateur existe
     if ($stmt->rowCount() > 0) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
         // Vérifier si le mot de passe est correct
         if (password_verify($password, $user['mdp'])) {
             // Mot de passe correct, démarrer la session
