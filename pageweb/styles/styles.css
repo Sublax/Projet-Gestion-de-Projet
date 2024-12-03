@@ -787,3 +787,21 @@ a.back-button:hover {
     left: 0;
     z-index: -1; /* Places the video behind the button */
 }
+.checkbox-group {
+    overflow-y: auto;
+    max-height: 300px;
+    width: 300px; /* Ajustado para que sea compacto */
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column; /* Alineación vertical */
+}
+.checkbox-group label {
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+.selected-countries {
+    margin-top: 20px;
+    font-weight: bold;
+}

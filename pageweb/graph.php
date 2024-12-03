@@ -1,5 +1,5 @@
 <?php
-require "./bd.php";
+require "bd.php";
 $bdd = getBD();
 ?>
 <!DOCTYPE html>
