@@ -9,8 +9,10 @@ $(document).ready(function() {
                 password: $("#password").val()
             },
             success: function(response){
-                if(response !== '1'){
+                if(response !== '1' && $(".messageErreur").length === 0){
                     $("#registerButton").after("<p class='messageErreur'> Les informations sont incorrectes.</p>")
+                }else{
+                    window.location.href = "../index.php";
                 }
             }
         });
