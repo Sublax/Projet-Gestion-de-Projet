@@ -161,7 +161,7 @@ body {
 .section {
     padding: 20px;
     background-color: white;
-    margin: 10px 20px;
+    margin: 35px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Suaviza la transición */
@@ -173,9 +173,15 @@ body {
 }
 .testimonial-section {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between; /* Répartit les éléments enfants */
     background-color: #d1c4a8;
-    padding: 20px;
+    padding: 50px;
+    margin-left: -20px; 
+    margin-right: -20px; /* Compense à droite aussi */
+    width: calc(100% + 40px); /* Élargir pour compenser les marges */
+    box-sizing: border-box;
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 .testimonial {
     width: 45%;
@@ -183,6 +189,8 @@ body {
     padding: 10px;
     border-radius: 8px;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
 }
 .testimonial:hover {
     background-color: #f0f0f0; /* Cambia el color de fondo al pasar el ratón */
