@@ -47,7 +47,7 @@ fig.update_layout(
     )
 )
 
-custom_js = """
+custom_js_graphs = """
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const mapElement = document.querySelector('.js-plotly-plot');
@@ -57,8 +57,27 @@ custom_js = """
                 const country = eventData.points[0].customdata[0];
                 console.log(`Selected country: ${country}`);
 
-                // Redirect to backend endpoint with the country name
-                window.location.href = `/generate_country_page?country=${encodeURIComponent(country)}`;
+                // Send the country name to the PHP backend
+                fetch('process_country.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ country: country })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("Failed to process the country.");
+                    }
+                })
+                .then(data => {
+                    console.log(data.message);
+                    // Redirect to the generated country page
+                    window.location.href = `country.php?country=${encodeURIComponent(country)}`;
+                })
+                .catch(error => console.error("Error:", error));
             });
         } else {
             console.error("Map element not found.");
@@ -69,6 +88,6 @@ custom_js = """
 
 with open(output_file, "w", encoding="utf-8") as f:
     f.write(fig.to_html(full_html=True))
-    f.write(custom_js)
+    f.write(custom_js_graphs)
 
 print(f"Map created successfully at {output_file}")
