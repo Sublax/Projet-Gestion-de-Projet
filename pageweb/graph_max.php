@@ -18,7 +18,12 @@ function getAllTables() {
     try {
         $bdd = getBD();
         $query = $bdd->query("SHOW TABLES");
-        return $query->fetchAll(PDO::FETCH_COLUMN);
+        $tables = $query->fetchAll(PDO::FETCH_COLUMN);
+
+        // Exclure les tables 'avis' et 'clients'
+        return array_filter($tables, function ($table) {
+            return !in_array($table, ['avis', 'clients','messages_contact']);
+        });
     } catch (PDOException $e) {
         return ["error" => $e->getMessage()];
     }
