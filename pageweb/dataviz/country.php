@@ -147,12 +147,44 @@ $sections = [
             width: 100%;
             height: 600px;
         }
+        .toggle-buttons {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .toggle-buttons button {
+            padding: 10px 15px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .toggle-buttons button:hover {
+            background-color: #2c3e50;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
     <script>
         function showSection(sectionId) {
             const sections = document.querySelectorAll('section');
             sections.forEach(section => section.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
+        }
+
+        function toggleGraphs(sectionId, graphType) {
+            const section = document.getElementById(sectionId);
+            const graphs = section.querySelectorAll(`iframe`);
+            graphs.forEach(graph => {
+                if (graph.classList.contains(graphType)) {
+                    graph.classList.remove('hidden');
+                } else {
+                    graph.classList.add('hidden');
+                }
+            });
         }
     </script>
 </head>
@@ -170,45 +202,32 @@ $sections = [
     <main>
         <?php foreach ($sections as $section => $types): ?>
             <section id="<?php echo $section; ?>">
-                <!-- BARPLOTS -->
                 <h2><?php echo ucfirst($section); ?> Graphs</h2>
+                <div class="toggle-buttons">
+                    <button onclick="toggleGraphs('<?php echo $section; ?>', 'barplot')">Show Barplots</button>
+                    <button onclick="toggleGraphs('<?php echo $section; ?>', 'lineplot')">Show Lineplots</button>
+                    <button onclick="toggleGraphs('<?php echo $section; ?>', 'boxplot')">Show Boxplots</button>
+                </div>
+
+                <!-- BARPLOTS -->
                 <?php if (!empty($types['barplots'])): ?>
-                    <h3>Barplots</h3>
                     <?php foreach ($types['barplots'] as $file): ?>
-                        <iframe src="<?php echo htmlspecialchars($file); ?>"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($file); ?>" class="barplot"></iframe>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No barplots available for <?php echo ucfirst($section); ?>.</p>
                 <?php endif; ?>
 
                 <!-- BOXPLOTS -->
                 <?php if (!empty($types['boxplots'])): ?>
-                    <h3>Boxplots</h3>
                     <?php foreach ($types['boxplots'] as $file): ?>
-                        <iframe src="<?php echo htmlspecialchars($file); ?>"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($file); ?>" class="boxplot hidden"></iframe>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No boxplots available for <?php echo ucfirst($section); ?>.</p>
                 <?php endif; ?>
 
                 <!-- LINEPLOTS -->
                 <?php if (!empty($types['lineplots'])): ?>
-                    <h3>Lineplots</h3>
                     <?php foreach ($types['lineplots'] as $file): ?>
-                        <iframe src="<?php echo htmlspecialchars($file); ?>"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($file); ?>" class="lineplot hidden"></iframe>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No lineplots available for <?php echo ucfirst($section); ?>.</p>
-                <?php endif; ?>
-
-                <!-- PIECHARTS -->
-                <?php if (!empty($types['piecharts'])): ?>
-                    <h3>Piecharts</h3>
-                    <?php foreach ($types['piecharts'] as $file): ?>
-                        <iframe src="<?php echo htmlspecialchars($file); ?>"></iframe>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No piecharts available for <?php echo ucfirst($section); ?>.</p>
                 <?php endif; ?>
             </section>
         <?php endforeach; ?>
