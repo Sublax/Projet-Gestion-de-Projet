@@ -6,6 +6,55 @@ import plotly.express as px
 from urllib.parse import quote
 
 # -- Graph types --
+def multiple_boxplot(df, columns, title, x_title, y_title, graph_name):
+    """
+    ==========================================================
+    Role : Creates multiple boxplots for selected columns
+    ==========================================================
+    Params : 
+        - df (dataframe) --> dataframe you're working on
+        - columns (list) --> list of column names to create boxplots
+        - title (str) --> title of the graph
+        - x_title (str) --> x-axis title
+        - y_title (str) --> y-axis title
+        - graph_name (str) --> destination file of the graph
+    ==========================================================
+    """
+    # Reshape the DataFrame for boxplot visualization
+    melted_df = df[columns].melt(var_name="Category", value_name="Values")
+    
+    # Create the boxplot
+    fig = px.box(
+        melted_df,
+        x="Category",  # Categories (column names) on the x-axis
+        y="Values",    # Values on the y-axis
+        color="Category",  # Color by category
+        title=title,
+        boxmode="group",
+    )
+    
+    # Customize layout
+    fig.update_layout(
+        showlegend=False,
+        title=dict(
+            text=title,
+            x=0.5,
+            font=dict(size=20)
+        ),
+        xaxis=dict(title=x_title),
+        yaxis=dict(title=y_title),
+        template="plotly_dark",
+    )
+    
+    # Path for saving the graph
+    output_dir = os.path.join(os.path.dirname(__file__), "static", "graphs")
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, graph_name)
+    
+    # Writing the graph
+    fig.write_html(output_file)
+    
+
 def multiple_line_plot(df, data_x, data_ys, title, x_title, y_title, graph_name):
     """
     ==========================================================
@@ -31,6 +80,7 @@ def multiple_line_plot(df, data_x, data_ys, title, x_title, y_title, graph_name)
     )
     
     fig.update_layout(
+        showlegend=False,
         title_font_size=20,
         title_x=0.5,
         xaxis_title=x_title,
@@ -84,6 +134,7 @@ def multiple_bar_plot(df, data_x, data_ys, title, x_title, y_title, graph_name):
     )
     
     fig.update_layout(
+        showlegend=False,
         title_font_size=20,
         title_x=0.5,
         xaxis_title=x_title,
@@ -180,16 +231,17 @@ def barplot(df, data_x, data_y, title, x_title, y_title, graph_name):
     )
     # Update layout for a cleaner look
     fig.update_layout(
-            title_font_size=20,
-            title_x=0.5,  # Center the title
-            xaxis_title=x_title,
-            yaxis_title=y_title,
-            font=dict(size=14),
-            plot_bgcolor="rgba(0,0,0,0)",  # Transparent background
-            paper_bgcolor="rgba(255,255,255,1)",  # White canvas background
-            xaxis=dict(showgrid=False),  # Remove vertical gridlines
-            yaxis=dict(showgrid=True, gridcolor="lightgrey"),  # Light gridlines for y-axis
-            margin=dict(l=40, r=40, t=50, b=50),  # Adjust margins
+        showlegend=False,
+        title_font_size=20,
+        title_x=0.5,  # Center the title
+        xaxis_title=x_title,
+        yaxis_title=y_title,
+        font=dict(size=14),
+        plot_bgcolor="rgba(0,0,0,0)",  # Transparent background
+        paper_bgcolor="rgba(255,255,255,1)",  # White canvas background
+        xaxis=dict(showgrid=False),  # Remove vertical gridlines
+        yaxis=dict(showgrid=True, gridcolor="lightgrey"),  # Light gridlines for y-axis
+        margin=dict(l=40, r=40, t=50, b=50),  # Adjust margins
     )  
     
     # Path for saving the graph
@@ -227,6 +279,7 @@ def lineplot(df, data_x, data_y, title, x_title, y_title, graph_name):
     
     # Update layout for a cleaner look
     fig.update_layout(
+        showlegend=False,
         title_font_size=20,
         title_x=0.5,  # Center the title
         xaxis_title=x_title,
@@ -262,8 +315,7 @@ def boxplot(df, data, title, x_title, y_title, graph_name):
     ==========================================================
     Params : 
         - df (dataframe) --> dataframe you're working on
-        - data_x (str) --> name of the column to put in x-axis
-        - data_y (str) --> name of the column to put in y-axis
+        - data (str) --> name of the column with values
         - x_title (str) --> x-axis title
         - y_title (str) --> y-axis title
         - output_file (str) --> destination file of the graph
@@ -278,6 +330,7 @@ def boxplot(df, data, title, x_title, y_title, graph_name):
     )
     # Customize layout
     fig.update_layout(
+        showlegend=False,
         title=dict(
             text="Visual Boxplot Example",
             x=0.5,
@@ -285,7 +338,7 @@ def boxplot(df, data, title, x_title, y_title, graph_name):
         ),
         xaxis=dict(title=x_title),
         yaxis=dict(title=y_title),
-        template="plotly_dark"
+        template="plotly_dark",
     )  
     
     # Path for saving the graph
@@ -367,12 +420,20 @@ def generate_graph(domain, country_name):
     print(f"Starting graph generation for domain: {domain}, country: {country_name}")
     
     # Query creation
-    query = f""" 
+    if domain == "economie":
+        query = f""" 
+                SELECT * 
+                FROM {domain}, pays 
+                WHERE {domain}.id_country = pays.id_pays
+                AND pays.nom_pays LIKE LOWER("{country_name}")
+                """
+    else :
+        query = f""" 
                 SELECT * 
                 FROM {domain}, pays 
                 WHERE {domain}.id_pays = pays.id_pays
                 AND pays.nom_pays LIKE LOWER("{country_name}")
-            """
+                """
     print(f"Generated query: {query}")
     
     # Fetch data from the database
@@ -398,6 +459,7 @@ def generate_graph(domain, country_name):
     # Generate the graphs based on domains
     print(f"Generating graph for domain: {domain}...")
     match domain:
+        
         case "agroalimentaire":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
@@ -406,38 +468,49 @@ def generate_graph(domain, country_name):
                         df, 
                         "annee", 
                         "costhealthydiet", 
-                        "title", 
-                        "x_title", 
-                        "y_title", 
+                        "Evolution du cout d'une diète saine", 
+                        "Année", 
+                        "Prix", 
                         "agroalimentaire_barplot_1.html"
                     )
                     
                     lineplot(
                         df, 
                         "annee", 
-                        "cleanfuelandcookingequipment", 
-                        "title", 
-                        "x_title", 
-                        "y_title", 
+                        "costhealthydiet", 
+                        "Evolution du cout d'une diète saine", 
+                        "Année", 
+                        "Prix", 
                         "agroalimentaire_lineplot_1.html"
                     )
                     
-                    boxplot(
-                        df,
-                        "costhealthydiet",
-                        "title", 
-                        "x_title",
-                        "y_title", 
-                        "agroalimentaire_boxplot_1.html"
+                    barplot(
+                        df, 
+                        "annee", 
+                        "cleanfuelandcookingequipment", 
+                        "Evolution des résources propres pour cuisiner", 
+                        "Année", 
+                        "Score", 
+                        "agroalimentaire_barplot_2.html"
                     )
                     
-                    boxplot(
+                    lineplot(
+                        df, 
+                        "annee", 
+                        "cleanfuelandcookingequipment", 
+                        "Evolution des résources propres pour cuisiner", 
+                        "Année", 
+                        "Score", 
+                        "agroalimentaire_lineplot_2.html"
+                    )
+                    
+                    multiple_boxplot(
                         df,
-                        "cleanfuelandcookingequipment",
-                        "title", 
-                        "x_title",
-                        "y_title", 
-                        "agroalimentaire_boxplot_2.html"
+                        ["cleanfuelandcookingequipment", "costhealthydiet"],
+                        "Comparaison des Indicateurs : \n Accès aux Combustibles Propres et Équipements de Cuisine vs Coût d'une Alimentation Saine",
+                        "Indicateurs",
+                        "Valeurs",
+                        "agroalimentaire_boxplot_3.html"
                     )
                     
                     print(f"Graph saved successfully to {output_file}")
@@ -448,11 +521,32 @@ def generate_graph(domain, country_name):
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 try:
+                    
+                    barplot(
+                        df,
+                        "annee",
+                        "score_bonheur",
+                        "Evolution Score Bonheur",
+                        "Annees",
+                        "Score Bonheur",
+                        "bonheur_barplot_1.html"
+                    )
+                    
+                    barplot(
+                        df,
+                        "annee",
+                        "generosite",
+                        "Evolution Générosité",
+                        "Annees",
+                        "Score Générosité",
+                        "bonheur_barplot_2.html"
+                    )
+                    
                     lineplot(
                         df,
                         "annee",
                         "score_bonheur",
-                        "Lineplot Bonheur",
+                        "Evolution Score Bonheur",
                         "Annees",
                         "Score Bonheur",
                         "bonheur_lineplot_1.html"
@@ -462,39 +556,51 @@ def generate_graph(domain, country_name):
                         df,
                         "annee",
                         "generosite",
-                        "Lineplot Generosite",
+                        "Evolution Générosité",
                         "Annees",
-                        "Generosite",
+                        "Score Generosite",
                         "bonheur_lineplot_2.html"
                     )
                     
-                    boxplot(
+                    multiple_boxplot(
                         df,
-                        "score_bonheur",
-                        "Boxplot Bonheur",
-                        "x_title",
-                        "y_title",
-                        "bonheur_boxplot_1.html"
+                        ["generosite", "score_bonheur"],
+                        "Comparaison des indicateurs : bonheur vs generosité",
+                        "Indicateurs",
+                        "Valeurs",
+                        "bonheur_boxplot_3.html"
                     )
+                    
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "corruption":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 try:
                     multiple_line_plot(
-                    df,
-                    "annee",
-                    ["liberte_expression", "corruption_politique", "rule_of_law"],
-                    "title",
-                    "x_title",
-                    "y_title",
-                    "corruption_barplot_1.html"
+                        df,
+                        "annee",
+                        ["liberte_expression", "corruption_politique", "rule_of_law"],
+                        "Evolution indicateurs corruption d'un pays",
+                        "Années",
+                        "Valeurs",
+                        "corruption_lineplot_1.html"
+                    )
+                    
+                    multiple_boxplot(
+                        df,
+                        ["liberte_expression", "corruption_politique", "rule_of_law"],
+                        "Comparaison Indicateurs corruption d'un pays",
+                        "Indicateurs",
+                        "Valeurs",
+                        "corruption_boxplot_1.html"
                     )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "crime":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
@@ -503,19 +609,19 @@ def generate_graph(domain, country_name):
                     df,
                     "annee",
                     "taux",
-                    "title",
-                    "x_title",
-                    "y_title",
+                    "Evolution Taux Crimes",
+                    "Années",
+                    "Taux Crime",
                     "crime_lineplot_1.html"
                     )
                     barplot(
                         df,
                         "annee",
                         "count",
-                        "title",
-                        "x_title",
-                        "y_title",
-                        "crime_lineplot_2.html"
+                        "Evolution Nombre de Crimes",
+                        "Années",
+                        "Nombre",
+                        "crime_barplot_1.html"
                     )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
@@ -525,6 +631,57 @@ def generate_graph(domain, country_name):
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
                 try:
+                    indices = [
+                                "AMA exchange rate",
+                                "IMF based exchange rate",
+                                "Per capita GNI",
+                                "Agriculture, hunting, forestry, fishing (ISIC A-B)",
+                                "Construction (ISIC F)",
+                                "Exports of goods and services",
+                                "Final consumption expenditure",
+                                "General government final consumption expenditure",
+                                "Gross capital formation",
+                                "Household consumption expenditure",
+                                "Imports of goods and services",
+                                "Manufacturing (ISIC D)",
+                                "Mining, Manufacturing, Utilities (ISIC C-E)",
+                                "Other Activities (ISIC J-P)",
+                                "Total Value Added",
+                                "Transport, storage and communication (ISIC I)",
+                                "Wholesale, retail trade, restaurants and hotels (ISIC G-H)",
+                                "Gross National Income(GNI) in USD",
+                                "Gross Domestic Product (GDP)"
+                            ]
+                    
+                    multiple_bar_plot(
+                        df,
+                        "Year",
+                        indices,
+                        "Evolution indices économiques",
+                        "Années",
+                        "Valeurs",
+                        "economie_barplot_1.html"
+                    )
+                    
+                    multiple_line_plot(
+                        df,
+                        "Year",
+                        indices,
+                        "Evolution indices économiques",
+                        "Années",
+                        "Valeurs",
+                        "economie_lineplot_1.html"
+                    )
+                    
+                    multiple_boxplot(
+                        df,
+                        indices,
+                        "Comparaison indices économiques",
+                        "Indices",
+                        "Valeurs",
+                        "economie_boxplot_1.html"
+                    )
+
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
@@ -533,13 +690,32 @@ def generate_graph(domain, country_name):
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 try:
                     multiple_line_plot(
-                    df,
-                    "annee",
-                    ["taux_classe_primaire", "taux_classe_secondaire"],
-                    "title",
-                    "x_title",
-                    "y_title",
-                    "education_lineplot_1.html"
+                        df,
+                        "annee",
+                        ["taux_classe_primaire", "taux_classe_secondaire"],
+                        "Evolution taux cycle primaire et secondaire",
+                        "Années",
+                        "Taux",
+                        "education_lineplot_1.html"
+                    )
+                    
+                    multiple_bar_plot(
+                        df,
+                        "annee",
+                        ["taux_classe_primaire", "taux_classe_secondaire"],
+                        "Evolution taux cycle primaire et secondaire",
+                        "Années",
+                        "Taux",
+                        "education_barplot_1.html"
+                    )
+                    
+                    multiple_boxplot(
+                        df,
+                        ["taux_classe_primaire", "taux_classe_secondaire"],
+                        "Comparaison taux cycles primaire et secondaire",
+                        "Cycles",
+                        "Valeurs",
+                        "education_boxplot_1.html"
                     )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
@@ -548,47 +724,39 @@ def generate_graph(domain, country_name):
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
-                
                 try:
-                    multiple_line_plot(
-                        df,
-                        "annee",
-                        ["automne_tmin", "automne_tavg", "automne_tmax"],
-                        "title",
-                        "x_title",
-                        "y_title",
-                        "meteo_lineplot_1.html"
-                    )
-                
-                    multiple_line_plot(
-                        df,
-                        "annee",
-                        ["hiver_tmin", "hiver_tavg", "hiver_tmax"],
-                        "title",
-                        "x_title",
-                        "y_title",
-                        "meteo_lineplot_2.html"
-                    )
-                
-                    multiple_line_plot(
-                        df,
-                        "annee",
-                        ["ete_tmin", "ete_tavg", "ete_tmax"],
-                        "title",
-                        "x_title",
-                        "y_title",
-                        "meteo_lineplot_3.html"
-                    )
-                
-                    multiple_line_plot(
-                        df,
-                        "annee",
-                        ["printemps_tmin", "printemps_tavg", "printemps_tmax"],
-                        "title",
-                        "x_title",
-                        "y_title",
-                        "meteo_lineplot_4.html"
-                    )
+                    seasons = ["automne", "hiver", "ete", "printemps"]
+                    
+                    for index, season in enumerate(seasons):
+                        multiple_boxplot(
+                            df,
+                            [f"{season}_tmin", f"{season}_tavg", f"{season}_tmax"],
+                            f"Comparaison Valeurs Temperatures {season}",
+                            "Années",
+                            "Temperature",
+                            f"meteo_boxplot_{index}.html"
+                        )
+                        
+                        multiple_line_plot(
+                            df,
+                            "annee",
+                            [f"{season}_tmin", f"{season}_tavg", f"{season}_tmax"],
+                            f"Evolution Temperature {season}",
+                            "Années",
+                            "Temperature",
+                            f"meteo_lineplot_{index}.html"
+                        )
+                        
+                        multiple_bar_plot(
+                            df,
+                            "annee",
+                            [f"{season}_tmin", f"{season}_tavg", f"{season}_tmax"],
+                            f"Comparaison temperatures pendant {season}",
+                            "Temperatures",
+                            "Valeurs",
+                            f"meteo_barplot_{index}.html"
+                        )
+                    
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
@@ -601,61 +769,264 @@ def generate_graph(domain, country_name):
                         df,
                         "annee",
                         groups,
-                        "title",
-                        "x_title",
-                        "y_title",
+                        "Evolution importance religion",
+                        "Année",
+                        "Valeur",
                         "religion_lineplot_1.html"
                     )
+                        
+                    multiple_boxplot(
+                        df,
+                        groups,
+                        "Comparaison indices d'importance religion",
+                        "Année",
+                        "Valeur",
+                        "religion_boxplot_1.html"
+                    )
                     
-                    for i in range(0, len(groups)):
-                        boxplot(
-                            df,
-                            groups[i],
-                            "title",
-                            "x_title",
-                            "y_title",
-                            f"religion_boxplot_{i}.html"
-                        )
+                    multiple_bar_plot(
+                        df,
+                        "annee",
+                        groups,
+                        "Evolution importance religion",
+                        "Années",
+                        "Valeur",
+                        "religion_barplot_1.html"
+                    )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "sante":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
                 try:
+                    lineplot(
+                        df,
+                        "annee",
+                        "esperance_vie",
+                        "Evolution esperance de vie",
+                        "Année",
+                        "Valeur",
+                        "sante_lineplot_1.html"
+                    )
+                    
+                    barplot(
+                        df,
+                        "annee",
+                        "esperance_vie",
+                        "Evolution esperance de vie",
+                        "Année",
+                        "Valeur",
+                        "sante_barplot_1.html"
+                    )
+                    
+                    boxplot(
+                        df,
+                        "esperance_vie",
+                        "Structure valeurs esperance de vie",
+                        "esperance de vie",
+                        "Valeur",
+                        "sante_boxplot_1.html"
+                    )
+                    
+                    multiple_line_plot(
+                        df,
+                        "annee",
+                        ["mort", "mort_estime", "naissance", "naissance_estimee"],
+                        "Evolution et prediction indices démographiques",
+                        "Années",
+                        "Valeur",
+                        "sante_lineplot_2.html"
+                    )
+                    
+                    multiple_boxplot(
+                        df,
+                        ["mort", "mort_estime", "naissance", "naissance_estimee"],
+                        "Comparaison indices démographiques",
+                        "x",
+                        "y",
+                        "sante_boxplot_2.html"
+                    )
+                    
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "social":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
                 try:
+                    multiple_bar_plot(
+                        df,
+                        "annee",
+                        ["salaire_min_annuel", "salaire_min_heure", "acces_elect"],
+                        "Evolution indices sociales",
+                        "Années",
+                        "Valeurs",
+                        "social_barplot_1.html"
+                    )
+                    
+                    multiple_line_plot(
+                        df,
+                        "annee",
+                        ["salaire_min_annuel", "salaire_min_heure", "acces_elect"],
+                        "Evolution indices sociales",
+                        "Années",
+                        "Valeurs",
+                        "social_lineplot_1.html"
+                    )
+                    
+                    multiple_boxplot(
+                        df,
+                        ["salaire_min_annuel", "salaire_min_heure", "acces_elect"],
+                        "Comparaison indices sociales",
+                        "Années",
+                        "Valeurs",
+                        "social_boxplot_1.html"
+                    )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "tourisme":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
                 try:
+                    barplot(
+                        df,
+                        "annee",
+                        "inbound_arrival",
+                        "Evolution Arrivées",
+                        "Années",
+                        "Valeurs",
+                        "tourisme_barplot_1.html"
+                    )
+                    
+                    lineplot(
+                        df,
+                        "annee",
+                        "inbound_arrival",
+                        "Evolution Arrivées",
+                        "Années",
+                        "Valeurs",
+                        "tourisme_lineplot_1.html"
+                    )
+                    
+                    boxplot(
+                        df,
+                        "inbound_arrival",
+                        "Structure valeurs arrivées",
+                        "Arrivées",
+                        "Valeurs",
+                        "tourisme_boxplot_1.html"
+                    )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "transport":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
                 try:
+                    barplot(
+                        df,
+                        "annee",
+                        "taux_acces_transport",
+                        "Evolution taux accées transport",
+                        "Années",
+                        "Valeur",
+                        "transport_barplot_1.html"
+                    )
+                    
+                    lineplot(
+                        df,
+                        "annee",
+                        "taux_acces_transport",
+                        "Evolution taux accées transport",
+                        "Années",
+                        "Valeur",
+                        "transport_lineplot_1.html"
+                    )
+                    
+                    boxplot(
+                        df,
+                        "taux_acces_transport",
+                        "Structure valeurs taux accées transport",
+                        "Taux Accées Transport",
+                        "Valeurs",
+                        "transport_boxplot_1.html"
+                    )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
+                    
         case "travail":
             if not df.empty:
                 print("Generating bar chart for 'agroalimentaire' domain...")
                 # Graphs here
                 try:
+                    multiple_bar_plot(
+                        df,
+                        "annee",
+                        ["sans_emploi_femme", "sans_emploi_homme"],
+                        "Evolution taux chomage par genre",
+                        "Année",
+                        "Valeur",
+                        "travail_barplot_1.html"
+                    )
+                    
+                    multiple_line_plot(
+                        df,
+                        "annee",
+                        ["sans_emploi_femme", "sans_emploi_homme"],
+                        "Evolution taux chomage par genre",
+                        "Année",
+                        "Valeur",
+                        "travail_lineplot_1.html"
+                    )
+                    
+                    multiple_boxplot(
+                        df,
+                        ["sans_emploi_femme", "sans_emploi_homme"],
+                        "Comparaison taux chomage par genre",
+                        "Genres",
+                        "Valeur",
+                        "travail_boxplot_1.html"
+                    )
+                    
+                    barplot(
+                        df,
+                        "annee",
+                        "population",
+                        "Evolution population",
+                        "Année",
+                        "Valeur",
+                        "travail_barplot_2.html"
+                    )
+                    
+                    lineplot(
+                        df,
+                        "annee",
+                        "population",
+                        "Evolution population",
+                        "Année",
+                        "Valeur",
+                        "travail_lineplot_2.html"
+                    )
+                    
+                    boxplot(
+                        df,
+                        "population",
+                        "Structure valeurs population",
+                        "",
+                        "Valeurs",
+                        "travail_boxplot_2.html"
+                    )
                     print(f"Graph saved successfully to {output_file}")
                 except Exception as e:
                     print(f"Error while generating or saving graph: {e}")
@@ -692,8 +1063,6 @@ if __name__ == "__main__":
 
 """
 TO DO:
-    - make function for:
-        * multiple boxplot
     - decide graphs for 'economie'
     - finish graphs
 """

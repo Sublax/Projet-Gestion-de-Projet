@@ -4,7 +4,7 @@ import os
 
 # Sample data
 df = pd.DataFrame({
-    "country_name": ["France", "Germany", "United States", "Spain", "Romania"],
+    "country_name": ["France", "Germany", "Norway", "Spain", "Romania"],
     "suitability_score": [10, 30, 50, 70, 90]
 })
 
