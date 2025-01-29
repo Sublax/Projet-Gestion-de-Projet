@@ -9,37 +9,6 @@
 
 </head>
 <body>
-<script>
-        // Fonction pour charger les pays depuis l'API REST Countries
-        function loadCountries() {
-            // URL de l'API REST Countries
-            const apiUrl = 'https://restcountries.com/v3.1/all';
-            
-            // Faire une requête fetch pour récupérer les données des pays
-            fetch(apiUrl)
-                .then(response => response.json())  // Convertir la réponse en JSON
-                .then(countries => {
-                    // Sélectionner le menu déroulant (select)
-                    const countrySelect = document.getElementById('country');
-                    
-                    // Trier les pays par nom (optionnel)
-                    countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-                    
-                    // Boucle à travers chaque pays et ajouter une option au menu déroulant
-                    countries.forEach(country => {
-                        const option = document.createElement('option');
-                        option.textContent = country.name.common;  // Nom du pays
-                        countrySelect.appendChild(option);  // Ajouter l'option au select
-                    });
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération des pays:', error);
-                });
-        }
-        
-        // Appeler la fonction loadCountries lorsque la page est prête
-        window.onload = loadCountries;
-</script>
 
 <div id="particles-js"></div>
 
@@ -87,5 +56,36 @@
         </form>
     </div>
     <script src="../styles/particles.js"></script>
+    <script>
+        // Fonction pour charger les pays depuis l'API REST Countries
+        function loadCountries() {
+            // URL de l'API REST Countries
+            const apiUrl = 'https://restcountries.com/v3.1/all';
+            
+            // Faire une requête fetch pour récupérer les données des pays
+            fetch(apiUrl)
+                .then(response => response.json())  // Convertir la réponse en JSON
+                .then(countries => {
+                    // Sélectionner le menu déroulant (select)
+                    const countrySelect = document.getElementById('country');
+                    
+                    // Trier les pays par nom (optionnel)
+                    countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
+                    
+                    // Boucle à travers chaque pays et ajouter une option au menu déroulant
+                    countries.forEach(country => {
+                        const option = document.createElement('option');
+                        option.textContent = country.name.common;  // Nom du pays
+                        countrySelect.appendChild(option);  // Ajouter l'option au select
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des pays:', error);
+                });
+        }
+        
+        // Appeler la fonction loadCountries lorsque la page est prête
+        window.onload = loadCountries;
+</script>
 </body>
 </html>
