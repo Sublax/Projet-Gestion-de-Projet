@@ -135,6 +135,65 @@ session_start();
         </div>
     </div>
     </main>
+    <div class="chatbot-container">
+    <button class="chatbot-button" onclick="toggleChat()">💬</button>
+    <div class="chatbox" id="chatbox">
+        <button class="close-button" onclick="toggleChat()">✖</button>
+
+        <!-- Presentación del chatbot -->
+        <div class="chat-intro" id="chat-intro">
+            <p>Bonjour, je suis <strong>ChatBot</strong> et je suis ici pour vous aider à naviguer sur notre site. 
+            Si vous avez des questions, n'hésitez pas à me contacter. J'espère pouvoir vous être utile !</p>
+            <button class="next-button" onclick="startChat()">Siguiente</button>
+        </div>
+
+        <!-- Interfaz del chat (inicialmente oculta) -->
+        <div class="chat-interface" id="chat-interface" style="display: none;">
+            <div id="chat-messages" class="chat-messages">
+                <p>Bonjour, comment puis-je vous aider ?</p>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input-field" placeholder="Écrivez votre message..." />
+                <button onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleChat() {
+        var chatbox = document.getElementById("chatbox");
+        var button = document.querySelector(".chatbot-button");
+        
+        if (chatbox.style.display === "none" || chatbox.style.display === "") {
+            chatbox.style.display = "flex";
+            button.style.display = "none";
+        } else {
+            chatbox.style.display = "none";
+            button.style.display = "flex";
+        }
+    }
+
+    function startChat() {
+        document.getElementById("chat-intro").style.display = "none"; // Ocultar la intro
+        document.getElementById("chat-interface").style.display = "flex"; // Mostrar el chat
+    }
+
+    function sendMessage() {
+        var inputField = document.getElementById("chat-input-field");
+        var message = inputField.value.trim();
+        
+        if (message !== "") {
+            var chatMessages = document.getElementById("chat-messages");
+            var newMessage = document.createElement("p");
+            newMessage.textContent = message;
+            chatMessages.appendChild(newMessage);
+            
+            inputField.value = "";
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Desplazar hacia abajo
+        }
+    }
+</script>
 
 </body>
 <footer>
