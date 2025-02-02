@@ -144,18 +144,21 @@ session_start();
         <div class="chat-intro" id="chat-intro">
             <p>Bonjour, je suis <strong>ChatBot</strong> et je suis ici pour vous aider à naviguer sur notre site. 
             Si vous avez des questions, n'hésitez pas à me contacter. J'espère pouvoir vous être utile !</p>
-            <button class="next-button" onclick="startChat()">Siguiente</button>
+            <button class="next-button" onclick="startChat()">Suivant</button>
         </div>
 
-        <!-- Interfaz del chat (inicialmente oculta) -->
+        <!-- Interfaz del chat -->
         <div class="chat-interface" id="chat-interface" style="display: none;">
+            <!-- Contenedor de mensajes -->
             <div id="chat-messages" class="chat-messages">
-                <p>Bonjour, comment puis-je vous aider ?</p>
+                <p class="bot-message"><strong>Bonjour, comment puis-je vous aider ?</strong></p>
             </div>
-            <div class="chat-input">
-                <input type="text" id="chat-input-field" placeholder="Écrivez votre message..." />
-                <button onclick="sendMessage()">Envoyer</button>
-            </div>
+        </div>
+
+        <!-- Input de chat (ahora separado) -->
+        <div class="chat-input">
+            <input type="text" id="chat-input-field" placeholder="Écrivez votre message..." />
+            <button onclick="sendMessage()">Envoyer</button>
         </div>
     </div>
 </div>
@@ -164,7 +167,7 @@ session_start();
     function toggleChat() {
         var chatbox = document.getElementById("chatbox");
         var button = document.querySelector(".chatbot-button");
-        
+
         if (chatbox.style.display === "none" || chatbox.style.display === "") {
             chatbox.style.display = "flex";
             button.style.display = "none";
@@ -182,18 +185,40 @@ session_start();
     function sendMessage() {
         var inputField = document.getElementById("chat-input-field");
         var message = inputField.value.trim();
-        
+
         if (message !== "") {
             var chatMessages = document.getElementById("chat-messages");
-            var newMessage = document.createElement("p");
-            newMessage.textContent = message;
-            chatMessages.appendChild(newMessage);
-            
+
+            // Crear el mensaje del usuario
+            var userMessage = document.createElement("p");
+            userMessage.textContent = message;
+            userMessage.classList.add("user-message");
+            chatMessages.appendChild(userMessage);
+
+            // Simular respuesta del chatbot
+            setTimeout(() => {
+                var botMessage = document.createElement("p");
+                botMessage.textContent = "Je suis désolé, mais je ne peux pas encore répondre aux questions.";
+                botMessage.classList.add("bot-message");
+                chatMessages.appendChild(botMessage);
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+
             inputField.value = "";
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Desplazar hacia abajo
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Mantener el scroll activo
         }
     }
+
+    // ✅ Permitir envío con Enter
+    document.getElementById("chat-input-field").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {  
+            event.preventDefault(); // Evita saltos de línea en el input
+            sendMessage();
+        }
+    });
 </script>
+
 
 </body>
 <footer>
