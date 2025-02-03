@@ -96,11 +96,11 @@ $sections = [
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphs for <?php echo $country_safe; ?></title>
+    <title>Graphiques pour : <?php echo $country_safe; ?></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -108,11 +108,25 @@ $sections = [
             padding: 0;
             background-color: #f4f4f9;
         }
+        .logo_site {
+        position: absolute;
+        width: 80px; 
+        height: 80px; 
+        z-index: 100;
+        }
+        .logo_site img {
+        width: 80px; /* Taille réelle de l'image */
+        height: 80px;
+        object-fit: contain; /* Conserve les proportions */
+        }
+        .titre_page{
+            text-align: center;
+        }
         header {
             background-color: #2c3e50;
             color: white;
             padding: 15px;
-            text-align: center;
+            position: relative;
         }
         nav {
             background-color: #34495e;
@@ -167,8 +181,78 @@ $sections = [
         .hidden {
             display: none;
         }
+        #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        flex-direction: column;
+    }
+
+.loading-text {
+    margin-bottom: 30px; /* Espace entre le texte et le spinner */
+    font-size: 1.4em;
+    color: #2c3e50;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    top: -20px; /* Ajustement fin de la position */
+}
+
+.loading-spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #3498db;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
     <script>
+        // Ajout du spinner chargement : 
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const iframes = document.querySelectorAll('iframe');
+        let loadedCount = 0;
+
+        function checkAllLoaded() {
+            loadedCount++;
+            if (loadedCount === iframes.length) {
+                // Ajout d'un léger délai pour une transition fluide
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        iframes.forEach(iframe => {
+            // Vérifier si l'iframe est déjà chargée
+            if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+                checkAllLoaded();
+            } else {
+                iframe.addEventListener('load', checkAllLoaded);
+                iframe.addEventListener('error', checkAllLoaded); // Gérer les erreurs
+            }
+        });
+
+        // Cas où il n'y a aucune iframe
+        if (iframes.length === 0) {
+            loadingOverlay.style.display = 'none';
+        }
+    });
+    // Fin du spinner de chargement
+
         function showSection(sectionId) {
             const sections = document.querySelectorAll('section');
             sections.forEach(section => section.classList.remove('active'));
@@ -189,8 +273,15 @@ $sections = [
     </script>
 </head>
 <body>
+<div id="loading-overlay">    
+    <div class="loading-text">Veuillez patienter, chargement des graphiques...</div>
+    <div class="loading-spinner"></div>
+</div>
     <header>
-        <h1>Graphs for <?php echo $country_safe; ?></h1>
+    <div class="logo_site">
+    <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
+    </div>
+        <h1 class="titre_page">Graphs for <?php echo $country_safe; ?></h1>
     </header>
     <nav>
         <?php foreach (array_keys($sections) as $section): ?>

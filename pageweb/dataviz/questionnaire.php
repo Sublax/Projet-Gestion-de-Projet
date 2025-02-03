@@ -80,7 +80,7 @@ session_start();
         </div>
         <div class="menu-item">
         <a href="../forum/forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
-           <p>Forum</p>
+        <p>Forum</p>
         </div>
         <div class="menu-item logo">
         <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
@@ -106,7 +106,7 @@ session_start();
         <p id="form_beginning">Le temps de réponse moyen est de <strong>- de 5 minutes</strong>.Vos réponses sont traitées <strong>anonymement</strong>, et vos résultats le seront aussi.
         <br> Attention, vous ne pouvez pas stocker plusieurs tentatives dans votre profil. <strong>Une seule</strong> sera stockée.
         <br>Si vous avez des questions n'hésitez pas à contacter <a href="mailto:corentin.labat-jarleton@etu.univ-montp3.fr">corentin.labat-jarleton@etu.univ-montp3.fr</a></p>
-        <form action="run_generate_map.php" method="POST" id="questionnaireForm">
+        <form action="map.php" method="POST" id="questionnaireForm">
             
             <!-- Page 1 -->
 <div class="questionnaire-section active">

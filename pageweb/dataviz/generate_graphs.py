@@ -362,7 +362,7 @@ def connect_to_database():
             host="localhost",      # MySQL server host
             user="root",           # MySQL username
             password="root",  # MySQL password
-            database="bd_projet",  # Your database name
+            database="bdprojet",  # Your database name
             cursorclass=pymysql.cursors.DictCursor  # Fetch rows as dictionaries
         )
         print("Database connection successful!")

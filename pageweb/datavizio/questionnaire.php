@@ -80,7 +80,7 @@ session_start();
         </div>
         <div class="menu-item">
         <a href="../forum/forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
-           <p>Forum</p>
+        <p>Forum</p>
         </div>
         <div class="menu-item logo">
         <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
