@@ -1,6 +1,5 @@
-<?php
-session_start();
-?>
+<?php include '../navbar.php' ;?>        
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,8 +10,6 @@ session_start();
     <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-<?php include '../navbar.php' ;?>        
-
     <main>
         <section class="sources">
         <h1>Sources de nos données</h1>

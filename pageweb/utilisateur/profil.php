@@ -1,7 +1,7 @@
 <?php
-session_start();
 include "../bd.php";
 $bdd = getBD();
+include '../navbar.php' ;
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +16,6 @@ $bdd = getBD();
 
 
 <body>
-<?php include '../navbar.php' ;?>
 
     <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_biography'])) {

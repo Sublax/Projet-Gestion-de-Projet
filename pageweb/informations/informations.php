@@ -1,6 +1,5 @@
-<?php
-session_start();
-?>
+<?php include '../navbar.php' ;?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -12,7 +11,6 @@ session_start();
 
 </head>
 <body>
-<?php include '../navbar.php' ;?>
 
 
 <main>

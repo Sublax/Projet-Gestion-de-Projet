@@ -1,6 +1,5 @@
-<?php
-session_start();
-?>
+<?php include 'navbar.php' ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,11 +10,7 @@ session_start();
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <!-- Barre de navigation -->
-<?php include 'navbar.php' ?>
-
     <div class="video-background">
-
         <video autoplay muted loop id="backgroundVideo">
             <source src="./images/map2.mp4" type="video/mp4">
             Votre navigateur ne supporte pas le contenu.

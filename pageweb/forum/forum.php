@@ -1,7 +1,7 @@
 <?php 
 include "../bd.php";
 $bdd = getBD();
-session_start();
+include '../navbar.php';
 ?>
 
 <!DOCTYPE html>
@@ -16,9 +16,6 @@ session_start();
 
 
 <body>
-    <!-- Barre de navigation -->
-    <?php include '../navbar.php' ;?>
-
 <section class="forum">
     <h1>Forum - Liste des pays</h1>
     <p>Exprimez-vous !</p>
