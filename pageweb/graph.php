@@ -12,6 +12,7 @@ $bdd = getBD();
 
 </head>
 <body>
+<?php include 'navbar.php' ;?>
 
 <form id="filterForm">
   <label for="countryFilter">Filtrer par pays :</label>
