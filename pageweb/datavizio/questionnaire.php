@@ -80,7 +80,7 @@ session_start();
         </div>
         <div class="menu-item">
         <a href="../forum/forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
-        <p>Forum</p>
+           <p>Forum</p>
         </div>
         <div class="menu-item logo">
         <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
@@ -114,9 +114,9 @@ session_start();
     <div class="question">
         <label for="question1">Question 1: Afin de débuter le questionnaire, souhaiteriez-vous plutôt vivre dans un nouveau pays ou y voyager ?</label>
         <div class="options">
-            <input type="radio" id="q1_option1" name="question1" value="Très insatisfait" required>
+            <input type="radio" id="q1_option1" name="question1" value="vivre" required>
             <label for="q1_option1">Je souhaite y vivre</label><br>
-            <input type="radio" id="q1_option2" name="question1" value="Insatisfait">
+            <input type="radio" id="q1_option2" name="question1" value="voyager">
             <label for="q1_option2">Je souhaite y voyager</label><br>
         </div>
     </div>
@@ -129,15 +129,15 @@ session_start();
     <div class="question">
         <label for="question2">Question 2: Accordez-vous de l'importance à l'utilisation des énergies propres (électricité, gaz contrairement au charbon et d'autres combustibles polluants) pour la cuisine ?</label>
         <div class="options">
-            <input type="radio" id="q2_option1" name="question2" value="Très important" required>
+            <input type="radio" id="q2_option1" name="question2" value=1 required>
             <label for="q2_option1">Très important</label><br>
-            <input type="radio" id="q2_option2" name="question2" value="Important">
+            <input type="radio" id="q2_option2" name="question2" value=0.75>
             <label for="q2_option2">Important</label><br>
-            <input type="radio" id="q2_option3" name="question2" value="Neutre">
+            <input type="radio" id="q2_option3" name="question2" value=0.5>
             <label for="q2_option3">Neutre</label><br>
-            <input type="radio" id="q2_option4" name="question2" value="Peu important">
+            <input type="radio" id="q2_option4" name="question2" value=0.25>
             <label for="q2_option4">Peu important</label><br>
-            <input type="radio" id="q2_option5" name="question2" value="Pas du tout important">
+            <input type="radio" id="q2_option5" name="question2" value=0>
             <label for="q2_option5">Pas du tout important</label><br>
         </div>
     </div>
@@ -146,15 +146,15 @@ session_start();
     <div class="question">
         <label for="question3">Question 3: Dans quelle mesure êtes-vous d'accord avec l'affirmation suivante : "Le coût d'une alimentation saine est un obstacle pour maintenir une diète équilibrée"</label>
         <div class="options">
-            <input type="radio" id="q3_option1" name="question3" value="Tout à fait d'accord" required>
+            <input type="radio" id="q3_option1" name="question3" value=1 required>
             <label for="q3_option1">Tout à fait d'accord</label><br>
-            <input type="radio" id="q3_option2" name="question3" value="Plutôt d'accord">
+            <input type="radio" id="q3_option2" name="question3" value=0.75>
             <label for="q3_option2">Plutôt d'accord</label><br>
-            <input type="radio" id="q3_option3" name="question3" value="Neutre">
+            <input type="radio" id="q3_option3" name="question3" value=0.5>
             <label for="q3_option3">Neutre</label><br>
-            <input type="radio" id="q3_option4" name="question3" value="Plutôt en désaccord">
+            <input type="radio" id="q3_option4" name="question3" value=0.25>
             <label for="q3_option4">Plutôt en désaccord</label><br>
-            <input type="radio" id="q3_option5" name="question3" value="Pas du tout d'accord">
+            <input type="radio" id="q3_option5" name="question3" value=0>
             <label for="q3_option5">Pas du tout d'accord</label><br>
         </div>
     </div>
@@ -166,12 +166,12 @@ session_start();
     <div class="question">
         <label for="question4">Question 4: Accordez-vous de l'importance à la bienveillance des autres dans votre vie quotidienne ?</label>
         <div class="options">
-            <input type="radio" id="q4_option1" name="question4" value="Oui" required>
+            <input type="radio" id="q4_option1" name="question4" value=1 required>
             <label for="q4_option1">Oui</label><br>
-            <input type="radio" id="q4_option2" name="question4" value="Non">
+            <input type="radio" id="q4_option2" name="question4" value=0>
             <label for="q4_option2">Non</label><br>
-            <input type="radio" id="q4_option3" name="question4" value="Ne sait pas">
-            <label for="q4_option2">Ne sait pas</label><br>
+            <input type="radio" id="q4_option3" name="question4" value=0.5>
+            <label for="q4_option3">Ne sait pas</label><br>
         </div>
     </div>
 
@@ -179,11 +179,11 @@ session_start();
     <div class="question">
         <label for="question5">Question 5: Envisagez-vous d'avoir des enfants et de les scolariser dans le pays en question ?</label>
         <div class="options">
-            <input type="radio" id="q5_option1" name="question5" value="Oui" required>
+            <input type="radio" id="q5_option1" name="question5" value=1 required>
             <label for="q5_option1">Oui</label><br>
-            <input type="radio" id="q5_option2" name="question5" value="Non">
+            <input type="radio" id="q5_option2" name="question5" value=0>
             <label for="q5_option2">Non</label><br>
-            <input type="radio" id="q5_option3" name="question5" value="Ne sait pas">
+            <input type="radio" id="q5_option3" name="question5" value=0.5>
             <label for="q5_option3">Ne sait pas</label><br>
         </div>
     </div>
@@ -196,15 +196,15 @@ session_start();
     <div class="question">
         <label for="question6">Question 6: Quelle sensibilité présentez-vous concernant les changements de température ?</label>
         <div class="options">
-            <input type="radio" id="q6_option1" name="question6" value="Très sensible" required>
+            <input type="radio" id="q6_option1" name="question6" value=1 required>
             <label for="q6_option1">Très sensible</label><br>
-            <input type="radio" id="q6_option2" name="question6" value="Sensible">
+            <input type="radio" id="q6_option2" name="question6" value=0.75>
             <label for="q6_option2">Sensible</label><br>
-            <input type="radio" id="q6_option3" name="question6" value="Moyen">
+            <input type="radio" id="q6_option3" name="question6" value=0.5>
             <label for="q6_option3">Moyen</label><br>
-            <input type="radio" id="q6_option4" name="question6" value="Peu sensible">
+            <input type="radio" id="q6_option4" name="question6" value=0.25>
             <label for="q6_option4">Peu sensible</label><br>
-            <input type="radio" id="q6_option5" name="question6" value="Pas du tout sensible">
+            <input type="radio" id="q6_option5" name="question6" value=0>
             <label for="q6_option5">Pas du tout sensible</label><br>
         </div>
     </div>
@@ -213,15 +213,15 @@ session_start();
     <div class="question">
         <label for="question7">Question 7: Que représente la religion pour vous en termes d'importance ?</label>
         <div class="options">
-            <input type="radio" id="q7_option1" name="question7" value="Important" required>
+            <input type="radio" id="q7_option1" name="question7" value=1 required>
             <label for="q7_option1">Important</label><br>
-            <input type="radio" id="q7_option2" name="question7" value="Plutôt important">
+            <input type="radio" id="q7_option2" name="question7" value=0.75>
             <label for="q7_option2">Plutôt important</label><br>
-            <input type="radio" id="q7_option3" name="question7" value="Plutôt pas important">
+            <input type="radio" id="q7_option3" name="question7" value=0.25>
             <label for="q7_option3">Plutôt pas important</label><br>
-            <input type="radio" id="q7_option4" name="question7" value="Pas important">
+            <input type="radio" id="q7_option4" name="question7" value=0>
             <label for="q7_option4">Pas important</label><br>
-            <input type="radio" id="q7_option5" name="question7" value="Ne sais pas">
+            <input type="radio" id="q7_option5" name="question7" value=0.5>
             <label for="q7_option5">Ne sais pas</label><br>
             <input type="radio" id="q7_option6" name="question7" value="Ne se prononce pas">
             <label for="q7_option6">Ne se prononce pas</label><br>
@@ -250,15 +250,15 @@ session_start();
     <div class="question">
         <label for="question9">Question 9: À quel point est-il important pour vous que votre pays d'accueil soit ouvert aux visiteurs et échanges internationaux ?</label>
         <div class="options">
-            <input type="radio" id="q9_option1" name="question9" value="Très important" required>
+            <input type="radio" id="q9_option1" name="question9" value=1 required>
             <label for="q9_option1">Très important</label><br>
-            <input type="radio" id="q9_option2" name="question9" value="Important">
+            <input type="radio" id="q9_option2" name="question9" value=0.75>
             <label for="q9_option2">Important</label><br>
-            <input type="radio" id="q9_option3" name="question9" value="Neutre">
+            <input type="radio" id="q9_option3" name="question9" value=0.5>
             <label for="q9_option3">Neutre</label><br>
-            <input type="radio" id="q9_option4" name="question9" value="Peu important">
+            <input type="radio" id="q9_option4" name="question9" value=0.25>
             <label for="q9_option4">Peu important</label><br>
-            <input type="radio" id="q9_option5" name="question9" value="Pas du tout important">
+            <input type="radio" id="q9_option5" name="question9" value=0>
             <label for="q9_option5">Pas du tout important</label><br>
         </div>
     </div>
@@ -267,15 +267,15 @@ session_start();
     <div class="question">
         <label for="question10">Question 10: À quel point est-il important pour vous de se déplacer à l'aide des transports en commun ?</label>
         <div class="options">
-            <input type="radio" id="q10_option1" name="question10" value="Très important" required>
+            <input type="radio" id="q10_option1" name="question10" value=1 required>
             <label for="q10_option1">Très important</label><br>
-            <input type="radio" id="q10_option2" name="question10" value="Important">
+            <input type="radio" id="q10_option2" name="question10" value=0.75>
             <label for="q10_option2">Important</label><br>
-            <input type="radio" id="q10_option3" name="question10" value="Neutre">
+            <input type="radio" id="q10_option3" name="question10" value=0.5>
             <label for="q10_option3">Neutre</label><br>
-            <input type="radio" id="q10_option4" name="question10" value="Peu important">
+            <input type="radio" id="q10_option4" name="question10" value=0.25>
             <label for="q10_option4">Peu important</label><br>
-            <input type="radio" id="q10_option5" name="question10" value="Pas du tout important">
+            <input type="radio" id="q10_option5" name="question10" value=0>
             <label for="q10_option5">Pas du tout important</label><br>
         </div>
     </div>
@@ -288,15 +288,15 @@ session_start();
     <div class="question">
         <label for="question11">Question 11: À quel point le taux de chômage dans votre pays de destination, est-il important pour vous ?</label>
         <div class="options">
-            <input type="radio" id="q11_option1" name="question11" value="Très important" required>
+            <input type="radio" id="q11_option1" name="question11" value=1 required>
             <label for="q11_option1">Très important</label><br>
-            <input type="radio" id="q11_option2" name="question11" value="Important">
+            <input type="radio" id="q11_option2" name="question11" value=0.75>
             <label for="q11_option2">Important</label><br>
-            <input type="radio" id="q11_option3" name="question11" value="Neutre">
+            <input type="radio" id="q11_option3" name="question11" value=0.5>
             <label for="q11_option3">Neutre</label><br>
-            <input type="radio" id="q11_option4" name="question11" value="Peu important">
+            <input type="radio" id="q11_option4" name="question11" value=0.25>
             <label for="q11_option4">Peu important</label><br>
-            <input type="radio" id="q11_option5" name="question11" value="Pas du tout important">
+            <input type="radio" id="q11_option5" name="question11" value=0>
             <label for="q11_option5">Pas du tout important</label><br>
         </div>
     </div>

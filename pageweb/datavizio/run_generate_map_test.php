@@ -2,8 +2,6 @@
 require_once "../bd.php";
 require_once "calc_fonctions.php";
 
-// country score = sum i=1->n (question values_i x country data_i)
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Getting questions values from the form
     $questions = [];
@@ -21,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'bonheur',
         'corruption',
         'crime',
-        'economie',
+        'economie', 
         'education',
         'meteo',
         'religion',
@@ -38,13 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data[$table] = getData($bdd, $table);
     }
 
-    // Calculating country scores
+    // Sending via JSON to generate_map.py
 
-    // Convert country scores to JSON
-
-    // Write JSON data to a file
-
-    // ==================== Testing Phase ====================
+    // ==================== Tests ====================
 
     // Test data
     $test_questions = [
@@ -64,16 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Write JSON data to a file
     file_put_contents("country_scores.json", $json_data);
 
-    //========================================================
-
-    // Pass form data to the Python script (if needed)
-    $pythonPath = "C:/Users/bogda/AppData/Local/Programs/Python/Python313/python.exe";
-    // Path to be replaced with the actual path to python.exe of the server
-    $pythonCommand = escapeshellcmd("$pythonPath generate_map.py");
-    $output = shell_exec($pythonCommand);
-
-    // Redirect to the generated map HTML file
-    header("Location: map.html");
-    exit;
+    echo "Data written to country_scores.json";
 }
 ?>

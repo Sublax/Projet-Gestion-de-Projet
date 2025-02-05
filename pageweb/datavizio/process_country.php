@@ -15,8 +15,8 @@ if (!$country) {
 
 // Define Python path and script
 // !!! To modify with the paths oh the server !!!
-$pythonPath = "/usr/bin/python3";
-$scriptPath = escapeshellarg("~/Documents/GitGestionProjet/pageweb/datavizio/generate_graphs.py");
+$pythonPath = "C:/Users/bogda/AppData/Local/Programs/Python/Python313/python.exe";
+$scriptPath = escapeshellarg("C:/MAMP/htdocs/payspedia/pageweb/datavizio/generate_graphs.py");
 
 // Command execution with output capturing
 $command = "\"$pythonPath\" $scriptPath " . escapeshellarg($country) . " 2>&1";

@@ -1,12 +1,30 @@
 import plotly.express as px
 import pandas as pd
 import os
+import json
 
-# Sample data
-df = pd.DataFrame({
-    "country_name": ["France", "Germany", "Norway", "Spain", "Romania"],
-    "suitability_score": [10, 30, 50, 70, 90]
-})
+# Getting json data
+# Use absolute path to locate the JSON file
+json_file = os.path.join(os.path.dirname(__file__), "country_scores.json")
+
+# Verify if file exists before reading
+if not os.path.exists(json_file):
+    print(f"Error: JSON file not found at {json_file}")
+else:
+    try:
+        with open(json_file, "r") as file:
+            country_scores = json.load(file)
+            countries = country_scores.keys()
+            values = country_scores.values()
+
+            df = pd.DataFrame({
+                "country_name": list(countries),
+                "suitability_score": list(values)
+            })
+
+            print(df)
+    except json.JSONDecodeError:
+        print("Error: Invalid JSON format!")
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 output_file = os.path.join(current_dir, "map.html")
