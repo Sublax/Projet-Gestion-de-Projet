@@ -12,10 +12,13 @@ session_start();
     <style>
         h2 {
             justify-self: center;
-            margin-top: 80px;
+            margin-top: 50px;
         }
         p {
             justify-self: center;
+        }
+        .text_introduction{
+            margin-left: 20px;
         }
         .step-container {
             display: flex;
@@ -102,8 +105,8 @@ session_start();
 
             <!-- QUESTIONNAIRE -->
     <div class="container">
-        <h2 id="form_beginning">Début du questionnaire</h2>
-        <p id="form_beginning">Le temps de réponse moyen est de <strong>- de 5 minutes</strong>.Vos réponses sont traitées <strong>anonymement</strong>, et vos résultats le seront aussi.
+        <h2 class="text_introduction">Début du questionnaire</h2>
+        <p class="text_introduction">Le temps de réponse moyen est de <strong>- de 5 minutes</strong>.Vos réponses sont traitées <strong>anonymement</strong>, et vos résultats le seront aussi.
         <br> Attention, vous ne pouvez pas stocker plusieurs tentatives dans votre profil. <strong>Une seule</strong> sera stockée.
         <br>Si vous avez des questions n'hésitez pas à contacter <a href="mailto:corentin.labat-jarleton@etu.univ-montp3.fr">corentin.labat-jarleton@etu.univ-montp3.fr</a></p>
         <form action="map.php" method="POST" id="questionnaireForm">

@@ -63,7 +63,7 @@ session_start();
     <?php
     if (isset($_SESSION['client'])) {
         echo '<div class="hero">';
-        echo '<a href="questionnaire.html" class="start-button">Essaye le questionnaire !</a>';
+        echo '<a href="dataviz/questionnaire.php" class="start-button">Essaye le questionnaire !</a>';
         echo '</div>';
     } else {
         echo '<div class="hero">';

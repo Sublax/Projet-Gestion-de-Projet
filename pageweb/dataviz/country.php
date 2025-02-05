@@ -115,9 +115,9 @@ $sections = [
         z-index: 100;
         }
         .logo_site img {
-        width: 80px; /* Taille réelle de l'image */
+        width: 80px; /* Taille réelle de l'image*/
         height: 80px;
-        object-fit: contain; /* Conserve les proportions */
+        object-fit: contain;
         }
         .titre_page{
             text-align: center;
@@ -180,6 +180,10 @@ $sections = [
         }
         .hidden {
             display: none;
+        }
+        .indication{
+            margin-left: 10px;
+            font-size: 18px;
         }
         #loading-overlay {
         position: fixed;
@@ -255,6 +259,7 @@ $sections = [
 
         function showSection(sectionId) {
             const sections = document.querySelectorAll('section');
+            document.getElementById("indication").style.visibility= "hidden";
             sections.forEach(section => section.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
         }
@@ -281,7 +286,7 @@ $sections = [
     <div class="logo_site">
     <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
     </div>
-        <h1 class="titre_page">Graphs for <?php echo $country_safe; ?></h1>
+        <h1 class="titre_page">Graphique pour : <?php echo $country_safe; ?></h1>
     </header>
     <nav>
         <?php foreach (array_keys($sections) as $section): ?>
@@ -323,5 +328,6 @@ $sections = [
             </section>
         <?php endforeach; ?>
     </main>
+    <p id="indication"> Veuillez sélectionner un onglet afin de naviguer. </p>
 </body>
 </html>
