@@ -90,33 +90,35 @@
         </div>
     </div>
     </main>
-    <div class="chatbot-container">
-    <button class="chatbot-button" onclick="toggleChat()">💬</button>
-    <div class="chatbox" id="chatbox">
-        <button class="close-button" onclick="toggleChat()">✖</button>
+        <div class="chatbot-container">
+        <button class="chatbot-button" onclick="toggleChat()">💬</button>
+        <div class="chatbox" id="chatbox">
+            <button class="close-button" onclick="toggleChat()">✖</button>
 
-        <!-- Presentación del chatbot -->
-        <div class="chat-intro" id="chat-intro">
-            <p>Bonjour, je suis <strong>ChatBot</strong> et je suis ici pour vous aider à naviguer sur notre site. 
-            Si vous avez des questions, n'hésitez pas à me contacter. J'espère pouvoir vous être utile !</p>
-            <button class="next-button" onclick="startChat()">Suivant</button>
-        </div>
+            <!-- Presentación del chatbot -->
+            <div class="chat-intro" id="chat-intro">
+                <p>Bonjour, je suis <strong>ChatBot</strong> et je suis ici pour vous aider à naviguer sur notre site. 
+                Si vous avez des questions, n'hésitez pas à me contacter. J'espère pouvoir vous être utile !</p>
+                <!-- Imagen debajo del párrafo -->
+                <img src="images/images_ced/chatbot-image.png" alt="ChatBot Assistant" class="chatbot-image">
+                <button class="next-button" onclick="startChat()">Suivant</button>
+            </div>
 
-        <!-- Interfaz del chat -->
-        <div class="chat-interface" id="chat-interface" style="display: none;">
-            <!-- Contenedor de mensajes -->
-            <div id="chat-messages" class="chat-messages">
-                <p class="bot-message"><strong>Bonjour, comment puis-je vous aider ?</strong></p>
+            <!-- Interfaz del chat -->
+            <div class="chat-interface" id="chat-interface" style="display: none;">
+                <!-- Contenedor de mensajes -->
+                <div id="chat-messages" class="chat-messages">
+                    <p class="bot-message"><strong>Bonjour, comment puis-je vous aider ?</strong></p>
+                </div>
+            </div>
+
+            <!-- Input de chat (ahora separado) -->
+            <div class="chat-input" id="chat-input" style="display: none;">
+                <input type="text" id="chat-input-field" placeholder="Écrivez votre message..." />
+                <button onclick="sendMessage()">Envoyer</button>
             </div>
         </div>
-
-        <!-- Input de chat (ahora separado) -->
-        <div class="chat-input">
-            <input type="text" id="chat-input-field" placeholder="Écrivez votre message..." />
-            <button onclick="sendMessage()">Envoyer</button>
-        </div>
     </div>
-</div>
 
 <script>
     function toggleChat() {
@@ -133,8 +135,9 @@
     }
 
     function startChat() {
-        document.getElementById("chat-intro").style.display = "none"; // Ocultar la intro
-        document.getElementById("chat-interface").style.display = "flex"; // Mostrar el chat
+        document.getElementById("chat-intro").style.display = "none"; 
+        document.getElementById("chat-interface").style.display = "flex"; 
+        document.getElementById("chat-input").style.display = "flex";   
     }
 
     function sendMessage() {
