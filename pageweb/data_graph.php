@@ -28,7 +28,7 @@ $result1->execute(['pays' => $pays]);
 $data['lineChart'] = $result1->fetchAll(PDO::FETCH_ASSOC);
 
 // Graphique en camembert
-$sql3 = "SELECT pays.nom_pays,pas_important, important FROM religion INNER JOIN pays ON religion.id_pays = pays.id_pays WHERE nom_pays = :pays";
+$sql3 = "SELECT pays.nom_pays,pas_important, important FROM religion INNER JOIN pays ON religion.id_pays = pays.id_pays WHERE nom_pays = :pays LIMIT 1";
 $stmt = $bdd->prepare($sql3);
 $stmt->execute(['pays' => $pays]);
 $data['pieChart'] = $stmt->fetchAll(PDO::FETCH_ASSOC);

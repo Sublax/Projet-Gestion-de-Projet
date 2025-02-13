@@ -120,13 +120,16 @@
             // Graphique en Camembert
             if (pieChart) pieChart.destroy();
             const pieCtx = document.getElementById('pieChart').getContext('2d');
+            const labels = data.pieChart.flatMap(item => [item.nom_pays + " - Important", item.nom_pays + " - Pas important"]);
+            const values = data.pieChart.flatMap(item => [item.important, item.pas_important]);
+
             pieChart = new Chart(pieCtx, {
                 type: 'pie',
                 data: {
-                    labels: data.pieChart.map(item => item.pays),
+                    labels: labels,
                     datasets: [{
-                        label: 'Stock',
-                        data: data.pieChart.map(item => item.important),
+                        label: "Comparaison Important / Pas Important",
+                        data: values,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.6)',
                             'rgba(54, 162, 235, 0.6)',
@@ -135,7 +138,8 @@
                             'rgba(153, 102, 255, 0.6)',
                             'rgba(255, 159, 64, 0.6)'
                         ]
-                    }]
+                    },
+                ]
                 },
                 options: {
                     responsive: false,
@@ -147,8 +151,17 @@
                                 size: 18 
                             },
                             color: '#333' 
-                        }
-                    }}
+                        },
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                font: { size: 14 },
+                                color: '#000',
+                                padding: 15,
+                                boxWidth: 20
+                            }
+                    }}}
             });
         }
 
@@ -168,6 +181,6 @@
     display: flex;
     justify-content: center; /* Centre les graphiques */
     gap: 200px;
-    flex-wrap: wrap; /* Permet de passer en ligne suivante si l'écran est petit */
+    flex-wrap: wrap;
 }
 </style>
