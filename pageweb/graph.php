@@ -17,25 +17,24 @@
     <select id="countrySelect"></select>
 
     <div class="chart-container">
-    <canvas id="barChart" height="300" width="300"></canvas>
-    <canvas id="lineChart" height="300" width="300"></canvas>
-    <canvas id="pieChart" height="300" width="300"></canvas>
+    <canvas id="barChart" height="500" width="400"></canvas>
+    <canvas id="lineChart" height="500" width="400"></canvas>
+    <canvas id="pieChart" height="500" width="400"></canvas>
     </div>
+    
     <div class="chart-container">
-    <canvas id="barChart" height="300" width="300"></canvas>
-    <canvas id="lineChart" height="300" width="300"></canvas>
-    <canvas id="pieChart" height="300" width="300"></canvas>
+    <canvas id="radarChart" height="750" width="550"></canvas>
+    <canvas id="polarChart" height="750" width="550"></canvas>
     </div>
 
     <script>
-        let barChart, lineChart, pieChart;
+        let barChart, lineChart, pieChart, radarChart, polarChart;
 
         function fetchCountries() {
             fetch('data_graph.php')
                 .then(response => response.json())
                 .then(data => {
                     const countrySelect = document.getElementById('countrySelect');
-                    
                     // Remplir la liste des pays
                     countrySelect.innerHTML = data.countries.map(country =>
                         `<option value="${country.nom_pays}">${country.nom_pays}</option>`
@@ -51,6 +50,16 @@
             fetch(`data_graph.php?pays=${country}`)
                 .then(response => response.json())
                 .then(data => {
+                    /*
+                    if(data.barChart.length === 0){
+                        document.querySelector("#barChart").replaceWith(createErrorMessage("Aucune donnée disponible pour ce pays."));
+                    }
+                    else if(data.lineChart.length === 0 ){
+                        document.querySelector("#lineChart").innerHTML = "<p style='color: red; text-align: center;'>Aucune donnée disponible pour ce pays.</p>";
+                    }
+                    else if(data.pieChart.length === 0){
+                        document.querySelector("#pieChart").replaceWith(createErrorMessage("Aucune donnée disponible pour ce pays."));
+                    }*/
                     updateCharts(data);
                 })
                 .catch(error => console.error("Erreur de chargement des données :", error));
@@ -77,7 +86,7 @@
                     plugins: {
                         title: {
                             display: true, 
-                            text: 'Score du bonheur enregistrée par années',
+                            text: 'Score du bonheur enregistrée par année',
                             font: {
                                 size: 18 
                             },
@@ -87,7 +96,7 @@
                 }
             });
 
-            // Graphique en Ligne (ventes par pays)
+            // Graphique en Ligne
             if (lineChart) lineChart.destroy();
             const lineCtx = document.getElementById('lineChart').getContext('2d');
             lineChart = new Chart(lineCtx, {
@@ -95,11 +104,18 @@
                 data: {
                     labels: data.lineChart.map(item => item.annee),
                     datasets: [{
-                        label: `${document.getElementById('countrySelect').value}`,
+                        label: `${document.getElementById('countrySelect').value} - Morts`,
                         data: data.lineChart.map(item => item.mort),
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 2,
-                        fill: false
+                        fill: true
+                    },
+                    {
+                        label: `${document.getElementById('countrySelect').value} - Naissances`,
+                        data: data.lineChart.map(item => item.naissance),
+                        borderColor: 'rgba(54, 162, 235, 1)', 
+                        borderWidth: 2,
+                        fill: true
                     }]
                 },
                 options: {
@@ -107,7 +123,7 @@
                     plugins: {
                         title: {
                             display: true, 
-                            text: 'Nombre de morts par an',
+                            text: 'Nombre de naissance/mort par année',
                             font: {
                                 size: 18 
                             },
@@ -122,7 +138,6 @@
             const pieCtx = document.getElementById('pieChart').getContext('2d');
             const labels = data.pieChart.flatMap(item => [item.nom_pays + " - Important", item.nom_pays + " - Pas important"]);
             const values = data.pieChart.flatMap(item => [item.important, item.pas_important]);
-
             pieChart = new Chart(pieCtx, {
                 type: 'pie',
                 data: {
@@ -146,7 +161,7 @@
                     plugins: {
                         title: {
                             display: true, 
-                            text: 'Graphique en camembert',
+                            text: 'Part de la religion dans le pays',
                             font: {
                                 size: 18 
                             },
@@ -163,8 +178,157 @@
                             }
                     }}}
             });
-        }
+        
 
+        if (radarChart) radarChart.destroy();
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: data.radarChart.map(item => item.annee),
+                    datasets: [
+                        {
+                        label: 'Temperature été',
+                        data: data.radarChart.map(item => item.ete_tavg),
+                        backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                        borderColor: 'rgba(255, 165, 0, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: 'Temperature printemps',
+                        data: data.radarChart.map(item => item.printemps_tavg),
+                        backgroundColor: 'rgba(60, 179, 113, 0.2)',
+                        borderColor: 'rgba(60, 179, 113, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: 'Temperature automne',
+                        data: data.radarChart.map(item => item.automne_tavg),
+                        backgroundColor: 'rgba(139, 69, 19, 0.2)',
+                        borderColor: 'rgba(139, 69, 19, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: 'Temperature hiver',
+                        data: data.radarChart.map(item => item.hiver_tavg),
+                        backgroundColor: 'rgba(0, 191, 255, 0.5)',
+                        borderColor: 'rgba(0, 191, 255, 1)',
+                        borderWidth: 1
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            display: true, 
+                            text: 'Température moyenne par saison',
+                            font: {
+                                size: 18 
+                            },
+                            color: '#333' 
+                        }
+                    },
+                    scales: {
+                        r: {
+                            pointLabels: {
+                                font: { size: 15 },
+                                color: '#000'
+                            },
+                            suggestedMin: -10,
+                            suggestedMax: 35.
+                        }
+                    }
+                }
+            });
+
+
+
+            if (polarChart) polarChart.destroy();
+            const polarCtx = document.getElementById('polarChart').getContext('2d');
+            const dataSaison = {
+                ete: [],
+                printemps: [],
+                automne: [],
+                hiver: []
+            };
+
+            // Regrouper les températures par saison
+            data.polarChart.forEach(item => {
+                dataSaison.ete.push(item.ete_tavg);
+                dataSaison.printemps.push(item.printemps_tavg);
+                dataSaison.automne.push(item.automne_tavg);
+                dataSaison.hiver.push(item.hiver_tavg);
+            });
+            
+            console.log(dataSaison.ete);
+            polarChart = new Chart(polarCtx, {
+                type: 'polarArea',
+                data: {
+                    //labels: ["Été","Printemps","Automne","Hiver"],
+                    datasets: [
+                        {
+                        label: '2018',
+                        data: [dataSaison.ete[0], dataSaison.printemps[0], dataSaison.automne[0], dataSaison.hiver[0]],
+                        backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                        borderColor: 'rgba(255, 165, 0, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: '2019',
+                        data: [dataSaison.ete[1], dataSaison.printemps[1], dataSaison.automne[1], dataSaison.hiver[1]],
+                        backgroundColor: 'rgba(60, 179, 113, 0.2)',
+                        borderColor: 'rgba(60, 179, 113, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: '2020',
+                        data: [dataSaison.ete[2], dataSaison.printemps[2], dataSaison.automne[2], dataSaison.hiver[2]],
+                        backgroundColor: 'rgba(139, 69, 19, 0.2)',
+                        borderColor: 'rgba(139, 69, 19, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: '2021',
+                        data: [dataSaison.ete[3], dataSaison.printemps[3], dataSaison.automne[3], dataSaison.hiver[3]],
+                        backgroundColor: 'rgba(0, 191, 255, 0.2)',
+                        borderColor: 'rgba(0, 191, 255, 1)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: '2022',
+                        data: [dataSaison.ete[4], dataSaison.printemps[4], dataSaison.automne[4], dataSaison.hiver[4]],
+                        backgroundColor: 'rgba(0, 191, 255, 0.2)',
+                        borderColor: 'rgba(0, 191, 255, 1)',
+                        borderWidth: 1
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            display: true, 
+                            text: 'Écart de température entre années et saisons',
+                            font: {
+                                size: 18 
+                            },
+                            color: '#333' 
+                        }
+                    },
+                    scales: {
+                        r: {
+                            pointLabels: {
+                                font: { size: 15 },
+                                color: '#000'
+                            },
+                            suggestedMin: -10,
+                            suggestedMax: 35.
+                        }
+                    }
+                }
+            });
+        }
         // Charger la liste des pays et les données du premier pays
         fetchCountries();
 
@@ -182,5 +346,7 @@
     justify-content: center; /* Centre les graphiques */
     gap: 200px;
     flex-wrap: wrap;
+    margin-bottom: 50px;
+    margin-top: 20px;
 }
 </style>
