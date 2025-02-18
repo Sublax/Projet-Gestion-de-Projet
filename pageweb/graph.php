@@ -27,8 +27,15 @@
     <canvas id="polarChart" height="750" width="550"></canvas>
     </div>
 
+    <div class="chart-container">
+    <canvas id="lineChart2" height="500" width="400"></canvas>
+    <canvas id="doughnutChart" height="500" width="400"></canvas>
+    <canvas id="doughnutChart2" height="500" width="400"></canvas>
+
+    </div>
+
     <script>
-        let barChart, lineChart, pieChart, radarChart, polarChart;
+        let barChart, lineChart, pieChart, radarChart, polarChart,lineChart2,doughnutChart,doughnutChart2;
 
         function fetchCountries() {
             fetch('data_graph.php')
@@ -69,18 +76,32 @@
             // Graphique en Barres
             if (barChart) barChart.destroy();
             const barCtx = document.getElementById('barChart').getContext('2d');
-            barChart = new Chart(barCtx, {
+            barChart = new Chart(barCtx, 
+            {
                 type: 'bar',
                 data: {
                     labels: data.barChart.map(item => item.annee),
-                    datasets: [{
-                        label: 'Score du bonheur',
+                    datasets: [
+                    {
+                        type: "bar",
+                        label: 'Évolution du score de bonheur',
                         data: data.barChart.map(item => item.score_bonheur),
                         backgroundColor: 'rgba(75, 192, 192, 0.5)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
-                    }]
+                    },
+                    {
+                        type: 'line',
+                        label: 'Score de la générosité',
+                        data: data.barChart.map(item => item.generosite * 10),
+                        borderColor: 'red',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4 // Pour une courbe plus lisse
+                    }
+                ]
                 },
+                
                 options: { 
                     responsive: false,
                     plugins: {
@@ -242,8 +263,6 @@
                 }
             });
 
-
-
             if (polarChart) polarChart.destroy();
             const polarCtx = document.getElementById('polarChart').getContext('2d');
             const dataSaison = {
@@ -252,7 +271,6 @@
                 automne: [],
                 hiver: []
             };
-
             // Regrouper les températures par saison
             data.polarChart.forEach(item => {
                 dataSaison.ete.push(item.ete_tavg);
@@ -261,7 +279,6 @@
                 dataSaison.hiver.push(item.hiver_tavg);
             });
             
-            console.log(dataSaison.ete);
             polarChart = new Chart(polarCtx, {
                 type: 'polarArea',
                 data: {
@@ -324,6 +341,111 @@
                             },
                             suggestedMin: -10,
                             suggestedMax: 35.
+                        }
+                    }
+                }
+            });
+
+            if (lineChart2) lineChart2.destroy();
+            const line2Ctx = document.getElementById('lineChart2').getContext('2d');
+            lineChart2 = new Chart(line2Ctx, {
+                type: 'line',
+                data: {
+                    labels: data.lineChart2.map(item => item.annee),
+                    datasets: [{
+                        label: `${document.getElementById('countrySelect').value} - Femmes`,
+                        data: data.lineChart2.map(item => item.sans_emploi_femme),
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        fill: true
+                    },
+                    {
+                        label: `${document.getElementById('countrySelect').value} - Hommes`,
+                        data: data.lineChart2.map(item => item.sans_emploi_homme),
+                        borderColor: 'rgba(54, 162, 235, 1)', 
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            display: true, 
+                            text: 'Évolution du taux de travail',
+                            font: {
+                                size: 18 
+                            },
+                            color: '#333' 
+                        }
+                    }
+                }
+            });
+
+            if (doughnutChart) doughnutChart.destroy();
+            const doughCtx = document.getElementById('doughnutChart').getContext('2d');
+            doughnutChart = new Chart(doughCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ["Acces (en %)","Non accès (en %)"],
+                    datasets: [
+                        {
+                        data: data.doughnutChart.flatMap(item=>[item.taux_acces_transport,100-item.taux_acces_transport]),                    
+                        backgroundColor: ['#D6955B', '#e5e7e6'],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                        }
+                ]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            display: true, 
+                            text: 'Accès aux transports en commun selon les années',
+                            font: {
+                                size: 18 
+                            },
+                            color: '#333' 
+                        }
+                    }
+                }
+            });
+
+            if (doughnutChart2) doughnutChart2.destroy();
+            const doughCtx2 = document.getElementById('doughnutChart2').getContext('2d');
+            doughnutChart2 = new Chart(doughCtx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Corruption politique', 'Vanité politique', 'Taux de criminalité', 'Reste criminalité'], 
+                    datasets: [
+                        {
+                        label: "Corruption politique (en %)",
+                        data: data.doughnutChart2.flatMap(item=>[item.corruption_politique,100-item.corruption_politique]),            
+                        backgroundColor: ['#A7001E', '#7AA95C'],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                        },
+                        {
+                        label: "Taux de criminalité (en %)",
+                        data: data.doughnutChart2.flatMap(item=>[item.taux_crime,100-item.taux_crime]),                    
+                        backgroundColor: ['#1E0F1C', '#7AA95C'],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1
+                        },
+
+                ]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            display: true, 
+                            text: 'Taux de corruption et de crimininalisation en une année',
+                            font: {
+                                size: 18 
+                            },
+                            color: '#333' 
                         }
                     }
                 }
