@@ -40,7 +40,7 @@ $stmt->execute(['pays' => $pays]);
 $data['polarChart'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-$sql6 = "SELECT pays.nom_pays,annee, sans_emploi_femme,sans_emploi_homme FROM travail INNER JOIN pays ON travail.id_pays = pays.id_pays WHERE nom_pays = :pays AND annee < 2024 AND annee > 1999 ORDER BY annee";
+$sql6 = "SELECT pays.nom_pays,annee, sans_emploi_femme,sans_emploi_homme FROM travail INNER JOIN pays ON travail.id_pays = pays.id_pays WHERE nom_pays = :pays AND annee < 2023 AND annee > 1999 ORDER BY annee";
 $stmt = $bdd->prepare($sql6);
 $stmt->execute(['pays' => $pays]);
 $data['lineChart2'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
