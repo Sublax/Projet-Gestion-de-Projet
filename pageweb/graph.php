@@ -8,11 +8,12 @@
     <title>Graphiques Filtrés par Pays</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles/styles.css">
+    <?php include 'navbar.php' ?>
 
-    
 </head>
 <body>
-    <h2>Démo de graphiques</h2>
+    <h2>Présentation des données</h2>
+    <p>Si vous souhaitez faire des graphes personnalisées : <a href= "./graph_max.php"> cliquez ici </a> </p>
     <label for="countrySelect">Sélectionner un pays :</label>
     <select id="countrySelect"></select>
 
@@ -470,5 +471,11 @@
     flex-wrap: wrap;
     margin-bottom: 50px;
     margin-top: 20px;
-}
+    }
+    h2{
+        margin-top: 50px;
+    }
+    body{
+        margin-left: 20px;
+    }
 </style>

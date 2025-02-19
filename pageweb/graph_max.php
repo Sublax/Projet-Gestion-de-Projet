@@ -1,7 +1,11 @@
 <?php
 require_once 'bd.php';
 require_once 'nom_pays.php'; // Inclure nom_pays.php directement
+include 'navbar.php'; ?>
 
+<link rel="stylesheet" href="styles/styles.css">
+
+<?php
 // Fonction pour obtenir les colonnes d'une table
 function getTableColumns($tableName) {
     try {
@@ -79,6 +83,7 @@ if (isset($_GET['table']) && $_GET['table'] !== '') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graphique Personnalisable</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <p><a href= "./graph.php"> Retour</a> </p>
     <style>
         .checkbox-group {
             overflow-y: auto;
@@ -99,7 +104,7 @@ if (isset($_GET['table']) && $_GET['table'] !== '') {
     </style>
 </head>
 <body>
-    <h1>Graphique Personnalisable</h1>
+    <h2>Graphique Personnalisable</h2>
 
     <!-- Formulaire pour sélectionner une table -->
     <form method="GET">
@@ -221,4 +226,13 @@ if (isset($_GET['table']) && $_GET['table'] !== '') {
         });
     </script>
 </body>
+
+<style>
+    h2{
+        margin-top: 50px;
+    }
+    body{
+        margin-left: 20px;
+    }
+</style>
 </html>
