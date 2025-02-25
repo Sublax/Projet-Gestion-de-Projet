@@ -1,5 +1,3 @@
-<?php include 'navbar.php' ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -9,6 +7,7 @@
     <title>Projet</title>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
+<?php include 'navbar.php' ?>
 <body>
     <div class="video-background">
         <video autoplay muted loop id="backgroundVideo">

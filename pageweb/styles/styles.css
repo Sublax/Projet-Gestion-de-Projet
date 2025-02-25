@@ -49,7 +49,31 @@ h1 {
       }
     }
   }
-  
+    /* Style du bouton */
+    #sendButtonPays {
+        background-color: #c00000; /* Bleu */
+        color: white;
+        font-size: 18px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        display: block;
+        margin: 20px auto;
+        font-weight: bold;
+    }
+
+    /* Effet hover */
+    #sendButtonPays:hover {
+        background-color: #700000; 
+        transform: scale(1.05); 
+    }
+
+    #sendButtonPays:active {
+        transform: scale(0.95);
+    }
+
   .field {
     position: relative;
     transform: translateY(-20px);
@@ -81,6 +105,31 @@ h1 {
     height: 50px;
     border-radius: 50%;
 }
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .popup-content select {
+    margin: 10px 0;
+    padding: 5px;
+  }
+  
 
 .forum {
     width: 80%;

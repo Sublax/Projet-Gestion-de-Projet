@@ -57,34 +57,46 @@
     </div>
     <script src="../styles/particles.js"></script>
     <script>
-        // Fonction pour charger les pays depuis l'API REST Countries
         function loadCountries() {
-            // URL de l'API REST Countries
+        const cachedCountries = localStorage.getItem('countriesData');
+        if (cachedCountries) {
+            //Si en cache on l'utilise direct
+            const countries = JSON.parse(cachedCountries);
+            populateCountrySelect(countries);
+        } else {
+            //Sinon on appelle l'API : 
             const apiUrl = 'https://restcountries.com/v3.1/all';
-            
-            // Faire une requête fetch pour récupérer les données des pays
+
             fetch(apiUrl)
-                .then(response => response.json())  // Convertir la réponse en JSON
+                .then(response => response.json())
                 .then(countries => {
-                    // Sélectionner le menu déroulant (select)
-                    const countrySelect = document.getElementById('country');
-                    
-                    // Trier les pays par nom (optionnel)
+                    //Trie les pays par nom
                     countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-                    
-                    // Boucle à travers chaque pays et ajouter une option au menu déroulant
-                    countries.forEach(country => {
-                        const option = document.createElement('option');
-                        option.textContent = country.name.common;  // Nom du pays
-                        countrySelect.appendChild(option);  // Ajouter l'option au select
-                    });
+
+                    //On les stocke
+                    localStorage.setItem('countriesData', JSON.stringify(countries));
+
+                    // Ajouter les pays au menu déroulant
+                    populateCountrySelect(countries);
                 })
                 .catch(error => {
                     console.error('Erreur lors de la récupération des pays:', error);
                 });
         }
+}
+
+// Fonction pour le menu déroulant avec les pays
+function populateCountrySelect(countries) {
+    const countrySelect = document.getElementById('country');
+    countrySelect.innerHTML = '';  
+
+    countries.forEach(country => {
+        const option = document.createElement('option');
+        option.textContent = country.name.common;  // Nom du pays
+        countrySelect.appendChild(option); 
+    });
+}
         
-        // Appeler la fonction loadCountries lorsque la page est prête
         window.onload = loadCountries;
 </script>
 </body>
