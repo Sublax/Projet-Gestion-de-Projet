@@ -6,11 +6,31 @@ require_once "calc_fonctions.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Getting questions values from the form
-    $questions = [];
-    $totalQuestions = 16; // Adjust this number based on your form
-    for ($i = 1; $i <= $totalQuestions; $i++) {
-        $questions["question$i"] = $_POST["question$i"] ?? 'Default Value';
+    foreach ($_POST as $key => $value) {
+        // Handle checkbox arrays correctly
+        $questions[$key] = $value;
     }
+
+    /* Spliting questions into:
+        - pre_questions: questions before the split_key
+        - choix: the split_key
+        - stats_questions: questions after the split_key
+    */
+    $split_key = 'choix';
+    $found = False;
+    foreach ($questions as $key => $value) {
+        if($key === $split_key){
+            $found = True;
+            $choix = $value;
+            continue;
+        }
+        if(!$found){
+            $pre_questions[$key] = $value;
+        } else {
+            $stats_questions[$key] = $value;
+        }
+    }
+    
 
     // DB connection
     $bdd = getBD(); 
@@ -37,34 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach($tables as $table){
         $data[$table] = getData($bdd, $table);
     }
-
+     
     // Calculating country scores
+    $countryScores = calculateScoresDebug($stats_questions, $data);
 
     // Convert country scores to JSON
-
-    // Write JSON data to a file
-
-    // ==================== Testing Phase ====================
-
-    // Test data
-    $test_questions = [
-        'agroalimentaire-cleanfuelandcookingequipment' => 0.5,
-        'agroalimentaire-costhealthydiet' => 0.7,
-        'bonheur-score_bonheur' => 0.3,
-        'bonheur-generosite' => 0.9,
-        'corruption-rule_of_law' => 0.2
-    ];
-
-    // Calculating country scores
-    $countryScores = calculateScores($test_questions, $data);
-
-    // Convert to JSON
     $json_data = json_encode($countryScores, JSON_PRETTY_PRINT);
 
     // Write JSON data to a file
     file_put_contents("country_scores.json", $json_data);
-
-    //========================================================
 
     // Pass form data to the Python script (if needed)
     $pythonPath = "C:/Users/bogda/AppData/Local/Programs/Python/Python313/python.exe";
@@ -75,5 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Redirect to the generated map HTML file
     header("Location: map.html");
     exit;
+    
 }
 ?>
