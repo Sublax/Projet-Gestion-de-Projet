@@ -1,3 +1,11 @@
+#===================================
+# A FAIRE ; 
+# -> Passer de R2 à Rn pour les variables (ttes les inclure)
+# -> Faire le clustering qu'une seule fois et pas à chaque fois
+# -> Erreur quand pays sans données sur un domaine
+# -> Renvoyer le résultat
+# -> Ne plus passer par l'execution manuel du python mais plutôt par l'execution via le site web du script. Puis renvoyer le résultat.
+#===================================
 import pymysql
 from flask import Flask, request, jsonify,send_file
 from flask_cors import CORS 
@@ -43,7 +51,7 @@ def receive_json():
         kmeans = KMeans(n_clusters=i, random_state=1)
         kmeans.fit(test)
         inertias.append(kmeans.inertia_)
-
+    
     plt.plot(range(1,11), inertias, marker='o')
     plt.title('Elbow method')
     plt.xlabel('Number of clusters')
@@ -63,6 +71,10 @@ def receive_json():
     plt.close()
 
     cursor.execute("SELECT AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays = '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
+    #Si on reçoit aucune donnée :
+    print("Longueur : ",len(cursor.fetchall()))
+    if len(cursor.fetchall()) == 0:
+        return jsonify({"status": "failed", "message": "Des données sont manquanteEEEEEEEs"}), 404
     selected_country = list(cursor.fetchall())
     #Prédiction du groupe auquel appartient le choix de l'user :
     cluster = kmeans.predict(selected_country)

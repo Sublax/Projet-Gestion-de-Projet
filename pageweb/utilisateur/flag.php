@@ -22,35 +22,47 @@
             width: 100px;
             height: 60px;
             margin: 10px;
-            background-size: contain;  /* Assure-toi que l'image s'adapte à l'intérieur de l'élément */
-            background-position: center;  /* Centre l'image à l'intérieur du conteneur */
-            background-repeat: no-repeat;  /* Empêche la répétition de l'image */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
             cursor: pointer;
             display: inline-block;
             position: relative;
-            border-radius: 5px; /* Optionnel, pour ajouter des bords arrondis aux drapeaux */
+            border-radius: 8px; /* Coins arrondis pour un effet plus doux */
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
         }
 
-        .flag-item.selected {
-            opacity: 0.5; /* Réduit l'opacité pour "griser" l'élément */
+        /* Effet au survol */
+        .flag-item:hover {
+            transform: scale(1.1); /* Légèrement plus grand pour attirer l'attention */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombre subtile pour effet de profondeur */
         }
+
+        /* Effet de sélection */
+        .flag-item.selected {
+            opacity: 1; /* On garde l'opacité normale */
+            border: 3px solid #007BFF; /* Contour bleu lumineux pour indiquer la sélection */
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Effet lumineux */
+            transform: scale(1.1); /* Mise en avant */
+        }   
 
         .country-name {
             position: absolute;
             bottom: 5px;
-            left: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
             color: white;
+            font-size: 9px;
             font-weight: bold;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
         }
         .flag-item:hover {
             border-color: #333;
         }
-        .country-name {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 5px;
-        }
+
     </style>
 </head>
 <body>
