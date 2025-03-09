@@ -28,54 +28,85 @@ def receive_json():
         return jsonify({"error": "Aucun JSON reçu"}), 400
     
     # Affiche dans la console le JSON reçu
-    print("JSON reçu :", data)
-    print("La liste reçue : ",list(data.values()))
+    print("[DEBUG] JSON reçu :", data)
+    print("[DEBUG] La liste reçue : ",list(data.values()))
     pays_selected = list(data.values())[0]
     print(pays_selected[0])
     #Prendre la dernière année : 
 
-    cursor.execute("SELECT pays.nom_pays,AVG(rang_bonheur) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '" + pays_selected[0] + "' GROUP BY pays.nom_pays")
-    data_x = []
-    data_y = []
+    #data_x = []
+    #data_y = []
+    #data_z = []
+    #data_diet = []
+    DATA = []
     #cursor.execute("SELECT pays.nom_pays,AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
-    cursor.execute("SELECT AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
-    test = cursor.fetchall()
-    print("Longueur du test : ",len(test))
+    cursor.execute("""SELECT AVG(rang_bonheur),
+                   AVG((corruption_politique * 100)), 
+                   AVG((cleanfuelandcookingequipment)), MAX(costhealthydiet)
+                   FROM bonheur 
+                   INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '""" + pays_selected[0] + """' 
+                   INNER JOIN corruption ON corruption.id_pays = pays.id_pays 
+                   INNER JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
+                   GROUP BY pays.nom_pays
+                   """)
+    #On prend les DATA ENTières
+    DATA_ENT = cursor.fetchall()
 
-    for data in list(test):
-        data_x.append(data[0])
-        data_y.append(data[1])
+    #Ici on fait en sorte qu'au lieu d'ajouter des listes à la main, ça les créer automatiquement en tant que sous liste
+    REQUEST_LIST = list(DATA_ENT)
+    NBRE_LIST = len(REQUEST_LIST[0])
+    for i in range(NBRE_LIST):
+        DATA.append([])
+    for data in REQUEST_LIST:
+        for ite_data in range(len(data)):
+            DATA[ite_data].append(data[ite_data])
+        
+    print(f"[DEBUG] LAST DATA : {DATA[-1]}")
 
+    #On créer le plot de la méth du coude
     inertias = []
     for i in range(1,11):
         kmeans = KMeans(n_clusters=i, random_state=1)
-        kmeans.fit(test)
+        kmeans.fit(DATA_ENT)
         inertias.append(kmeans.inertia_)
-    
+
     plt.plot(range(1,11), inertias, marker='o')
-    plt.title('Elbow method')
+    plt.title('Elbow method X = 4')
     plt.xlabel('Number of clusters')
     plt.ylabel('Inertia')
     plt.savefig("./elbow_method.png")
     plt.close() 
 
+    #Puis on réalise les KMEANS, même si ici cela ne servait qu'en 2D, c'est utile pour voir l'évolution du projet et des groupes justement.
     kmeans = KMeans(n_clusters=3)
-    kmeans.fit(test)
-    plt.scatter(data_x, data_y, c=kmeans.labels_)
+    kmeans.fit(DATA_ENT)
+    plt.scatter(DATA[0], DATA[1], c=kmeans.labels_)
     #print("DATA X  : ",data_x)
     #print("DATA Y : ",data_y)
-    plt.title('Bonheur/Corruption politique')
+    plt.title('Bonheur/Corruption politique X = 4')
     plt.xlabel('Bonheur')
     plt.ylabel('Politique')
     plt.savefig("./Cluster.png")
     plt.close()
 
-    cursor.execute("SELECT AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays = '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
+    cursor.execute("""SELECT AVG(rang_bonheur),
+                AVG((corruption_politique * 100)), 
+                AVG((cleanfuelandcookingequipment)),MAX(costhealthydiet)""
+                FROM bonheur 
+                INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays = '""" + pays_selected[0] + """' 
+                INNER JOIN corruption ON corruption.id_pays = pays.id_pays 
+                INNER JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
+                GROUP BY pays.nom_pays
+                """)
     #Si on reçoit aucune donnée :
-    print("Longueur : ",len(cursor.fetchall()))
-    if len(cursor.fetchall()) == 0:
-        return jsonify({"status": "failed", "message": "Des données sont manquanteEEEEEEEs"}), 404
-    selected_country = list(cursor.fetchall())
+    requete = cursor.fetchall()
+    if len(requete) == 0:
+        print("[ERREUR] : Len(requete) = ",len(requete))
+        return jsonify({"status": "failed", "message": "Des données sont manquantes"}), 404
+
+    
+    selected_country = list(requete)
+    
     #Prédiction du groupe auquel appartient le choix de l'user :
     cluster = kmeans.predict(selected_country)
 
@@ -83,7 +114,7 @@ def receive_json():
     indices_cluster = np.where(kmeans.labels_ == cluster[0])[0]
 
     #On prend tous pts du cluster
-    points_cluster = np.array(test)[indices_cluster]
+    points_cluster = np.array(DATA_ENT)[indices_cluster]
 
     # On calcule les distances entre la donnée et tous les points du cluster
     distances = cdist(selected_country, points_cluster)
