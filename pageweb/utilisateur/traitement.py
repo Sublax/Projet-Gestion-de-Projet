@@ -39,16 +39,30 @@ def receive_json():
     #data_z = []
     #data_diet = []
     DATA = []
+    REQUEST_TABLE= """
+                SELECT AVG(score_bonheur), AVG(generosite),
+                AVG((corruption_politique * 100)), 
+                AVG((cleanfuelandcookingequipment)), MAX(costhealthydiet),
+                MAX(crime.taux),
+                AVG(taux_classe_primaire),AVG(taux_classe_secondaire)
+                FROM bonheur 
+                """
+
+
+    JOINT_TABLE = """
+                INNER JOIN corruption ON corruption.id_pays = pays.id_pays 
+                INNER JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
+                INNER JOIN crime ON crime.id_pays = pays.id_pays
+                INNER JOIN education ON education.id_pays = pays.id_pays
+                GROUP BY pays.nom_pays
+                """
+
     #cursor.execute("SELECT pays.nom_pays,AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
-    cursor.execute("""SELECT AVG(rang_bonheur),
-                   AVG((corruption_politique * 100)), 
-                   AVG((cleanfuelandcookingequipment)), MAX(costhealthydiet)
-                   FROM bonheur 
+    cursor.execute(REQUEST_TABLE + 
+                   """
                    INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '""" + pays_selected[0] + """' 
-                   INNER JOIN corruption ON corruption.id_pays = pays.id_pays 
-                   INNER JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
-                   GROUP BY pays.nom_pays
-                   """)
+                   """ 
+                   + JOINT_TABLE)
     #On prend les DATA ENTières
     DATA_ENT = cursor.fetchall()
 
@@ -71,33 +85,28 @@ def receive_json():
         inertias.append(kmeans.inertia_)
 
     plt.plot(range(1,11), inertias, marker='o')
-    plt.title('Elbow method X = 4')
+    plt.title(f'Elbow method X = {NBRE_LIST}')
     plt.xlabel('Number of clusters')
-    plt.ylabel('Inertia')
-    plt.savefig("./elbow_method.png")
+    plt.ylabel('Inertie')
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/coude_X{NBRE_LIST}.png")
     plt.close() 
 
     #Puis on réalise les KMEANS, même si ici cela ne servait qu'en 2D, c'est utile pour voir l'évolution du projet et des groupes justement.
-    kmeans = KMeans(n_clusters=3)
+    kmeans = KMeans(n_clusters=2)
     kmeans.fit(DATA_ENT)
     plt.scatter(DATA[0], DATA[1], c=kmeans.labels_)
     #print("DATA X  : ",data_x)
     #print("DATA Y : ",data_y)
-    plt.title('Bonheur/Corruption politique X = 4')
-    plt.xlabel('Bonheur')
-    plt.ylabel('Politique')
-    plt.savefig("./Cluster.png")
+    plt.title(f'Bonheur/Corruption politique X = {NBRE_LIST}')
+    plt.xlabel('Moyenne du bonheur')
+    plt.ylabel('Échelle de corruption')
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
     plt.close()
 
-    cursor.execute("""SELECT AVG(rang_bonheur),
-                AVG((corruption_politique * 100)), 
-                AVG((cleanfuelandcookingequipment)),MAX(costhealthydiet)""
-                FROM bonheur 
-                INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays = '""" + pays_selected[0] + """' 
-                INNER JOIN corruption ON corruption.id_pays = pays.id_pays 
-                INNER JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
-                GROUP BY pays.nom_pays
-                """)
+    cursor.execute(REQUEST_TABLE + 
+                """
+                INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays = '""" + pays_selected[0] + """' """ 
+                + JOINT_TABLE)
     #Si on reçoit aucune donnée :
     requete = cursor.fetchall()
     if len(requete) == 0:
@@ -123,7 +132,7 @@ def receive_json():
     index_voisin_plus_proche = np.argmin(distances)
     voisin_plus_proche = points_cluster[index_voisin_plus_proche]
     print(f"Le voisin le plus proche est : {voisin_plus_proche}")
-    cursor.execute("SELECT pays.nom_pays,AVG(rang_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(rang_bonheur) =" + str(voisin_plus_proche[0]))
+    cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(voisin_plus_proche[0]))
     country_predict = cursor.fetchone()
     print("Country predicted : ",country_predict[0])
     
