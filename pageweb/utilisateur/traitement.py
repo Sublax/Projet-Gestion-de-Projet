@@ -10,6 +10,7 @@ import pymysql
 from flask import Flask, request, jsonify,send_file
 from flask_cors import CORS 
 from sklearn.cluster import KMeans
+from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 import numpy as np
@@ -50,22 +51,28 @@ def receive_json():
 
 
     JOINT_TABLE = """
-                INNER JOIN corruption ON corruption.id_pays = pays.id_pays 
-                INNER JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
-                INNER JOIN crime ON crime.id_pays = pays.id_pays
-                INNER JOIN education ON education.id_pays = pays.id_pays
-                GROUP BY pays.nom_pays
+                LEFT JOIN pays ON bonheur.id_pays = pays.id_pays
+                LEFT JOIN corruption ON corruption.id_pays = pays.id_pays 
+                LEFT JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
+                LEFT JOIN crime ON crime.id_pays = pays.id_pays
+                LEFT JOIN education ON education.id_pays = pays.id_pays
+                LEFT JOIN meteo ON meteo.id_pays = pays.id_pays
+                
                 """
 
     #cursor.execute("SELECT pays.nom_pays,AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
-    cursor.execute(REQUEST_TABLE + 
+    cursor.execute(REQUEST_TABLE + JOINT_TABLE +
                    """
-                   INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '""" + pays_selected[0] + """' 
-                   """ 
-                   + JOINT_TABLE)
+                   WHERE pays.nom_pays <> '""" + pays_selected[0] + """' 
+                   GROUP BY pays.nom_pays""")
     #On prend les DATA ENTières
     DATA_ENT = cursor.fetchall()
+    print("DATA ENTIERE AV. TRANSFO : ",DATA_ENT[0])
 
+    imputer = SimpleImputer(strategy='mean')
+    DATA_ENT = imputer.fit_transform(DATA_ENT)
+
+    print("DATA ENTIERE APR. TRANSFO : ",DATA_ENT[0])
     #Ici on fait en sorte qu'au lieu d'ajouter des listes à la main, ça les créer automatiquement en tant que sous liste
     REQUEST_LIST = list(DATA_ENT)
     NBRE_LIST = len(REQUEST_LIST[0])
@@ -75,7 +82,6 @@ def receive_json():
         for ite_data in range(len(data)):
             DATA[ite_data].append(data[ite_data])
         
-    print(f"[DEBUG] LAST DATA : {DATA[-1]}")
 
     #On créer le plot de la méth du coude
     inertias = []
@@ -84,37 +90,42 @@ def receive_json():
         kmeans.fit(DATA_ENT)
         inertias.append(kmeans.inertia_)
 
-    plt.plot(range(1,11), inertias, marker='o')
-    plt.title(f'Elbow method X = {NBRE_LIST}')
-    plt.xlabel('Number of clusters')
-    plt.ylabel('Inertie')
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/coude_X{NBRE_LIST}.png")
-    plt.close() 
+    #plt.plot(range(1,11), inertias, marker='o')
+    #plt.title(f'Elbow method X = {NBRE_LIST}')
+    #plt.xlabel('Number of clusters')
+    #plt.ylabel('Inertie')
+    #plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/coude_X{NBRE_LIST}.png")
+    #plt.close() 
 
     #Puis on réalise les KMEANS, même si ici cela ne servait qu'en 2D, c'est utile pour voir l'évolution du projet et des groupes justement.
-    kmeans = KMeans(n_clusters=2)
+    kmeans = KMeans(n_clusters=3)
     kmeans.fit(DATA_ENT)
     plt.scatter(DATA[0], DATA[1], c=kmeans.labels_)
     #print("DATA X  : ",data_x)
     #print("DATA Y : ",data_y)
-    plt.title(f'Bonheur/Corruption politique X = {NBRE_LIST}')
-    plt.xlabel('Moyenne du bonheur')
-    plt.ylabel('Échelle de corruption')
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
-    plt.close()
+    #plt.title(f'Bonheur/Corruption politique X = {NBRE_LIST}')
+    #plt.xlabel('Moyenne du bonheur')
+    #plt.ylabel('Échelle de corruption')
+    #plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
+    #plt.close()
 
-    cursor.execute(REQUEST_TABLE + 
+    cursor.execute(REQUEST_TABLE + JOINT_TABLE + 
                 """
-                INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays = '""" + pays_selected[0] + """' """ 
-                + JOINT_TABLE)
+                WHERE pays.nom_pays = '""" + pays_selected[0] + """'
+                GROUP BY pays.nom_pays """)
     #Si on reçoit aucune donnée :
     requete = cursor.fetchall()
+    print(f"////// PAYS SELECTIONNE : {pays_selected[0]} ")
+    print(f"REQUETE AVANT MODIF : {requete[0]}")
+    #requete = imputer.transform(requete)
+    print(f"REQUETE APRES MODIF : {requete[0]}")
+    #print(f"[DEBUG] Requête : {requete}")
     if len(requete) == 0:
         print("[ERREUR] : Len(requete) = ",len(requete))
         return jsonify({"status": "failed", "message": "Des données sont manquantes"}), 404
 
     
-    selected_country = list(requete)
+    selected_country = np.array(requete)
     
     #Prédiction du groupe auquel appartient le choix de l'user :
     cluster = kmeans.predict(selected_country)
@@ -130,13 +141,14 @@ def receive_json():
 
     #Et on trouve le voisin le plus proche
     index_voisin_plus_proche = np.argmin(distances)
+    print("VOISIN PLUS PROCHE :",index_voisin_plus_proche)
     voisin_plus_proche = points_cluster[index_voisin_plus_proche]
     print(f"Le voisin le plus proche est : {voisin_plus_proche}")
     cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(voisin_plus_proche[0]))
     country_predict = cursor.fetchone()
     print("Country predicted : ",country_predict[0])
     
-    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": data}), 200
+    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": country_predict[0]}), 200
 app.run(debug=True, port=5000)
     
     
