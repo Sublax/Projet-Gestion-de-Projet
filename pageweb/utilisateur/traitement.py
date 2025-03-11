@@ -1,8 +1,10 @@
 #===================================
 # A FAIRE ; 
-# -> Passer de R2 à Rn pour les variables (ttes les inclure)
-# -> Faire le clustering qu'une seule fois et pas à chaque fois
+# -> Passer de R2 à Rn pour les variables (ttes les inclure) (DONE)
+# -> Faire le clustering qu'une seule fois et pas à chaque fois (DONE)
+# --> Le CSV oublie une ligne car il a été une fois sans Chili, il faudrait prendre tous les pays et enlever la ligne correspondant au pays sélectionné.
 # -> Renvoyer le résultat
+# -> Attention aux injections SQL
 # -> Ne plus passer par l'execution manuel du python mais plutôt par l'execution via le site web du script. Puis renvoyer le résultat.
 #===================================
 import pymysql
@@ -109,18 +111,36 @@ def receive_json():
                 """
                 WHERE pays.nom_pays = '""" + pays_selected[0] + """'
                 GROUP BY pays.nom_pays """)
-    #Si on reçoit aucune donnée :
     requete = cursor.fetchall()
-    print(f"////// PAYS SELECTIONNE : {pays_selected[0]} ")
-    print(f"REQUETE AVANT MODIF : {requete[0]}")
-    #requete = imputer.transform(requete)
-    print(f"REQUETE APRES MODIF : {requete[0]}")
-    #print(f"[DEBUG] Requête : {requete}")
+    
+    #Si le pays n'est pas trouvé : 
     if len(requete) == 0:
         print("[ERREUR] : Len(requete) = ",len(requete))
         return jsonify({"status": "failed", "message": "Des données sont manquantes"}), 404
 
+    #On retire les NoneType en complétant par la moyenne des données : 
+    requete = imputer.transform(requete)
     
+    #Attention, il faut enlever le pays sélectionner dans toutes les données : 
+    #print("[DEBUG --] Data entière : ",DATA_ENT)
+    #print("[DEBUG --] Data requete :",requete[0])
+    #Ici, on va chercher la récurrence qui existe déjà pour savoir quel pays enlevé de nos données.
+    #(ON AURAIT PU FAIRE PAR NOM DE PAYS ET ENSUITE RETIRER LES NOMS DE PAYS)
+    found = False
+    for i in range(len(DATA_ENT)):
+        if not found:
+            if np.allclose(DATA_ENT[i],requete[0],atol=1e-8): #ATTENTION ICI ON FAIT UN RAPPROCHEMENT PAR 1e-8 !!!!
+                DATA_ENT = np.delete(DATA_ENT,i,axis=0) #On supprime l'occurence
+                found = True
+        else:
+            break
+    #=======================
+    
+    #=======================
+    #   Méthode des KMEANS
+    #=======================
+    kmeans = KMeans(n_clusters=3)
+    kmeans.fit(DATA_ENT)
     selected_country = np.array(requete)
     
     #Prédiction du groupe auquel appartient le choix de l'user :
@@ -148,7 +168,17 @@ def receive_json():
     
     return jsonify({"status": "success", "message": "Données reçues avec succès", "data": country_predict[0]}), 200
 
-def create_data(pays_selected):
+
+
+
+
+
+
+def create_data():
+    """
+    Fonction qui créer la base de donnée permettant d'effectuer les KMEAN
+    ça évite surtout de se taper une grosse requête à chaque fois que l'utilisateur veut avoir sa prédiction.
+    """
     REQUEST_TABLE= """
                 SELECT AVG(score_bonheur), AVG(generosite),
                 AVG((corruption_politique * 100)), 
@@ -157,7 +187,6 @@ def create_data(pays_selected):
                 AVG(taux_classe_primaire),AVG(taux_classe_secondaire)
                 FROM bonheur 
                 """
-
     JOINT_TABLE = """
                 LEFT JOIN pays ON bonheur.id_pays = pays.id_pays
                 LEFT JOIN corruption ON corruption.id_pays = pays.id_pays 
@@ -165,13 +194,10 @@ def create_data(pays_selected):
                 LEFT JOIN crime ON crime.id_pays = pays.id_pays
                 LEFT JOIN education ON education.id_pays = pays.id_pays
                 LEFT JOIN meteo ON meteo.id_pays = pays.id_pays
-                
+                GROUP BY pays.nom_pays
                 """
 
-    cursor.execute(REQUEST_TABLE + JOINT_TABLE +
-                   """
-                   WHERE pays.nom_pays <> '""" + pays_selected + """' 
-                   GROUP BY pays.nom_pays""")
+    cursor.execute(REQUEST_TABLE + JOINT_TABLE)
     
     #On prend les DATA ENTières (elles nous serviront de complétion par moyenne)
     DATA_ENT = cursor.fetchall()
