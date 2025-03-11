@@ -2,18 +2,20 @@
 # A FAIRE ; 
 # -> Passer de R2 à Rn pour les variables (ttes les inclure)
 # -> Faire le clustering qu'une seule fois et pas à chaque fois
-# -> Erreur quand pays sans données sur un domaine
 # -> Renvoyer le résultat
 # -> Ne plus passer par l'execution manuel du python mais plutôt par l'execution via le site web du script. Puis renvoyer le résultat.
 #===================================
 import pymysql
-from flask import Flask, request, jsonify,send_file
+from flask import Flask, request, jsonify, redirect, url_for
 from flask_cors import CORS 
 from sklearn.cluster import KMeans
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 import numpy as np
+import pandas as pd
+from pathlib import Path #On peut l'optimiser en utilisant try: except: mais méthode conseillé par geeksforgeeks.org
+
 
 connection = pymysql.connect(host="localhost", port=3306, user="root", passwd="root", database="bdprojet")
 cursor = connection.cursor()
@@ -32,13 +34,9 @@ def receive_json():
     print("[DEBUG] JSON reçu :", data)
     print("[DEBUG] La liste reçue : ",list(data.values()))
     pays_selected = list(data.values())[0]
-    print(pays_selected[0])
-    #Prendre la dernière année : 
-
-    #data_x = []
-    #data_y = []
-    #data_z = []
-    #data_diet = []
+    req = Path("./REQUETE_ENT.csv")
+    if not req.exists():
+        create_data(pays_selected[0])
     DATA = []
     REQUEST_TABLE= """
                 SELECT AVG(score_bonheur), AVG(generosite),
@@ -49,7 +47,6 @@ def receive_json():
                 FROM bonheur 
                 """
 
-
     JOINT_TABLE = """
                 LEFT JOIN pays ON bonheur.id_pays = pays.id_pays
                 LEFT JOIN corruption ON corruption.id_pays = pays.id_pays 
@@ -59,20 +56,17 @@ def receive_json():
                 LEFT JOIN meteo ON meteo.id_pays = pays.id_pays
                 
                 """
-
-    #cursor.execute("SELECT pays.nom_pays,AVG(rang_bonheur),AVG((corruption_politique * 100)) FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays AND pays.nom_pays <> '" + pays_selected[0] + "' INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays")
-    cursor.execute(REQUEST_TABLE + JOINT_TABLE +
-                   """
-                   WHERE pays.nom_pays <> '""" + pays_selected[0] + """' 
-                   GROUP BY pays.nom_pays""")
-    #On prend les DATA ENTières
-    DATA_ENT = cursor.fetchall()
-    print("DATA ENTIERE AV. TRANSFO : ",DATA_ENT[0])
-
+    DATA_ENT = pd.read_csv(req)
+    
+    #Complétion par moyenne global :
     imputer = SimpleImputer(strategy='mean')
     DATA_ENT = imputer.fit_transform(DATA_ENT)
 
     print("DATA ENTIERE APR. TRANSFO : ",DATA_ENT[0])
+    
+    # /////////////////////////////////////////////////////////////////////////////////////
+    # /////////////////////////////////// VISUALISATION ///////////////////////////////////
+    # /////////////////////////////////////////////////////////////////////////////////////
     #Ici on fait en sorte qu'au lieu d'ajouter des listes à la main, ça les créer automatiquement en tant que sous liste
     REQUEST_LIST = list(DATA_ENT)
     NBRE_LIST = len(REQUEST_LIST[0])
@@ -82,7 +76,6 @@ def receive_json():
         for ite_data in range(len(data)):
             DATA[ite_data].append(data[ite_data])
         
-
     #On créer le plot de la méth du coude
     inertias = []
     for i in range(1,11):
@@ -108,7 +101,10 @@ def receive_json():
     #plt.ylabel('Échelle de corruption')
     #plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
     #plt.close()
-
+    # /////////////////////////////////////////////////////////////////////////////////////
+    # ///////////////////////////////// FIN -VISUALISATION ////////////////////////////////
+    # /////////////////////////////////////////////////////////////////////////////////////
+    
     cursor.execute(REQUEST_TABLE + JOINT_TABLE + 
                 """
                 WHERE pays.nom_pays = '""" + pays_selected[0] + """'
@@ -144,11 +140,52 @@ def receive_json():
     print("VOISIN PLUS PROCHE :",index_voisin_plus_proche)
     voisin_plus_proche = points_cluster[index_voisin_plus_proche]
     print(f"Le voisin le plus proche est : {voisin_plus_proche}")
+    
+    #Pour retrouver le pays qui est prédit (grâce au score bonheur)
     cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(voisin_plus_proche[0]))
     country_predict = cursor.fetchone()
     print("Country predicted : ",country_predict[0])
     
     return jsonify({"status": "success", "message": "Données reçues avec succès", "data": country_predict[0]}), 200
+
+def create_data(pays_selected):
+    REQUEST_TABLE= """
+                SELECT AVG(score_bonheur), AVG(generosite),
+                AVG((corruption_politique * 100)), 
+                AVG((cleanfuelandcookingequipment)), MAX(costhealthydiet),
+                MAX(crime.taux),
+                AVG(taux_classe_primaire),AVG(taux_classe_secondaire)
+                FROM bonheur 
+                """
+
+    JOINT_TABLE = """
+                LEFT JOIN pays ON bonheur.id_pays = pays.id_pays
+                LEFT JOIN corruption ON corruption.id_pays = pays.id_pays 
+                LEFT JOIN agroalimentaire ON agroalimentaire.id_pays = pays.id_pays 
+                LEFT JOIN crime ON crime.id_pays = pays.id_pays
+                LEFT JOIN education ON education.id_pays = pays.id_pays
+                LEFT JOIN meteo ON meteo.id_pays = pays.id_pays
+                
+                """
+
+    cursor.execute(REQUEST_TABLE + JOINT_TABLE +
+                   """
+                   WHERE pays.nom_pays <> '""" + pays_selected + """' 
+                   GROUP BY pays.nom_pays""")
+    
+    #On prend les DATA ENTières (elles nous serviront de complétion par moyenne)
+    DATA_ENT = cursor.fetchall()
+    print("DATA ENTIERE AV. TRANSFO : ",DATA_ENT[0])
+    columns = ['avg_score_bonheur', 'avg_generosite', 'avg_corruption', 'avg_cleanfuelandcookingequipment', 
+           'max_costhealthydiet', 'max_crime_taux', 'avg_taux_classe_primaire', 'avg_taux_classe_secondaire']
+
+    # Crée un DataFrame pandas à partir des données récupérées
+    df = pd.DataFrame(DATA_ENT, columns=columns)
+
+    # Enregistre le DataFrame dans un fichier CSV
+    df.to_csv('./REQUETE_ENT.csv', index=False)
+            
+
 app.run(debug=True, port=5000)
     
     
