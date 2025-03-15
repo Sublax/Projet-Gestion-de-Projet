@@ -17,7 +17,9 @@ from scipy.spatial.distance import cdist
 import numpy as np
 import pandas as pd
 from pathlib import Path #On peut l'optimiser en utilisant try: except: mais méthode conseillé par geeksforgeeks.org
-
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
+import random
 
 connection = pymysql.connect(host="localhost", port=3306, user="root", passwd="root", database="bdprojet")
 cursor = connection.cursor()
@@ -91,9 +93,10 @@ def receive_json():
     #Complétion par moyenne global :
     imputer = SimpleImputer(strategy='mean')
     DATA_ENT = imputer.fit_transform(DATA_ENT)
-
-    print("DATA ENTIERE APR. TRANSFO : ",DATA_ENT[0])
     
+    #On standardise les données : 
+    scaler = StandardScaler()
+    DATA_ENT = scaler.fit_transform(DATA_ENT)
     # /////////////////////////////////////////////////////////////////////////////////////
     # /////////////////////////////////// VISUALISATION ///////////////////////////////////
     # /////////////////////////////////////////////////////////////////////////////////////
@@ -108,28 +111,28 @@ def receive_json():
         
     #On créer le plot de la méth du coude
     inertias = []
-    for i in range(1,11):
+    for i in range(2,40):
         kmeans = KMeans(n_clusters=i, random_state=1)
         kmeans.fit(DATA_ENT)
         inertias.append(kmeans.inertia_)
+        score = silhouette_score(np.array(DATA_ENT), kmeans.labels_)
+        print(f"Score silhouette pour k={i}: {score:.4f}")
 
-    #plt.plot(range(1,11), inertias, marker='o')
-    #plt.title(f'Elbow method X = {NBRE_LIST}')
-    #plt.xlabel('Number of clusters')
-    #plt.ylabel('Inertie')
-    #plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/coude_X{NBRE_LIST}.png")
-    #plt.close() 
+    plt.plot(range(2,40), inertias, marker='o')
+    plt.title(f'Elbow method X = {NBRE_LIST}')
+    plt.xlabel('Number of clusters')
+    plt.ylabel('Inertie')
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/coude_X{NBRE_LIST}_new.png")
+    plt.close() 
 
     #Puis on réalise les KMEANS, même si ici cela ne servait qu'en 2D, c'est utile pour voir l'évolution du projet et des groupes justement.
     kmeans = KMeans(n_clusters=3)
     kmeans.fit(DATA_ENT)
     plt.scatter(DATA[0], DATA[1], c=kmeans.labels_)
-    #print("DATA X  : ",data_x)
-    #print("DATA Y : ",data_y)
-    #plt.title(f'Bonheur/Corruption politique X = {NBRE_LIST}')
-    #plt.xlabel('Moyenne du bonheur')
-    #plt.ylabel('Échelle de corruption')
-    #plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
+    plt.title(f'Bonheur/Corruption politique X = {NBRE_LIST}')
+    plt.xlabel('Moyenne du bonheur')
+    plt.ylabel('Échelle de corruption')
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
     #plt.close()
     # /////////////////////////////////////////////////////////////////////////////////////
     # ///////////////////////////////// FIN -VISUALISATION ////////////////////////////////
@@ -167,34 +170,30 @@ def receive_json():
     #=======================
     #   Méthode des KMEANS
     #=======================
-    kmeans = KMeans(n_clusters=3)
-    kmeans.fit(DATA_ENT)
+    kmeans = KMeans(n_clusters=4, random_state=1).fit(DATA_ENT)
     selected_country = np.array(requete)
     
     #Prédiction du groupe auquel appartient le choix de l'user :
     cluster = kmeans.predict(selected_country)
+    print("Cluster trouvé : ",cluster)
+    print(kmeans.labels_)
 
+    
     #On extrait les coordonnées des pts du même cluster :
     indices_cluster = np.where(kmeans.labels_ == cluster[0])[0]
+    print("INDICES CLUSTER :", indices_cluster)
+    random_selected = random.sample(list(indices_cluster),3)
 
-    #On prend tous pts du cluster
-    points_cluster = np.array(DATA_ENT)[indices_cluster]
-
-    # On calcule les distances entre la donnée et tous les points du cluster
-    distances = cdist(selected_country, points_cluster)
-
-    #Et on trouve le voisin le plus proche
-    index_voisin_plus_proche = np.argmin(distances)
-    print("VOISIN PLUS PROCHE :",index_voisin_plus_proche)
-    voisin_plus_proche = points_cluster[index_voisin_plus_proche]
-    print(f"Le voisin le plus proche est : {voisin_plus_proche}")
+    pays_predicted = []
+    for i in range(len(random_selected)):
+    #REPOSE SUR UNE HYPOTHÈSE : 
+    #   - Les requêtes sont effectués dans le même ordre que l'id pays inscrit ici.
+        #cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(points_cluster[0]))
+        cursor.execute("SELECT pays.nom_pays FROM pays WHERE id_pays="+ str(random_selected[i]))
+        pays_predicted.append(cursor.fetchone())
+    print("Country predicted : ",pays_predicted)
     
-    #Pour retrouver le pays qui est prédit (grâce au score bonheur)
-    cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(voisin_plus_proche[0]))
-    country_predict = cursor.fetchone()
-    print("Country predicted : ",country_predict[0])
-    
-    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": country_predict[0]}), 200
+    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": pays_predicted}), 200
 
 
 
