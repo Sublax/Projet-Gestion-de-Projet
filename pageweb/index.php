@@ -1,3 +1,5 @@
+<?php include 'navbar.php' ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -7,7 +9,6 @@
     <title>Projet</title>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
-<?php include 'navbar.php' ?>
 <body>
     <div class="video-background">
         <video autoplay muted loop id="backgroundVideo">
@@ -146,13 +147,11 @@
         if (message !== "") {
             var chatMessages = document.getElementById("chat-messages");
 
-            // Crear el mensaje del usuario
             var userMessage = document.createElement("p");
             userMessage.textContent = message;
             userMessage.classList.add("user-message");
             chatMessages.appendChild(userMessage);
 
-            // Simular respuesta del chatbot
             setTimeout(() => {
                 var botMessage = document.createElement("p");
                 botMessage.textContent = "Je suis désolé, mais je ne peux pas encore répondre aux questions.";
@@ -163,14 +162,13 @@
             }, 1000);
 
             inputField.value = "";
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Mantener el scroll activo
+            chatMessages.scrollTop = chatMessages.scrollHeight; 
         }
     }
 
-    // ✅ Permitir envío con Enter
     document.getElementById("chat-input-field").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {  
-            event.preventDefault(); // Evita saltos de línea en el input
+            event.preventDefault(); 
             sendMessage();
         }
     });
