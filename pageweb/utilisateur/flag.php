@@ -62,11 +62,134 @@
         .flag-item:hover {
             border-color: #333;
         }
+/* Bandeau des pays sélectionnés */
+#selectedCountriesContainer {
+    position: sticky;
+    top: 95px; /* Ajuste la hauteur pour laisser de la place au logo */
+    width: 100%;
+    background: #F0F0F0;
+    padding: 15px 20px;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid #ddd; /* Légère séparation */
+}
 
+/*Liste des pays sélectionnés */
+#selectedCountriesList {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Style des pays sélectionnés (colorés) */
+.selected-item {
+    background: linear-gradient(45deg, red, blue);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Effet au survol */
+.selected-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Drapeaux dans la liste */
+.selected-item img {
+    width: 20px;
+    height: 15px;
+    border-radius: 3px;
+}
+.flag-item {
+    width: 100px;
+    height: 70px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    border: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    margin: 5px;
+}
+
+.flag-item.selected {
+    border-color: red;
+}
+
+.country-name {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    padding: 2px;
+    position: absolute;
+    bottom: 0;
+}
+
+#searchBar {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 20px;
+    margin-top: 65px;
+    margin-left: 70px;
+    border: 2px solid #ddd;
+    border-radius: 50px; /* Bordure arrondie pour un look moderne */
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    outline: none;
+    transition: all 0.3s ease-in-out; /* Transition fluide pour les changements */
+}
+
+/* Effet de focus élégant */
+#searchBar:focus {
+    border-color: #4CAF50; /* Couleur de la bordure au focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); /* Légère ombre verte autour */
+    background-color: #ffffff; /* Changer la couleur de fond lors du focus */
+    transition: all 0.3s ease-in-out; /* Transition fluide */
+    color: #333; /* Maintenir la couleur du texte */
+}
+
+/* Style de texte au focus pour un effet moderne */
+#searchBar::placeholder {
+    color: #888; /* Couleur du placeholder */
+    transition: color 0.3s ease-in-out;
+}
     </style>
 </head>
 <body>
+    <div id="selectedCountriesContainer">
+        <h3>Pays sélectionnés :</h3>
+        <ul id="selectedCountriesList"></ul>
+    </div>
 
+
+    <div>
+    <input type="text" id="searchBar" placeholder="Rechercher un pays..." />
+    </div>
     <div class="flag-container" id="flagContainer">Chargement...</div>
     <button id="sendButtonPays">Envoyer les pays sélectionnés</button>
 
@@ -100,15 +223,20 @@
 
         let selectedCountries = [];
 
-// Fonction pour afficher les drapeaux (comme avant)
+// Fonction pour afficher les drapeaux
 function displayFlags(countries) {
+    const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+    const filteredCountries = countries.filter(country => 
+        country.name.common.toLowerCase().includes(searchQuery)
+    );
+    
     const flagContainer = document.getElementById('flagContainer');
     flagContainer.innerHTML = ''; // Vider le conteneur avant d'ajouter de nouveaux drapeaux
 
     // Trier les pays par ordre alphabétique
-    countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
+    filteredCountries.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
-    countries.forEach(country => {
+    filteredCountries.forEach(country => {
         const countryCode = country.cca2 ? country.cca2.toLowerCase() : null;
         if (!countryCode) return; // Ignore les pays sans code valide
 
@@ -154,7 +282,50 @@ function selectCountry(flagElement, country) {
         }
     }
 }
+function updateSelectedList() {
+    const selectedList = document.getElementById("selectedCountriesList");
+    selectedList.innerHTML = ""; // Vide la liste avant de la remplir
 
+    selectedCountries.forEach(countryName => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("selected-item");
+
+        // Trouver les données du pays pour récupérer son code
+        const cachedCountries = JSON.parse(localStorage.getItem("countriesFlags")) || [];
+        const countryData = cachedCountries.find(c => c.name.common === countryName);
+        
+        if (countryData && countryData.cca2) {
+            const flagImg = document.createElement("img");
+            flagImg.src = `https://flagcdn.com/w40/${countryData.cca2.toLowerCase()}.png`;
+            flagImg.alt = `Drapeau de ${countryName}`;
+
+            listItem.appendChild(flagImg); // Ajoute le drapeau avant le texte
+        }
+
+        // Ajout du nom du pays
+        const textNode = document.createTextNode(countryName);
+        listItem.appendChild(textNode);
+
+        // Ajout de l’événement pour désélectionner
+        listItem.onclick = () => deselectCountry(countryName);
+
+        selectedList.appendChild(listItem);
+    });
+}
+        // Fonction pour gérer la sélection/désélection d'un pays
+        function selectCountry(flagElement, country) {
+            if (selectedCountries.includes(country.name.common)) {
+                deselectCountry(country.name.common);
+            } else {
+                if (selectedCountries.length < 3) {
+                    flagElement.classList.add('selected');
+                    selectedCountries.push(country.name.common);
+                    updateSelectedList();
+                } else {
+                    alert("Tu peux sélectionner au maximum 3 pays.");
+                }
+            }
+        }
         function sendSelectedCountries() {
             if (selectedCountries.length === 0) {
                 alert("Sélectionne au moins un pays avant d'envoyer.");
@@ -172,12 +343,34 @@ function selectCountry(flagElement, country) {
                 body: JSON.stringify(data)
             })
             .then(response => response.json())
-            // Affichage du JSON dans la console (que tu pourras récupérer côté Python)
             console.log("JSON envoyé :", JSON.stringify(data));
         }
 
+        // Fonction pour désélectionner un pays depuis la liste
+        function deselectCountry(countryName) {
+            selectedCountries = selectedCountries.filter(c => c !== countryName);
+            updateSelectedList();
+            refreshFlagSelection();
+        }
+
+        // Fonction pour mettre à jour l'affichage des drapeaux après une désélection
+        function refreshFlagSelection() {
+            document.querySelectorAll(".flag-item").forEach(flagElement => {
+                const countryName = flagElement.querySelector(".country-name").innerText;
+                if (selectedCountries.includes(countryName)) {
+                    flagElement.classList.add("selected");
+                } else {
+                    flagElement.classList.remove("selected");
+                }
+            });
+        }
         // Appel de la fonction pour récupérer les pays et leurs drapeaux
         fetchCountries();
+        // Fonction pour filtrer les pays en fonction de la recherche
+        document.getElementById('searchBar').addEventListener('input', () => {
+            const cachedCountries = JSON.parse(localStorage.getItem('countriesFlags')) || [];
+            displayFlags(cachedCountries);
+        });
         document.getElementById("sendButtonPays").addEventListener("click", sendSelectedCountries);
 
 </script>

@@ -23,7 +23,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 import random
 from sklearn.decomposition import PCA
-import plotly.express as px
+import statistics
 
 
 connection = pymysql.connect(host="localhost", port=3306, user="root", passwd="root", database="bdprojet")
@@ -102,13 +102,15 @@ def receive_json():
 
     #On reprend les données traitées (complétions + standardisation): 
     DATA_ENT = pd.read_csv(req)
+    DATA_FIN = DATA_ENT
     #DATA_ENT = np.array(DATA_ENT)
     
     # /////////////////////////////////////////////////////////////////////////////////////
     # /////////////////////////////////// VISUALISATION ///////////////////////////////////
     # /////////////////////////////////////////////////////////////////////////////////////
     #Ici on fait en sorte qu'au lieu d'ajouter des listes à la main, ça les créer automatiquement en tant que sous liste
-    #create_visu(DATA_ENT)
+    nbre_clusters = 6
+    #create_visu(DATA_ENT,nbre_clusters)
     
     # /////////////////////////////////////////////////////////////////////////////////////
     # ///////////////////////////////// PARTIE KMEANS /////////////////////////////////////
@@ -121,39 +123,42 @@ def receive_json():
     #            """)
     #requete = cursor.fetchall()
 
-
-    #PROBLEME CORRESPONDANCE PAYS => ID_PAYS
-    #On récupère l'ID du pays sélectionné : 
-    cursor.execute("SELECT id_pays FROM pays WHERE pays.nom_pays = '" + pays_selected[0] + "'")
-    id_pays_selected = cursor.fetchone()
-    if id_pays_selected == None:
-        return jsonify({"status": "failed", "message": "Aucun pays sous ce nom dans la BDD"}), 401
-    id_pays_selected = id_pays_selected[0]
-    print("Id du pays sélectionné : ",id_pays_selected)
+    #On récupére nos trois données selon la sélection de l'user : 
+    print(f"Récupération des données pour : {pays_selected[0]}")
+    first_req = get_data_selected(DATA_ENT,pays_selected[0])
+    print(first_req[1])
+    #On va récupérer la seconde data : 
+    print(f"Récupération des données pour : {pays_selected[1]}")
+    sec_req = get_data_selected(DATA_ENT,pays_selected[1])
+    print(sec_req[1])
     
+    print(f"Récupération des données pour : {pays_selected[2]}")
+    third_req = get_data_selected(DATA_ENT,pays_selected[2])
+    print(third_req[1])
     
-    #Trouver une correspondace entre le pays et la liste DATA_ENT
-    requete = (DATA_ENT.loc[DATA_ENT['id_pays'] == id_pays_selected])
+    #Si un pays n'est pas trouvé dans la BDD :
+    if (first_req == False) or (sec_req == False) or (third_req == False):
+        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
     
-    #On enlève la colonne id_pays
-    requete = requete.loc[:,requete.columns != 'id_pays'].to_numpy()
-    
-    #Si le pays n'est pas trouvé : 
-    if len(requete) == 0:
-        print("[ERREUR] : Len(requete) = ",len(requete))
-        return jsonify({"status": "failed", "message": "Des données sont manquantes"}), 404
-
     #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
-    DATA_ENT = (DATA_ENT[DATA_ENT.id_pays != id_pays_selected])
+    id_pays_selected = [first_req[0],sec_req[0],third_req[0]]
+    for i in range(len(id_pays_selected)):
+        #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
+        DATA_ENT = (DATA_ENT[DATA_ENT.id_pays != id_pays_selected[i]])
+    
     # On retire la colonne id_pays
     DATA_ENT = DATA_ENT.loc[:,DATA_ENT.columns != 'id_pays'].to_numpy()
     
+    #Ici on prend les données de chaque requete, et on fait la moyenne des trois pays :
+    requete = [[]]
+    for j in range(len(first_req[1][0])):
+        requete[0].append(statistics.mean([first_req[1][0][j],sec_req[1][0][j],third_req[1][0][j]]))
+    print("Voici la moyenne des trois pays : ",requete)
     #=======================
     #   Méthode des KMEANS
     #=======================
-    kmeans = KMeans(n_clusters=9, init="k-means++")
+    kmeans = KMeans(n_clusters= nbre_clusters, init="k-means++")
     kmeans.fit(DATA_ENT)
-    print(f"LE PAYS CHOISI EST : {pays_selected}")
 
     print("Voici les données de la requête : ",requete)
     #Prédiction du groupe auquel appartient le choix de l'user :
@@ -167,36 +172,70 @@ def receive_json():
     
     #On sélectionne 3 pays aléatoirement dans ce cluster : 
     random_selected = random.sample(list(indices_cluster),3)
-
+    print("RANDOM SELECTED : ",random_selected[0])
+    int_pays_predicted = DATA_FIN.iloc[random_selected[0]]["id_pays"].item()
+    print("INT PAYS PREDICTED : ",int_pays_predicted)
     pays_predicted = []
     for i in range(len(random_selected)):
     #REPOSE SUR UNE HYPOTHÈSE : 
     #   - Les requêtes sont effectués dans le même ordre que l'id pays inscrit ici.
         #cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(points_cluster[0]))
-        cursor.execute("SELECT pays.nom_pays FROM pays WHERE id_pays="+ str(random_selected[i]))
+        int_pays_predicted = DATA_FIN.iloc[random_selected[i]]["id_pays"].item()
+        cursor.execute("SELECT pays.nom_pays FROM pays WHERE id_pays="+ str(int_pays_predicted))
         pays_predicted.append(cursor.fetchone())
     print("Country predicted : ",pays_predicted)
     
     pca = PCA(n_components=2)
     components = pca.fit_transform(DATA_ENT)
+    
+    requete_pca = pca.transform(requete)
+    
     plt.figure(figsize=(8, 6))
-    plt.scatter(components[:, 0], components[:, 1], alpha=0.8, c=kmeans.labels_, edgecolors='k',cmap='tab10')
-
+    scatter = plt.scatter(components[:, 0], components[:, 1], alpha=0.8, c=kmeans.labels_, edgecolors='k',cmap='Set1')
+    plt.scatter(requete_pca[:, 0], requete_pca[:, 1], color='red', edgecolors='black', s=50, label="Requête")
+    plt.annotate("Requete", (requete_pca[:, 0], requete_pca[:, 1]), fontsize=10, fontweight='bold', color='red')
+    
+    
     variance_expl = pca.explained_variance_ratio_ * 100
     # Ajouter des labels
-    plt.xlabel('Composante principale 1 (' + str(round(variance_expl[0],2)) + '%)')
-    plt.ylabel('Composante principale 2 (' + str(round(variance_expl[1],2)) + '%)')
-    plt.title('Projection PCA des données')
+    plt.xlabel('Axe 1 (' + str(round(variance_expl[0],2)) + '%)')
+    plt.ylabel('Axe 2 (' + str(round(variance_expl[1],2)) + '%)')
+    plt.title('PCA')
     plt.grid(True)
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/PCA_XD.png")
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/final/PCA_point_rouge_{nbre_clusters}.png")
     plt.close()
     return jsonify({"status": "success", "message": "Données reçues avec succès", "data": pays_predicted}), 200
 
 
 
+def get_data_selected(df,pays):
+    """
+    Fonction qui prend en entrée les données, un nom de pays et qui ressort les données correspondantes
+    
+    Sortie : 
+        -data   : Données correspondantes à l'id_pays (list)
+        -False  : en cas d'erreur
+    """
+    cursor.execute("SELECT id_pays FROM pays WHERE pays.nom_pays = '" + pays + "'")
+    id_pays_selected = cursor.fetchone()
+    if id_pays_selected == None:
+        return False
+    id_pays_selected = id_pays_selected[0]
+    print("Id du pays sélectionné : ",id_pays_selected)
+    
+    data = (df.loc[df['id_pays'] == id_pays_selected])
+        
+    #On enlève la colonne id_pays
+    data = data.loc[:,data.columns != 'id_pays'].to_numpy()
+    
+    #Si le pays n'est pas trouvé : 
+    if len(data) == 0:
+        print("[ERREUR] : Len(requete) = ",len(data))
+        return False
+    return (id_pays_selected,data)
 
 
-def create_visu(DATA_ENT):
+def create_visu(DATA_ENT,nbre_clusters):
     """
     Fonction qui prend en entrée le tableau des données et créer des visuels en fonction.
     Notamment Graph Coude + Score Silhouette
@@ -206,15 +245,7 @@ def create_visu(DATA_ENT):
         - Graphique coude
     
     """
-    DATA = []
-    REQUEST_LIST = list(DATA_ENT)
-    NBRE_LIST = len(REQUEST_LIST[0])
-    for i in range(NBRE_LIST):
-        DATA.append([])
-    for data in REQUEST_LIST:
-        for ite_data in range(len(data)):
-            DATA[ite_data].append(data[ite_data])
-        
+
     #On créer le plot de la méth du coude + silhouette
     inertias = []
     for i in range(2,40):
@@ -225,21 +256,13 @@ def create_visu(DATA_ENT):
         print(f"Score silhouette pour k={i}: {score:.4f}")
 
     plt.plot(range(2,40), inertias, marker='o')
-    plt.title(f'Elbow method X = {NBRE_LIST}')
+    plt.title(f'Elbow method Xfinal')
     plt.xlabel('Number of clusters')
     plt.ylabel('Inertie')
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/coude_X{NBRE_LIST}_new.png")
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/final/coude_final_{nbre_clusters}.png")
     plt.close() 
 
-    #Puis on réalise les KMEANS, même si ici cela ne servait qu'en 2D, c'est utile pour voir l'évolution du projet et des groupes justement.
-    kmeans = KMeans(n_clusters=9, random_state= 1)
-    kmeans.fit(DATA_ENT)
-    plt.scatter(DATA[0], DATA[1], c=kmeans.labels_)
-    plt.title(f'Bonheur/Corruption politique X = {NBRE_LIST}')
-    plt.xlabel('Moyenne du bonheur')
-    plt.ylabel('Échelle de corruption')
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/cluster_X{NBRE_LIST}.png")
-    plt.close()
+
     
 def create_data():
     """
