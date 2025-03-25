@@ -25,7 +25,7 @@ from sklearn.decomposition import PCA
 import statistics
 
 
-connection = pymysql.connect(host="mysql.railway.internal", port=20808, user="root", passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
+connection = pymysql.connect(host="nozomi.proxy.rlwy.net", port=20808, user="root", passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
 cursor = connection.cursor()
 app = Flask(__name__)
 CORS(app)
