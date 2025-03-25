@@ -265,23 +265,6 @@ function displayFlags(countries) {
     });
 }
 
-// Fonction pour gérer la sélection des pays
-function selectCountry(flagElement, country) {
-    // Vérifie si le pays est déjà sélectionné
-    if (selectedCountries.includes(country.name.common)) {
-        // Si le pays est déjà sélectionné, on le désélectionne
-        flagElement.classList.remove('selected');
-        selectedCountries = selectedCountries.filter(c => c !== country.name.common);
-    } else {
-        // Si le pays n'est pas sélectionné, et qu'il y a encore de la place (moins de 3 pays sélectionnés)
-        if (selectedCountries.length < 3) {
-            flagElement.classList.add('selected');
-            selectedCountries.push(country.name.common);
-        } else {
-            alert("Tu peux sélectionner au maximum 3 pays.");
-        }
-    }
-}
 function updateSelectedList() {
     const selectedList = document.getElementById("selectedCountriesList");
     selectedList.innerHTML = ""; // Vide la liste avant de la remplir
@@ -327,15 +310,15 @@ function updateSelectedList() {
             }
         }
         function sendSelectedCountries() {
-            if (selectedCountries.length === 0) {
-                alert("Sélectionne au moins un pays avant d'envoyer.");
+            if (selectedCountries.length < 3) {
+                alert("Veuillez sélectionner 3 pays avant d'envoyer.");
                 return;
             }
             // Création de l'objet JSON
             const data = {
                 selectedCountries: selectedCountries
             };
-            fetch("http://127.0.0.1:5000/receive_json", {
+            fetch("https://projet-gestion-de-projet-production.up.railway.app", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
