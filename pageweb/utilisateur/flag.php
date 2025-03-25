@@ -321,11 +321,14 @@ function updateSelectedList() {
             fetch("https://projet-gestion-de-projet-production.up.railway.app/receive_json", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json"                
                 },
                 body: JSON.stringify(data)
             })
             .then(response => response.json())
+            .then(data => {
+            console.log("Réponse du serveur :", data); // Réponse du serv
+            })
             console.log("JSON envoyé :", JSON.stringify(data));
         }
 

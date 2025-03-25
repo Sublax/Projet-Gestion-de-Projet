@@ -125,20 +125,20 @@ def receive_json():
     print(f"Récupération des données pour : {pays_selected[0]}")
     first_req = get_data_selected(DATA_ENT,pays_selected[0])
     if not first_req:
-        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
+        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 499
     print(first_req[1])
     #On va récupérer la seconde data : 
     print(f"Récupération des données pour : {pays_selected[1]}")
     sec_req = get_data_selected(DATA_ENT,pays_selected[1])
     if not sec_req:
-        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
+        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 498
     print(sec_req[1])
     
     print(f"Récupération des données pour : {pays_selected[2]}")
     third_req = get_data_selected(DATA_ENT,pays_selected[2])
     #S'il nest pas dans la liste : 
     if not third_req:
-        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
+        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 497
     print(third_req[1])
     
     #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
