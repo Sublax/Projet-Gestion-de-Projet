@@ -15,7 +15,6 @@ from flask_cors import CORS
 from sklearn.cluster import KMeans
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import cdist
 import numpy as np
 import pandas as pd
 from pathlib import Path #On peut l'optimiser en utilisant try: except: mais méthode conseillé par geeksforgeeks.org
@@ -26,9 +25,8 @@ from sklearn.decomposition import PCA
 import statistics
 
 
-connection = pymysql.connect(host="localhost", port=3306, user="root", passwd="root", database="bdprojet")
+connection = pymysql.connect(host="mysql.railway.internal", port=20808, user="root", passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
 cursor = connection.cursor()
-
 app = Flask(__name__)
 CORS(app)
 REQUEST_TABLE= """
@@ -126,19 +124,22 @@ def receive_json():
     #On récupére nos trois données selon la sélection de l'user : 
     print(f"Récupération des données pour : {pays_selected[0]}")
     first_req = get_data_selected(DATA_ENT,pays_selected[0])
+    if not first_req:
+        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
     print(first_req[1])
     #On va récupérer la seconde data : 
     print(f"Récupération des données pour : {pays_selected[1]}")
     sec_req = get_data_selected(DATA_ENT,pays_selected[1])
+    if not sec_req:
+        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
     print(sec_req[1])
     
     print(f"Récupération des données pour : {pays_selected[2]}")
     third_req = get_data_selected(DATA_ENT,pays_selected[2])
-    print(third_req[1])
-    
-    #Si un pays n'est pas trouvé dans la BDD :
-    if (first_req == False) or (sec_req == False) or (third_req == False):
+    #S'il nest pas dans la liste : 
+    if not third_req:
         return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 402
+    print(third_req[1])
     
     #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
     id_pays_selected = [first_req[0],sec_req[0],third_req[0]]
@@ -165,16 +166,12 @@ def receive_json():
     cluster = kmeans.predict(requete)
     print("Cluster trouvé : ",cluster)
     print(kmeans.labels_)
-    print("LOngueur labels : ",len(kmeans.labels_))
     #On extrait les coordonnées des pts du même cluster :
     indices_cluster = np.where(kmeans.labels_ == cluster[0])[0]
     print("INDICES CLUSTER :", indices_cluster)
     
     #On sélectionne 3 pays aléatoirement dans ce cluster : 
     random_selected = random.sample(list(indices_cluster),3)
-    print("RANDOM SELECTED : ",random_selected[0])
-    int_pays_predicted = DATA_FIN.iloc[random_selected[0]]["id_pays"].item()
-    print("INT PAYS PREDICTED : ",int_pays_predicted)
     pays_predicted = []
     for i in range(len(random_selected)):
     #REPOSE SUR UNE HYPOTHÈSE : 
@@ -184,9 +181,19 @@ def receive_json():
         cursor.execute("SELECT pays.nom_pays FROM pays WHERE id_pays="+ str(int_pays_predicted))
         pays_predicted.append(cursor.fetchone())
     print("Country predicted : ",pays_predicted)
-    
+    #get_PCA(DATA_ENT,requete,kmeans)
+    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": pays_predicted}), 200
+
+
+def get_PCA(data,requete,kmeans):
+    """
+    Fonction qui prend en entrée les données, les données du pays et les kmeans
+    pour ressortir un PCA
+    Sortie : 
+    - Enregistrement d'une PCA
+    """
     pca = PCA(n_components=2)
-    components = pca.fit_transform(DATA_ENT)
+    components = pca.fit_transform(data)
     
     requete_pca = pca.transform(requete)
     
@@ -197,15 +204,12 @@ def receive_json():
     
     
     variance_expl = pca.explained_variance_ratio_ * 100
-    # Ajouter des labels
     plt.xlabel('Axe 1 (' + str(round(variance_expl[0],2)) + '%)')
     plt.ylabel('Axe 2 (' + str(round(variance_expl[1],2)) + '%)')
     plt.title('PCA')
     plt.grid(True)
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/final/PCA_point_rouge_{nbre_clusters}.png")
+    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/final/PCA_Clustered.png")
     plt.close()
-    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": pays_predicted}), 200
-
 
 
 def get_data_selected(df,pays):
@@ -293,7 +297,7 @@ def create_data():
     df.to_csv('./REQUETE_ENT.csv', index=False)
             
 
-app.run(debug=True, port=5000)
+app.run(host='0.0.0.0', debug=True, port=5000)
     
     
     
