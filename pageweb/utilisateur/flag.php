@@ -318,7 +318,7 @@ function updateSelectedList() {
             const data = {
                 selectedCountries: selectedCountries
             };
-            fetch("projet-gestion-de-projet-production.up.railway.app/receive_json", {
+            fetch("https://projet-gestion-de-projet-production.up.railway.app/receive_json", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
