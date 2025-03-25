@@ -166,11 +166,11 @@
 
 /* Effet de focus élégant */
 #searchBar:focus {
-    border-color: #4CAF50; /* Couleur de la bordure au focus */
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); /* Légère ombre verte autour */
-    background-color: #ffffff; /* Changer la couleur de fond lors du focus */
+    border-color: #4CAF50; 
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); 
+    background-color: #ffffff;
     transition: all 0.3s ease-in-out; /* Transition fluide */
-    color: #333; /* Maintenir la couleur du texte */
+    color: #333; 
 }
 
 /* Style de texte au focus pour un effet moderne */
