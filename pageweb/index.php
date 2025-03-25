@@ -120,58 +120,74 @@
         </div>
     </div>
 
-<script>
-    function toggleChat() {
-        var chatbox = document.getElementById("chatbox");
-        var button = document.querySelector(".chatbot-button");
-
-        if (chatbox.style.display === "none" || chatbox.style.display === "") {
-            chatbox.style.display = "flex";
-            button.style.display = "none";
-        } else {
-            chatbox.style.display = "none";
-            button.style.display = "flex";
-        }
+    <script>
+  function toggleChat() {
+    var chatbox = document.getElementById("chatbox");
+    var button = document.querySelector(".chatbot-button");
+    if (chatbox.style.display === "none" || chatbox.style.display === "") {
+      chatbox.style.display = "flex";
+      button.style.display = "none";
+    } else {
+      chatbox.style.display = "none";
+      button.style.display = "flex";
     }
+  }
 
-    function startChat() {
-        document.getElementById("chat-intro").style.display = "none"; 
-        document.getElementById("chat-interface").style.display = "flex"; 
-        document.getElementById("chat-input").style.display = "flex";   
-    }
+  function startChat() {
+    document.getElementById("chat-intro").style.display = "none"; 
+    document.getElementById("chat-interface").style.display = "flex"; 
+    document.getElementById("chat-input").style.display = "flex";   
+  }
 
-    function sendMessage() {
-        var inputField = document.getElementById("chat-input-field");
-        var message = inputField.value.trim();
+  async function sendMessage() {
+    const inputField = document.getElementById("chat-input-field");
+    const message = inputField.value.trim();
 
-        if (message !== "") {
-            var chatMessages = document.getElementById("chat-messages");
+    if (message !== "") {
+      const chatMessages = document.getElementById("chat-messages");
 
-            var userMessage = document.createElement("p");
-            userMessage.textContent = message;
-            userMessage.classList.add("user-message");
-            chatMessages.appendChild(userMessage);
+      // Mostrar mensaje del usuario
+      const userMessage = document.createElement("p");
+      userMessage.textContent = message;
+      userMessage.classList.add("user-message");
+      chatMessages.appendChild(userMessage);
 
-            setTimeout(() => {
-                var botMessage = document.createElement("p");
-                botMessage.textContent = "Je suis désolé, mais je ne peux pas encore répondre aux questions.";
-                botMessage.classList.add("bot-message");
-                chatMessages.appendChild(botMessage);
+      // Hacemos la petición al servidor Node, que internamente llama a obtenerRéponseIA
+      setTimeout(async () => {
+        const botMessageElem = document.createElement("p");
+        botMessageElem.classList.add("bot-message");
 
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 1000);
+        try {
+          // Ajusta la URL si tu server corre en otro puerto o ruta
+          const res = await fetch("http://localhost:3000/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+          });
 
-            inputField.value = "";
-            chatMessages.scrollTop = chatMessages.scrollHeight; 
+          const data = await res.json();
+          // data.response contiene el texto que Node generó con OpenAI
+          botMessageElem.textContent = data.response;
+        } catch (error) {
+          botMessageElem.textContent = "Error: " + error.message;
         }
-    }
 
-    document.getElementById("chat-input-field").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {  
-            event.preventDefault(); 
-            sendMessage();
-        }
-    });
+        chatMessages.appendChild(botMessageElem);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+
+      // Limpiar el campo de entrada y hacer scroll
+      inputField.value = "";
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+
+  document.getElementById("chat-input-field").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {  
+      event.preventDefault(); 
+      sendMessage();
+    }
+  });
 </script>
 
 
