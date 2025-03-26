@@ -3,6 +3,7 @@
 # -> Passer de R2 à Rn pour les variables (ttes les inclure) (DONE)
 # -> Faire le clustering qu'une seule fois et pas à chaque fois (DONE)
 # --> Le CSV oublie une ligne car il a été une fois sans Chili, il faudrait prendre tous les pays et enlever la ligne correspondant au pays sélectionné. (DONE)
+# --> Centrer la barre de recherche au milieu et représenter en haut, de la même manière qu'en bas
 # -> Renvoyer le résultat
 # -> Attention aux injections SQL
 # -> Ne plus passer par l'execution manuel du python mais plutôt par l'execution via le site web du script. Puis renvoyer le résultat.
@@ -106,20 +107,15 @@ def receive_json():
     # /////////////////////////////////////////////////////////////////////////////////////
     # /////////////////////////////////// VISUALISATION ///////////////////////////////////
     # /////////////////////////////////////////////////////////////////////////////////////
-    #Ici on fait en sorte qu'au lieu d'ajouter des listes à la main, ça les créer automatiquement en tant que sous liste
+    #Ici on renseigne le nombre de cluster voulu (en référence avec le graph du coude + le calcul de silhouette)
     nbre_clusters = 6
+    
+    #Create visu permet de créer les graphes permettant de visualiser graph coude et calcul silhouette
     #create_visu(DATA_ENT,nbre_clusters)
     
     # /////////////////////////////////////////////////////////////////////////////////////
     # ///////////////////////////////// PARTIE KMEANS /////////////////////////////////////
     # /////////////////////////////////////////////////////////////////////////////////////
-    
-    
-    #cursor.execute(REQUEST_TABLE + JOINT_TABLE + 
-    #            """ 
-    #            WHERE pays.nom_pays = '""" + pays_selected[0] + """' 
-    #            """)
-    #requete = cursor.fetchall()
 
     #On récupére nos trois données selon la sélection de l'user : 
     print(f"Récupération des données pour : {pays_selected[0]}")
@@ -136,12 +132,12 @@ def receive_json():
     
     print(f"Récupération des données pour : {pays_selected[2]}")
     third_req = get_data_selected(DATA_ENT,pays_selected[2])
-    #S'il nest pas dans la liste : 
+    #S'il nest pas dans la liste : (mieux de le faire ici vu que j'ai print après...)
     if not third_req:
         return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 497
     print(third_req[1])
     
-    #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
+    #On enlève les pays sélectionnés par l'utilisateur pour éviter que ça recommande le même : 
     id_pays_selected = [first_req[0],sec_req[0],third_req[0]]
     for i in range(len(id_pays_selected)):
         #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
@@ -155,10 +151,13 @@ def receive_json():
     for j in range(len(first_req[1][0])):
         requete[0].append(statistics.mean([first_req[1][0][j],sec_req[1][0][j],third_req[1][0][j]]))
     print("Voici la moyenne des trois pays : ",requete)
+    
     #=======================
     #   Méthode des KMEANS
     #=======================
+    # On initialise kmean sur notre nombre de cluster et ici kmeans++ permet d'avoir une optimisation meilleure (O(log(k))) d'ap. la doc.
     kmeans = KMeans(n_clusters= nbre_clusters, init="k-means++")
+    # On fit avec nos données 
     kmeans.fit(DATA_ENT)
 
     print("Voici les données de la requête : ",requete)
@@ -176,12 +175,15 @@ def receive_json():
     for i in range(len(random_selected)):
     #REPOSE SUR UNE HYPOTHÈSE : 
     #   - Les requêtes sont effectués dans le même ordre que l'id pays inscrit ici.
-        #cursor.execute("SELECT pays.nom_pays,AVG(score_bonheur) as bon,AVG((corruption_politique * 100)) as corrupt FROM bonheur INNER JOIN pays ON bonheur.id_pays = pays.id_pays INNER JOIN corruption ON corruption.id_pays = pays.id_pays GROUP BY pays.nom_pays HAVING AVG(score_bonheur) =" + str(points_cluster[0]))
+        #On récupéré l'ID PAYS du pays prédis (reposant sur notre hypothèse)
         int_pays_predicted = DATA_FIN.iloc[random_selected[i]]["id_pays"].item()
+        # On sélectionne les données de chaque pays prédis grâce à l'id
         cursor.execute("SELECT pays.nom_pays FROM pays WHERE id_pays="+ str(int_pays_predicted))
+        #et on l'ajoute à notre liste
         pays_predicted.append(cursor.fetchone())
     print("Country predicted : ",pays_predicted)
     #get_PCA(DATA_ENT,requete,kmeans)
+    #On fait un retour positif au serveur !
     return jsonify({"status": "success", "message": "Données reçues avec succès", "data": pays_predicted}), 200
 
 
@@ -192,17 +194,21 @@ def get_PCA(data,requete,kmeans):
     Sortie : 
     - Enregistrement d'une PCA
     """
+    #On initialise notre PCA
     pca = PCA(n_components=2)
+    #On créer les composantes principales
     components = pca.fit_transform(data)
     
+    #Là on applique la transformation sur la requete juste pour afficher sur notre graph la donnée (moins long que de la chercher?)
     requete_pca = pca.transform(requete)
     
     plt.figure(figsize=(8, 6))
-    scatter = plt.scatter(components[:, 0], components[:, 1], alpha=0.8, c=kmeans.labels_, edgecolors='k',cmap='Set1')
-    plt.scatter(requete_pca[:, 0], requete_pca[:, 1], color='red', edgecolors='black', s=50, label="Requête")
-    plt.annotate("Requete", (requete_pca[:, 0], requete_pca[:, 1]), fontsize=10, fontweight='bold', color='red')
+    #On affiche notre scatter
+    scatter = plt.scatter(components[:,0], components[:,1], alpha=0.8, c=kmeans.labels_, edgecolors='k',cmap='Set1')
+    plt.scatter(requete_pca[:,0], requete_pca[:,1], color='red', edgecolors='black', s=50, label="Requête")
+    plt.annotate("Requete", (requete_pca[:,0], requete_pca[:,1]), fontsize=10, fontweight='bold', color='red')
     
-    
+    #Variance expliquée par chacun des axes
     variance_expl = pca.explained_variance_ratio_ * 100
     plt.xlabel('Axe 1 (' + str(round(variance_expl[0],2)) + '%)')
     plt.ylabel('Axe 2 (' + str(round(variance_expl[1],2)) + '%)')
@@ -257,8 +263,7 @@ def create_visu(DATA_ENT,nbre_clusters):
         kmeans.fit(DATA_ENT)
         inertias.append(kmeans.inertia_)
         score = silhouette_score(np.array(DATA_ENT), kmeans.labels_)
-        print(f"Score silhouette pour k={i}: {score:.4f}")
-
+        print(f"Score silhouette pour k={i}: {score:.4f}") #score: .4f permet d'éviter le round()
     plt.plot(range(2,40), inertias, marker='o')
     plt.title(f'Elbow method Xfinal')
     plt.xlabel('Number of clusters')
@@ -285,18 +290,21 @@ def create_data():
     columns = ['id_pays','avg_score_bonheur', 'avg_generosite', 'avg_libExpress','avg_corruption', 'taux_crime', 
            'avgGDP', 'avgPOP', 'avg_taux_classe_primaire', 'avg_taux_classe_secondaire',
            "avg_HiverMin","avg_EteMax", "religionImportant", "religionPasImp","EsperanceVie","avgMigration","avgTransport","avgUnemployedWomen","avgUnemployedMen"]
-
+    # On initialise la complétion de nos données avec la moyenne de toutes les données par colonne
     imputer = SimpleImputer(strategy='mean')
+    #On initialise le centrage/reduc
     scaler = StandardScaler()
     
     #On fait un dataframe avec la complétion et le centrage/réduction
     df = pd.DataFrame(DATA_ENT, columns=columns)
+    #On les applique ici sur toutes nos colonnes sauf la première qui sera l'id du pays
+    #À changer à l'avenir car ça ne permet pas d'être très "scalable" pour l'avenir.
     df.iloc[:,2:18]  = imputer.fit_transform(df.iloc[:,2:18])
     df.iloc[:,2:18] = scaler.fit_transform(df.iloc[:,2:18])
     #Sauvegarde le DataFrame dans un fichier CSV
     df.to_csv('./REQUETE_ENT.csv', index=False)
-            
 
+#On run notre projet
 app.run(host='0.0.0.0', debug=True, port=5000)
     
     

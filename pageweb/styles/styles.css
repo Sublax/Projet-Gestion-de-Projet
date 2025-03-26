@@ -309,7 +309,164 @@ color: #333;
 margin-bottom: 6px;
 }
 
+.flag-container {
+    margin-top: 50px;
+}
+.flag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.flag-item {
+    width: 100px;
+    height: 60px;
+    margin: 10px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    border-radius: 8px; /* Coins arrondis pour un effet plus doux */
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
 
+/* Effet au survol */
+.flag-item:hover {
+    transform: scale(1.1); /* Légèrement plus grand pour attirer l'attention */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombre subtile pour effet de profondeur */
+}
+
+/* Effet de sélection */
+.flag-item.selected {
+    opacity: 1; /* On garde l'opacité normale */
+    border: 3px solid #007BFF; /* Contour bleu lumineux pour indiquer la sélection */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Effet lumineux */
+    transform: scale(1.1); /* Mise en avant */
+}   
+
+.flag-item:hover {
+    border-color: #333;
+}
+/* Bandeau des pays sélectionnés */
+#selectedCountriesContainer {
+position: sticky;
+top: 95px; /* Ajuste la hauteur pour laisser de la place au logo */
+width: 100%;
+background: #F0F0F0;
+padding: 15px 20px;
+text-align: center;
+color: black;
+font-weight: bold;
+font-size: 18px;
+z-index: 1000;
+display: flex;
+flex-direction: column;
+align-items: center;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+border-bottom: 2px solid #ddd; /* Légère séparation */
+}
+
+/*Liste des pays sélectionnés */
+#selectedCountriesList {
+list-style: none;
+padding: 0;
+margin-top: 10px;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 10px;
+border-radius: 0 0 10px 10px;
+}
+
+/* Style des pays sélectionnés (colorés) */
+.selected-item {
+background: linear-gradient(45deg, red, blue);
+color: white;
+padding: 8px 15px;
+border-radius: 20px;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+font-weight: bold;
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Effet au survol */
+.selected-item:hover {
+transform: scale(1.1);
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Drapeaux dans la liste */
+.selected-item img {
+width: 20px;
+height: 15px;
+border-radius: 3px;
+}
+.flag-item {
+width: 100px;
+height: 70px;
+background-size: cover;
+background-position: center;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+border: 2px solid transparent;
+cursor: pointer;
+position: relative;
+margin: 5px;
+}
+
+.flag-item.selected {
+border-color: red;
+}
+
+.country-name {
+background: rgba(0, 0, 0, 0.6);
+color: white;
+font-size: 12px;
+text-align: center;
+width: 100%;
+padding: 2px;
+position: absolute;
+bottom: 0;
+}
+
+#searchBar {
+width: 100%;
+max-width: 300px;
+padding: 12px 20px;
+margin-top: 65px;
+margin-left: 40%;
+
+align-self: center;
+border: 2px solid #ddd;
+border-radius: 50px; /* Bordure arrondie pour un look moderne */
+font-size: 16px;
+font-family: 'Arial', sans-serif;
+background-color: #f5f5f5;
+color: #333;
+outline: none;
+transition: all 0.3s ease-in-out; /* Transition fluide pour les changements */
+}
+
+/* Effet de focus élégant */
+#searchBar:focus {
+border-color: #4CAF50; 
+box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); 
+background-color: #ffffff;
+transition: all 0.3s ease-in-out; /* Transition fluide */
+color: #333; 
+}
+
+/* Style de texte au focus pour un effet moderne */
+#searchBar::placeholder {
+color: #888; /* Couleur du placeholder */
+transition: color 0.3s ease-in-out;
+}
 /* Options Styling */
 .options {
 display: flex;

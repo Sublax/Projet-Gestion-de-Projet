@@ -12,7 +12,7 @@
 <body>
     <div class="video-background">
         <video autoplay muted loop id="backgroundVideo">
-            <source src="./images/map2.mp4" type="video/mp4">
+            <source src="./images/map3.mp4" type="video/mp4">
             Votre navigateur ne supporte pas le contenu.
         </video>
     <?php
