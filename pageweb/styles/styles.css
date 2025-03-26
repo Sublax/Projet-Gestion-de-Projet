@@ -1183,3 +1183,26 @@ a.back-button:hover {
 .next-button:hover {
     background-color: #0056b3;
 }
+
+.graph_avis button {
+    padding: 8px 16px;
+    margin: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.graph_avis button:hover {
+    background-color: #45a049;
+}
+
+.chart-container {
+    width: 50%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.titre_graph{
+    margin-top:5%;
+}

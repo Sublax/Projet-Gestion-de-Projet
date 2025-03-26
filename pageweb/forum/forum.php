@@ -12,6 +12,7 @@ include '../navbar.php';
     <link rel="stylesheet" href="../styles/styles.css">
     <title>Forum - Où partir</title>
     <script src="./forum_script.js"></script>
+    
 </head>
 
 

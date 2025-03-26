@@ -28,6 +28,7 @@ if(isset($_GET['id_pays'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/styles.css">
     <title>Forum - <?php echo '' . $nom_pays .'' ?></title>
+
 </head>
 <body>
 <header>
@@ -73,30 +74,84 @@ if(isset($_GET['id_pays'])){
 
 <section class="forum">
 <h1> Bienvenue sur le forum <?php echo '' . $nom_pays .'' ?> </h1>   
+<div class="graph_avis">
+    <a href="graph_avis.php?id_pays=<?php echo $id_pays; ?>">
+        <button>Voir la répartition des avis</button>
+    </a>
+</div>
     <?php
-    // -- Partie Affichage du formulaire
-    if(isset($_SESSION['client'])){
-        $id_client = $_SESSION['client'];
-        echo '<form action="" method="POST">
-        <input type="text" class="recherchePays id="commentaire" name="commentaire" placeholder="Ajoutez votre commentaire">
-        <button type="submit">Envoyer</button>
-        </form>';
-    }else{
-        echo 'Vous devez être connecté pour poster un commentaire !';
-    }
-    // -- Partie Insertion base de données
-    if(isset($_POST["commentaire"])){
-        $commentaire = htmlspecialchars($_POST['commentaire']);
-        $stmt = $bdd->prepare("INSERT INTO avis (id_client,id_pays,avis,date) VALUES (:id_client,:id_pays,:avis,NOW());");
+   // -- Partie Affichage du formulaire
+   if (isset($_SESSION['client'])) {
+       $id_client = $_SESSION['client'];
+       echo '<form action="" method="POST">
+           <input type="text" class="recherchePays" id="commentaire" name="commentaire" placeholder="Ajoutez votre commentaire">
+           <button type="submit">Envoyer</button>
+       </form>';
+   } else {
+       echo 'Vous devez être connecté pour poster un commentaire !';
+   }
+   
+   // -- Partie Insertion base de données
+// -- Partie Insertion base de données
+if (isset($_POST["commentaire"])) {
+    $commentaire = htmlspecialchars($_POST['commentaire']);
+
+    // Appel API pour l'analyse de sentiment
+    $url = 'http://127.0.0.1:8000/analyser_avis/';
+    $data = json_encode(['texte' => $commentaire]);
+
+    $options = [
+        'http' => [
+            'header' => "Content-type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data,
+        ],
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+    $resultat = json_decode($response, true);
+
+    // Appel API pour l'analyse d'aspect et d'opinion
+    $url_aspect = 'http://127.0.0.1:8002/analyser_aspect/';
+    $response_aspect = file_get_contents($url_aspect, false, $context);
+    $resultat_aspect = json_decode($response_aspect, true);
+
+    // Appel API pour l'analyse de toxicité
+    $url_toxicite = 'http://127.0.0.1:8001/detecter_toxicite/';
+    $context_toxicite = stream_context_create([
+        'http' => [
+            'header' => "Content-type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data,
+        ],
+    ]);
+    $response_toxicite = file_get_contents($url_toxicite, false, $context_toxicite);
+    $resultat_toxicite = json_decode($response_toxicite, true);
+
+    // Vérification de la toxicité
+    if ($resultat_toxicite['toxique']) {
+        echo '<p style="color: red;">Votre commentaire contient des propos inappropriés et n\'a pas été publié.</p>';
+    } else {
+        $sentiment = $resultat['label'] ?? "inconnu";
+        $aspect = $resultat_aspect['aspect'] ?? "inconnu";
+        $opinion = $resultat_aspect['opinion'] ?? "inconnu";
+
+        $stmt = $bdd->prepare("INSERT INTO avis (id_client, id_pays, avis, sentiment, aspect, opinion, date) VALUES (:id_client, :id_pays, :avis, :sentiment, :aspect, :opinion, NOW());");
         $stmt->execute([
             ':id_client' => $id_client,
             ':id_pays' => $id_pays,
-            ':avis' => $commentaire
+            ':avis' => $commentaire,
+            ':sentiment' => $sentiment,
+            ':aspect' => $aspect,
+            ':opinion' => $opinion,
         ]);
-        echo '<p> Votre commentaire a été ajouté avec succès !</p>';
+        echo '<p>Votre commentaire a été ajouté avec succès !</p>';
+
+        header("Location: commentaires.php?id_pays=$id_pays");
+        exit();
     }
-
-
+}
+   
     // -- Partie Affichage des commentaires de la bdd :
     $stmt = $bdd -> prepare('SELECT avis.*, clients.nom_utilisateur, pays.id_pays FROM avis INNER JOIN clients ON clients.id_client = avis.id_client INNER JOIN pays ON pays.id_pays = avis.id_pays WHERE pays.id_pays = :id_pays ORDER BY id_avis DESC;');
     $stmt->execute([':id_pays' => $id_pays]);
@@ -106,11 +161,13 @@ if(isset($_GET['id_pays'])){
         while($ligne = $stmt->fetch()){
             //On formate pour montrer seulement la date, heure:min
             $date_formate = date("d/m/Y H:i", strtotime($ligne['date']));
+            $sentiment_color = ($ligne['sentiment']== "positif") ?"green" : "red";
             echo '<p> '. $date_formate.' Commentaire écrit par '.$ligne['nom_utilisateur'] . ' :</p>';
-            echo '<p>' .$ligne["avis"] . '</p>';
+            echo '<p style="color: ' . $sentiment_color . ';">' . ucfirst($ligne["avis"]) .'</p>';
             echo '<br> <br>';
         }
     }
+
 
     ?>
 </section>
