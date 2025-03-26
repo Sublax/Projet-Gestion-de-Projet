@@ -4,51 +4,46 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Esta parte es para que __dirname funcione en un ESM (type: "module")
+// Pour que __dirname fonctionne en ESM (type: "module")
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Instanciamos el cliente de OpenAI con la API key de tu .env
+// Instanciation du client OpenAI avec l'API key
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Función para leer archivos con ruta relativa a este archivo JS
-function lireFichier(relPath) {
-  // El 'relPath' se interpretará desde la carpeta "js/" donde está chat-ia.js
-  // con path.join(__dirname, relPath) subimos niveles si es necesario.
-  const fullPath = path.join(__dirname, relPath);
+// Fonction pour lire un fichier avec un chemin relatif à ce fichier JS
+function lireFichier(cheminRelatif) {
+  const cheminComplet = path.join(__dirname, cheminRelatif);
   try {
-    if (!fs.existsSync(fullPath)) {
-      console.error(`❌ File not found: ${fullPath}`);
+    if (!fs.existsSync(cheminComplet)) {
+      console.error(`❌ Fichier introuvable : ${cheminComplet}`);
       return null;
     }
-    return fs.readFileSync(fullPath, "utf-8");
+    return fs.readFileSync(cheminComplet, "utf-8");
   } catch (error) {
-    console.error("❌ Error reading the file:", error);
+    console.error("❌ Erreur de lecture du fichier :", error);
     return null;
   }
 }
 
-// Exportamos la función principal que invoca a OpenAI
+// Fonction principale pour obtenir la réponse de l'IA
 export async function obtenirRéponseIA(messageUtilisateur) {
-  // Ajusta las rutas para subir un nivel (../) y así llegar a tus .php
-  const index        = lireFichier("../index.php");
-  const navbar       = lireFichier("../navbar.php");
-  // Si tienes una carpeta "connexion" al mismo nivel que "js", sube dos niveles
-  // o ajusta según tu estructura real.
-  const deconnection     = lireFichier("../connexion/deconnection.php");
-  const login            = lireFichier("../connexion/login.php");
-  const register         = lireFichier("../connexion/register.php");
-  const process_login    = lireFichier("../connexion/process_login.php");
-  const process_register = lireFichier("../connexion/process_register.php");
-  // Y así con el resto de tus archivos .php:
-  const forum         = lireFichier("../forum/forum.php");
-  const informations  = lireFichier("../informations/informations.php");
-  const sources       = lireFichier("../informations/sources.php");
-  const profil        = lireFichier("../utilisateur/profil.php");
+  // Lecture des fichiers PHP
+  const index           = lireFichier("../index.php");
+  const navbar          = lireFichier("../navbar.php");
+  const deconnection    = lireFichier("../connexion/deconnection.php");
+  const login           = lireFichier("../connexion/login.php");
+  const register        = lireFichier("../connexion/register.php");
+  const process_login   = lireFichier("../connexion/process_login.php");
+  const process_register= lireFichier("../connexion/process_register.php");
+  const forum           = lireFichier("../forum/forum.php");
+  const informations    = lireFichier("../informations/informations.php");
+  const sources         = lireFichier("../informations/sources.php");
+  const profil          = lireFichier("../utilisateur/profil.php");
 
-  // Une el contenido de todos los archivos en un solo string
+  // Concaténer le contenu de tous les fichiers PHP dans une chaîne
   const codePHP = [
     index, navbar, deconnection, login, register,
     process_login, process_register, forum,
@@ -61,26 +56,53 @@ export async function obtenirRéponseIA(messageUtilisateur) {
     return "Je ne peux pas accéder aux informations techniques pour le moment.";
   }
 
+  // Filtrage préliminaire : bloquer les questions non autorisées
+  const motsInvalides = /(recette|tarte|sport|football|musique|film|politique|météo|sprinteur|etc)/i;
+  if (motsInvalides.test(messageUtilisateur)) {
+    return "Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web.";
+  }
+
+  // Prompt système très strict
+  const systemPrompt = `
+Vous êtes un assistant technique STRICTEMENT RESTREINT.
+
+Règles OBLIGATOIRES (sans exception) :
+
+- Vous devez répondre UNIQUEMENT en citant directement le CODE PHP fourni ci-dessous.
+- Vous ne pouvez JAMAIS inventer, suggérer ou ajouter d’autres informations.
+- Si la réponse n'est pas explicitement et précisément disponible dans le CODE PHP fourni, répondez TOUJOURS exactement la phrase suivante, sans AUCUNE exception :
+"Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web."
+
+Voici le CODE PHP à utiliser exclusivement comme source :
+${codePHP}
+
+FIN DU CODE PHP. Aucune autre information que ce code n’est valide.
+  `;
+
   try {
-    // Llamada a la API de OpenAI
+    // Appel à l'API OpenAI
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini", 
-      max_tokens: 150,
-      temperature: 0.5,
+      model: "gpt-4o-mini",
+      max_tokens: 80,
+      temperature: 0,
       top_p: 0.9,
       messages: [
-        {
-          role: "system",
-          content: "Vous êtes un assistant qui guide l'utilisateur dans les fonctionalités du site."
-        },
-        { role: "system", content: `Code source PHP:\n\n${codePHP}` },
+        { role: "system", content: systemPrompt },
         { role: "user", content: messageUtilisateur },
       ],
     });
 
-    return completion.choices[0].message.content;
+    let reponseIA = completion.choices[0].message.content;
+
+    // Filtrage postérieur de la réponse
+    const motsInvalidesDansReponse = /(recette|tarte|ingrédients|sport|musique|film|préparation|etc)/i;
+    if (motsInvalidesDansReponse.test(reponseIA)) {
+      reponseIA = "Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web.";
+    }
+
+    return reponseIA;
   } catch (error) {
-    console.error("❌ Error calling OpenAI:", error);
+    console.error("❌ Erreur lors de l'appel à OpenAI:", error);
     return "Désolé, une erreur s'est produite lors du traitement.";
   }
 }
