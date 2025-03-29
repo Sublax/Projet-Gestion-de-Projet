@@ -18,7 +18,7 @@
         <p>Statistiques & Graphs</p>
     </div>
     <div class="menu-item">
-    <a href="/forum/forum.php"><img src="/images/images_ced/icone7.png" alt="Forum"></a>
+    <a href="/forum/forum.php"><img src="/images/images_ced/icone3.png" alt="Forum"></a>
         <p>Forum</p>
     </div>
     <div class="menu-item logo">

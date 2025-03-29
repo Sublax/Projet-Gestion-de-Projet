@@ -7,10 +7,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // Récupérer les valeurs du formulaire
     $username = $_POST['username'];
     $password = $_POST['password'];
-
+    
     // Connexion à la base de données
     $conn = getBD();
-
+    
     // Préparer la requête SQL pour vérifier les informations de l'utilisateur (soit username soit mail)
     $sql = "SELECT * FROM clients WHERE nom_utilisateur = :username OR mail = :username";
     $stmt = $conn->prepare($sql);
