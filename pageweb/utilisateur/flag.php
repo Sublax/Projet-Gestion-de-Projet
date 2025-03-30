@@ -25,6 +25,7 @@
     <div class="popup" id="popup">
         <img src="../images/tick.png">
         <h2 id="popupMessage"></h2>
+        <ul id="paysPredis"></ul>
         <p id="errorPopup"></p>
         <button type="button" onclick="closePopup()"> OK !</button>
     </div>
@@ -175,16 +176,27 @@
             .then(data => {
             console.log("Réponse du serveur :", data); // Réponse du serv
             
+            const paysPredis = document.getElementById("paysPredis");
+            paysPredis.innerHTML = ""; //On efface la liste précédente
+            //Si on a bien les pays prédis : 
             if(data.status =="success"){
                 var  messagePopup = "Voici les pays prédis :"
-            }else{
+
+
+            //Ajouter les pays à la liste
+            data.data.forEach(country => {
+                const liste = document.createElement("li");
+                liste.textContent = country; // Ajouter le pays à l'élément de la liste
+                paysPredis.appendChild(liste);
+            });
+            }else{ // SInon erreur : 
                 var messagePopup = "Désolé, il y a eu une erreur."
                 if(data.posCountry == "1"){
-                    popup.querySelector("#popupMessage").textContent = "Veuillez changer le 1er pays.";
+                    popup.querySelector("#errorPopup").textContent = "Veuillez changer le 1er pays.";
                 }else if(data.posCountry == "2"){
-                    popup.querySelector("#popupMessage").textContent = "Veuillez changer le 2e pays.";
+                    popup.querySelector("#errorPopup").textContent = "Veuillez changer le 2e pays.";
                 }else if(data.posCountry == "3"){
-                    popup.querySelector("#popupMessage").textContent = "Veuillez changer le 3e pays.";
+                    popup.querySelector("#errorPopup").textContent = "Veuillez changer le 3e pays.";
                 }
             }
             popup.querySelector("#popupMessage").textContent = messagePopup;
