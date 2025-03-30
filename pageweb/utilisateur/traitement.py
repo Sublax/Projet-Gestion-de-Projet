@@ -25,7 +25,7 @@ import random
 from sklearn.decomposition import PCA
 
 
-connection = pymysql.connect(host="nozomi.proxy.rlwy.net", user="root", port=20808,passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN!", database="railway")
+connection = pymysql.connect(host="nozomi.proxy.rlwy.net", user="root", port=20808,passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
 cursor = connection.cursor()
 app = Flask(__name__)
 CORS(app)
