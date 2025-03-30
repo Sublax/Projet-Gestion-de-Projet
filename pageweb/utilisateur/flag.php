@@ -11,19 +11,31 @@
 
 </head>
 <body>
-    <div id="selectedCountriesContainer">
-        <h3>Pays sélectionnés :</h3>
-        <ul id="selectedCountriesList"></ul>
-    </div>
 
+            <div id="selectedCountriesContainer">
+                <h3>Pays sélectionnés :</h3>
+            <ul id="selectedCountriesList"></ul>
+    </div>
 
     <div>
     <input type="text" id="searchBar" placeholder="Rechercher un pays..." />
     </div>
     <div class="flag-container" id="flagContainer">Chargement...</div>
     <button id="sendButtonPays">Envoyer les pays sélectionnés</button>
+    <div class="popup" id="popup">
+        <img src="../images/tick.png">
+        <h2 id="popupMessage"></h2>
+        <p id="errorPopup"></p>
+        <button type="button" onclick="closePopup()"> OK !</button>
+    </div>
 
     <script>
+        //Fonction pour fermer la popup et l'ouvrir quand requete
+        let popup = document.getElementById("popup");
+        function closePopup(){
+            popup.classList.remove("open-popup");
+        }
+
         // Fonction pour récupérer les pays depuis l'API REST Countries
         async function fetchCountries() {
             try {
@@ -53,78 +65,80 @@
 
         let selectedCountries = [];
 
-// Fonction pour afficher les drapeaux
-function displayFlags(countries) {
-    const searchQuery = document.getElementById('searchBar').value.toLowerCase();
-    const filteredCountries = countries.filter(country => 
-        country.name.common.toLowerCase().includes(searchQuery)
-    );
-    
-    const flagContainer = document.getElementById('flagContainer');
-    flagContainer.innerHTML = ''; // Vider le conteneur avant d'ajouter de nouveaux drapeaux
-
-    // Trier les pays par ordre alphabétique
-    filteredCountries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-
-    filteredCountries.forEach(country => {
-        const countryCode = country.cca2 ? country.cca2.toLowerCase() : null;
-        if (!countryCode) return; // Ignore les pays sans code valide
-
-        const flagElement = document.createElement('div');
-        flagElement.classList.add('flag-item');
-
-        // Construction de l'URL du drapeau
-        const flagUrl = `https://flagcdn.com/w320/${countryCode}.png`;
-        flagElement.style.backgroundImage = `url('${flagUrl}')`;
-
-        // Affichage du nom du pays
-        const countryName = document.createElement('div');
-        countryName.classList.add('country-name');
-        countryName.innerText = country.name.common;
-
-        // Quand on clique sur un pays, on le sélectionne/désélectionne
-        flagElement.onclick = () => selectCountry(flagElement, country);
-
-        // Si le pays est déjà sélectionné, on applique la classe 'selected'
-        if (selectedCountries.includes(country.name.common)) {
-            flagElement.classList.add('selected');
-        }
-
-        flagElement.appendChild(countryName);
-        flagContainer.appendChild(flagElement);
-    });
-}
-
-function updateSelectedList() {
-    const selectedList = document.getElementById("selectedCountriesList");
-    selectedList.innerHTML = ""; // Vide la liste avant de la remplir
-
-    selectedCountries.forEach(countryName => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("selected-item");
-
-        // Trouver les données du pays pour récupérer son code
-        const cachedCountries = JSON.parse(localStorage.getItem("countriesFlags")) || [];
-        const countryData = cachedCountries.find(c => c.name.common === countryName);
+    // Fonction pour afficher les drapeaux
+    function displayFlags(countries) {
+        const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+        const filteredCountries = countries.filter(country => 
+            country.name.common.toLowerCase().includes(searchQuery)
+        );
         
-        if (countryData && countryData.cca2) {
-            const flagImg = document.createElement("img");
-            flagImg.src = `https://flagcdn.com/w40/${countryData.cca2.toLowerCase()}.png`;
-            flagImg.alt = `Drapeau de ${countryName}`;
+        const flagContainer = document.getElementById('flagContainer');
+        flagContainer.innerHTML = ''; // Vider le conteneur avant d'ajouter de nouveaux drapeaux
 
-            listItem.appendChild(flagImg); // Ajoute le drapeau avant le texte
+        // Trier les pays par ordre alphabétique
+        filteredCountries.sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+        filteredCountries.forEach(country => {
+            const countryCode = country.cca2 ? country.cca2.toLowerCase() : null;
+            if (!countryCode) return; // Ignore les pays sans code valide
+
+            const flagElement = document.createElement('div');
+            flagElement.classList.add('flag-item');
+
+            // Construction de l'URL du drapeau
+            const flagUrl = `https://flagcdn.com/w320/${countryCode}.png`;
+            flagElement.style.backgroundImage = `url('${flagUrl}')`;
+
+            // Affichage du nom du pays
+            const countryName = document.createElement('div');
+            countryName.classList.add('country-name');
+            countryName.innerText = country.name.common;
+
+            // Quand on clique sur un pays, on le sélectionne/désélectionne
+            flagElement.onclick = () => selectCountry(flagElement, country);
+
+            // Si le pays est déjà sélectionné, on applique la classe 'selected'
+            if (selectedCountries.includes(country.name.common)) {
+                flagElement.classList.add('selected');
+            }
+
+            flagElement.appendChild(countryName);
+            flagContainer.appendChild(flagElement);
+        });
+    }
+
+    function updateSelectedList() {
+        const selectedList = document.getElementById("selectedCountriesList");
+        selectedList.innerHTML = ""; // Vide la liste avant de la remplir
+
+        selectedCountries.forEach(countryName => {
+            const listItem = document.createElement("li");
+            listItem.classList.add("selected-item");
+
+            // Trouver les données du pays pour récupérer son code
+            const cachedCountries = JSON.parse(localStorage.getItem("countriesFlags")) || [];
+            const countryData = cachedCountries.find(c => c.name.common === countryName);
+            
+            if (countryData && countryData.cca2) {
+                const flagImg = document.createElement("img");
+                flagImg.src = `https://flagcdn.com/w40/${countryData.cca2.toLowerCase()}.png`;
+                flagImg.alt = `Drapeau de ${countryName}`;
+
+                listItem.appendChild(flagImg); // Ajoute le drapeau avant le texte
+            }
+
+            // Ajout du nom du pays
+            const textNode = document.createTextNode(countryName);
+            listItem.appendChild(textNode);
+
+            // Ajout de l’événement pour désélectionner
+            listItem.onclick = () => deselectCountry(countryName);
+
+            selectedList.appendChild(listItem);
+        });
         }
 
-        // Ajout du nom du pays
-        const textNode = document.createTextNode(countryName);
-        listItem.appendChild(textNode);
 
-        // Ajout de l’événement pour désélectionner
-        listItem.onclick = () => deselectCountry(countryName);
-
-        selectedList.appendChild(listItem);
-    });
-}
         // Fonction pour gérer la sélection/désélection d'un pays
         function selectCountry(flagElement, country) {
             if (selectedCountries.includes(country.name.common)) {
@@ -139,6 +153,8 @@ function updateSelectedList() {
                 }
             }
         }
+
+
         function sendSelectedCountries() {
             if (selectedCountries.length < 3) {
                 alert("Veuillez sélectionner 3 pays avant d'envoyer.");
@@ -158,6 +174,21 @@ function updateSelectedList() {
             .then(response => response.json())
             .then(data => {
             console.log("Réponse du serveur :", data); // Réponse du serv
+            
+            if(data.status =="success"){
+                var  messagePopup = "Voici les pays prédis :"
+            }else{
+                var messagePopup = "Désolé, il y a eu une erreur."
+                if(data.posCountry == "1"){
+                    popup.querySelector("#popupMessage").textContent = "Veuillez changer le 1er pays.";
+                }else if(data.posCountry == "2"){
+                    popup.querySelector("#popupMessage").textContent = "Veuillez changer le 2e pays.";
+                }else if(data.posCountry == "3"){
+                    popup.querySelector("#popupMessage").textContent = "Veuillez changer le 3e pays.";
+                }
+            }
+            popup.querySelector("#popupMessage").textContent = messagePopup;
+            popup.classList.add("open-popup");
             })
             console.log("JSON envoyé :", JSON.stringify(data));
         }
@@ -191,8 +222,5 @@ function updateSelectedList() {
 
 </script>
 
-
-<script>
-</script>
 </body>
 </html>

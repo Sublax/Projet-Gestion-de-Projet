@@ -23,10 +23,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 import random
 from sklearn.decomposition import PCA
-import statistics
 
 
-connection = pymysql.connect(host="nozomi.proxy.rlwy.net", port=20808, user="root", passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
+connection = pymysql.connect(host="mysql-payspedia.alwaysdata.net", user="payspedia_admin", passwd="payspedia1234!", database="payspedia_bdprojet")
 cursor = connection.cursor()
 app = Flask(__name__)
 CORS(app)
@@ -121,26 +120,25 @@ def receive_json():
     print(f"Récupération des données pour : {pays_selected[0]}")
     first_req = get_data_selected(DATA_ENT,pays_selected[0])
     if not first_req:
-        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 499
+        return jsonify({"status": "failed","posCountry":"1", "message": "Aucun pays correspondant à un pays dans la liste."}), 499
     print(first_req[1])
     #On va récupérer la seconde data : 
     print(f"Récupération des données pour : {pays_selected[1]}")
     sec_req = get_data_selected(DATA_ENT,pays_selected[1])
     if not sec_req:
-        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 498
+        return jsonify({"status": "failed","posCountry":"2","message": "Aucun pays correspondant à un pays dans la liste."}), 498
     print(sec_req[1])
     
     print(f"Récupération des données pour : {pays_selected[2]}")
     third_req = get_data_selected(DATA_ENT,pays_selected[2])
     #S'il nest pas dans la liste : (mieux de le faire ici vu que j'ai print après...)
     if not third_req:
-        return jsonify({"status": "failed", "message": "Aucun pays correspondant à un pays dans la liste."}), 497
+        return jsonify({"status": "failed","posCountry":"3", "message": "Aucun pays correspondant à un pays dans la liste."}), 497
     print(third_req[1])
     
     #On enlève les pays sélectionnés par l'utilisateur pour éviter que ça recommande le même : 
     id_pays_selected = [first_req[0],sec_req[0],third_req[0]]
     for i in range(len(id_pays_selected)):
-        #On enlève le pays sélectionné par l'utilisateur pour éviter que ça recommande le même : 
         DATA_ENT = (DATA_ENT[DATA_ENT.id_pays != id_pays_selected[i]])
     
     # On retire la colonne id_pays
@@ -149,7 +147,8 @@ def receive_json():
     #Ici on prend les données de chaque requete, et on fait la moyenne des trois pays :
     requete = [[]]
     for j in range(len(first_req[1][0])):
-        requete[0].append(statistics.mean([first_req[1][0][j],sec_req[1][0][j],third_req[1][0][j]]))
+        # CHANGEMENT SERVEUR : Remplacement de statistics.mean par np.mean
+        requete[0].append(np.mean([first_req[1][0][j],sec_req[1][0][j],third_req[1][0][j]]))
     print("Voici la moyenne des trois pays : ",requete)
     
     #=======================
@@ -184,7 +183,7 @@ def receive_json():
     print("Country predicted : ",pays_predicted)
     #get_PCA(DATA_ENT,requete,kmeans)
     #On fait un retour positif au serveur !
-    return jsonify({"status": "success", "message": "Données reçues avec succès", "data": pays_predicted}), 200
+    return jsonify({"status": "success", "message": "Données reçues avec succès","posCountry": "-1", "data": pays_predicted}), 200
 
 
 def get_PCA(data,requete,kmeans):
@@ -226,6 +225,7 @@ def get_data_selected(df,pays):
         -data   : Données correspondantes à l'id_pays (list)
         -False  : en cas d'erreur
     """
+    print("salut artiste")
     cursor.execute("SELECT id_pays FROM pays WHERE pays.nom_pays = '" + pays + "'")
     id_pays_selected = cursor.fetchone()
     if id_pays_selected == None:

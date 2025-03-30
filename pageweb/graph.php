@@ -1,5 +1,3 @@
-<?php include 'navbar.php' ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,23 +10,40 @@
 
 </head>
 <body>
+
+<style>
+    .graph-container {
+    display: flex;
+    justify-content: center;
+    gap: 200px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+    margin-top: 20px;
+    }
+    h2{
+        margin-top: 50px;
+    }
+    body{
+        margin-left: 20px;
+    }
+</style>
     <h2>Présentation des données</h2>
     <p>Si vous souhaitez faire des graphes personnalisées : <a href= "./graph_max.php"> cliquez ici </a> </p>
     <label for="countrySelect">Sélectionner un pays :</label>
     <select id="countrySelect"></select>
 
-    <div class="chart-container">
+    <div class="graph-container">
     <canvas id="barChart" height="500" width="400"></canvas>
     <canvas id="lineChart" height="500" width="400"></canvas>
     <canvas id="pieChart" height="500" width="400"></canvas>
     </div>
     
-    <div class="chart-container">
+    <div class="graph-container">
     <canvas id="radarChart" height="750" width="550"></canvas>
     <canvas id="polarChart" height="750" width="550"></canvas>
     </div>
 
-    <div class="chart-container">
+    <div class="graph-container">
     <canvas id="lineChart2" height="500" width="400"></canvas>
     <canvas id="doughnutChart" height="500" width="400"></canvas>
     <canvas id="doughnutChart2" height="500" width="400"></canvas>
@@ -462,20 +477,3 @@
     </script>
 </body>
 </html>
-
-<style>
-    .chart-container {
-    display: flex;
-    justify-content: center; /* Centre les graphiques */
-    gap: 200px;
-    flex-wrap: wrap;
-    margin-bottom: 50px;
-    margin-top: 20px;
-    }
-    h2{
-        margin-top: 50px;
-    }
-    body{
-        margin-left: 20px;
-    }
-</style>
