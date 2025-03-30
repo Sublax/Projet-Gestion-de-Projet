@@ -175,7 +175,7 @@
             .then(response => response.json())
             .then(data => {
             console.log("Réponse du serveur :", data); // Réponse du serv
-            
+
             const paysPredis = document.getElementById("paysPredis");
             paysPredis.innerHTML = ""; //On efface la liste précédente
             //Si on a bien les pays prédis : 
@@ -200,7 +200,8 @@
                 }
             }
             popup.querySelector("#popupMessage").textContent = messagePopup;
-            popup.classList.add("open-popup");
+            popup.classList.add("open-popup"); //On affiche la popup
+            document.getElementById("errorPopup").innerHTML = ""; // On réinitialise le message...
             })
             console.log("JSON envoyé :", JSON.stringify(data));
         }
