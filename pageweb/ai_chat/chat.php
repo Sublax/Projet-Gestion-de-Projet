@@ -19,6 +19,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            padding-top: 80px;
         }
         .chat-container {
             width: 100%;
@@ -119,9 +120,63 @@
     transition: height 0.3s ease-in-out;
 }
 
+.menu-bar {
+    display: flex;
+    width: 100%;
+    justify-content: space-around; /* or space-between */
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 10px 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.menu-item {
+    text-align: center;
+    cursor: pointer;
+}
+
+.menu-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background-color: transparent;
+}
+
+.menu-item p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.menu-item.logo {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    bottom: -20px;
+    border-radius: 80%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    background-color: #f4f4f4;
+}
+
+.menu-item.logo img {
+    width: 150%; /* The image is intentionally larger than its container */
+    height: 150%;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
     </style>
 </head>
 <body>
+    <?php include ('../navbar.php'); ?>
     <div class="chat-container">
         <div class="chat-header">AI Chat Assistant</div>
         <div class="chat-messages" id="chatMessages"></div>
@@ -130,6 +185,7 @@
                 <button onclick="toggleMap()">Hide Map</button>
                 <button onclick="resizeMap()">Make Map Bigger</button>
                 <button onclick="getUserLocation()">Show My Location</button>
+                <button onclick="resetMap()">Reset Map</button>
             </div>
             <div id="map"></div>
         </div>
@@ -218,6 +274,19 @@ function resizeMap() {
         if (map) map.invalidateSize();
     }, 300);
 }
+
+function resetMap() {
+    // Clear all markers from the markers layer
+    clearMarkers();
+
+    // Remove the routing control (route) if it exists
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;  // Reset routingControl so it can be recreated later
+        console.log('Route has been reset: routing control removed.');
+    }
+}
+
 
 function initializeMap(lat, lon) {
     console.log('Initializing map with center:', { lat, lon }); // Debug
@@ -372,7 +441,7 @@ function sendMessage() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     // Send to backend via AJAX
-    fetch('chatbot.php', {
+    fetch('http://localhost:5000/decision', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -458,6 +527,7 @@ function sendMessage() {
     // Clear input
     document.getElementById('userMessage').value = '';
 }
+    
 
 function clearMarkers() {
     console.log('Clearing markers'); // Debug

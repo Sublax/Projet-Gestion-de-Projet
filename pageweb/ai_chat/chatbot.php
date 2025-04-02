@@ -1,13 +1,37 @@
 <?php
 header('Content-Type: application/json');
 
+// Basic HTTP Authentication check
+if (!isset($_SERVER['PHP_AUTH_USER'])) {
+    // Ask the client to provide credentials
+    header('WWW-Authenticate: Basic realm="Restricted Area"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo json_encode(['reply' => 'Authentication required']);
+    exit;
+} else {
+    // Define your expected username and password (store these securely in production)
+    $expectedUser = 'myuser';
+    $expectedPass = 'password';
+    
+    if ($_SERVER['PHP_AUTH_USER'] !== $expectedUser || $_SERVER['PHP_AUTH_PW'] !== $expectedPass) {
+        header('WWW-Authenticate: Basic realm="Restricted Area"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo json_encode(['reply' => 'Forbidden: invalid credentials. Expected --> ' . $expectedUser]);
+        exit;
+    }
+}
+
 // Include the API helper functions
 require_once 'apis.php';
 
 // Fetch user message
 $requestBody = file_get_contents('php://input');
+error_log("chatbot.php received JSON: " . $requestBody);
+
 $data = json_decode($requestBody, true);
-$userMessage = strtolower(trim($data['message'] ?? ''));
+$userMessage = strtolower(trim($data['formattedQuery'] ?? ''));
+$chatInfo = strtolower(trim($data['informations'] ?? ''));
+error_log("userMessage : " . $userMessage);
 
 // Check for country-specific queries using REST Countries
 if (preg_match('/tell me about (.+)/', $userMessage, $matches)) {
@@ -22,6 +46,10 @@ if (preg_match('/tell me about (.+)/', $userMessage, $matches)) {
         $reply .= "Region: {$country['region']}\n";
         $reply .= "Population: " . number_format($country['population']) . "\n";
         $reply .= "Languages: " . implode(', ', $country['languages']) . "\n";
+        // Append $chatInfo if it exists
+        if (!empty($chatInfo)) {
+            $reply .= "\nAdditional info: " . $chatInfo;
+        }
 
         echo json_encode(['reply' => $reply]);
         exit;
@@ -58,7 +86,7 @@ if (preg_match('/find (.+) in (.+)/', $userMessage, $matches)) {
             }
 
             echo json_encode([
-                'reply' => "Here are some $amenityType in $cityName:",
+                'reply' => $chatInfo,
                 'mapData' => [
                     'type' => 'places',
                     'lat' => $lat,
@@ -82,7 +110,7 @@ if (preg_match('/route from (.+) to (.+)/', $userMessage, $matches)) {
 
     if ($startCoordinates && $endCoordinates) {
         echo json_encode([
-            'reply' => "Calculating route from $startCity to $endCity...",
+            'reply' => $chatInfo,
             'routeData' => [
                 'start' => [
                     'lat' => $startCoordinates['lat'],
@@ -169,7 +197,7 @@ if (preg_match('/weather in (.+)/', $userMessage, $matches)) {
 
             // Return response with current weather and forecast
             echo json_encode([
-                'reply' => $reply,
+                'reply' => $reply . "\n" .$chatInfo,
                 'forecastTable' => $forecastTable, // Ensure this contains the HTML table
                 'mapData' => [
                     'type' => 'weather',
@@ -215,7 +243,6 @@ if (preg_match('/details concerning (.+) in (.+)/', $userMessage, $matches)) {
 
         if ($placesData && isset($placesData['results'])) {
             $places = [];
-            $reply = "Here are some $query in $cityName:\n";
         
             foreach ($placesData['results'] as $place) {
                 $placeDetails = fetchGooglePlaceDetails($place['place_id']);
@@ -239,7 +266,7 @@ if (preg_match('/details concerning (.+) in (.+)/', $userMessage, $matches)) {
             }
         
             echo json_encode([
-                'reply' => $reply,
+                'reply' => $chatInfo,
                 'places' => $places
             ]);
             exit;        
