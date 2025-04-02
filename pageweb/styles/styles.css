@@ -1118,7 +1118,12 @@ a.back-button:hover {
     justify-content: flex-start; 
     max-height: 250px; 
 }
-
+.chat-intro{
+    text-align:justify ;
+    margin-left:10px;
+    margin-right:10px ;
+    margin-top: 10px;
+}
 
 .user-message, .bot-message {
     max-width: 75%;
@@ -1187,7 +1192,7 @@ a.back-button:hover {
     cursor: pointer;
 }
 .chatbot-image {
-    width: 200px; /* Ajusta el tamaño de la imagen según necesites */
+    width: 210px; /* Ajusta el tamaño de la imagen según necesites */
     height: auto;
     display: flex;
     margin: 10px auto; /* Centra la imagen */

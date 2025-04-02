@@ -57,21 +57,19 @@ export async function obtenirRéponseIA(messageUtilisateur) {
   }
 
   // Filtrage préliminaire : bloquer les questions non autorisées
-  const motsInvalides = /(recette|tarte|sport|football|musique|film|politique|météo|sprinteur|etc)/i;
-  if (motsInvalides.test(messageUtilisateur)) {
-    return "Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web.";
-  }
+
 
   // Prompt système très strict
   const systemPrompt = `
-Vous êtes un assistant technique STRICTEMENT RESTREINT.
+Vous êtes un assistant technique vous aiderez aux utilisateurs a naviger dans le site vous utiliserez le code php fourni pour trouvers les reponses mais vous repoderez avec langage comun, pas des hyperliens ni technicites juste guider avec des mots simples.
 
 Règles OBLIGATOIRES (sans exception) :
 
-- Vous devez répondre UNIQUEMENT en citant directement le CODE PHP fourni ci-dessous.
+- Vous devez répondre en citant prenant CODE PHP fourni ci-dessous.
 - Vous ne pouvez JAMAIS inventer, suggérer ou ajouter d’autres informations.
-- Si la réponse n'est pas explicitement et précisément disponible dans le CODE PHP fourni, répondez TOUJOURS exactement la phrase suivante, sans AUCUNE exception :
-"Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web."
+- Si la réponse n'est pas disponible dans le CODE PHP fourni, répondez la phrase suivante :
+"Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web.
+Si vous avez fait une question par rapport au site, veullez etre plus clair s'il vous plait"
 
 Voici le CODE PHP à utiliser exclusivement comme source :
 ${codePHP}
@@ -84,7 +82,7 @@ FIN DU CODE PHP. Aucune autre information que ce code n’est valide.
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       max_tokens: 80,
-      temperature: 0,
+      temperature: 0.4,
       top_p: 0.9,
       messages: [
         { role: "system", content: systemPrompt },
@@ -95,10 +93,7 @@ FIN DU CODE PHP. Aucune autre information que ce code n’est valide.
     let reponseIA = completion.choices[0].message.content;
 
     // Filtrage postérieur de la réponse
-    const motsInvalidesDansReponse = /(recette|tarte|ingrédients|sport|musique|film|préparation|etc)/i;
-    if (motsInvalidesDansReponse.test(reponseIA)) {
-      reponseIA = "Désolé, je ne peux répondre qu'aux questions relatives à l'utilisation de ce site web.";
-    }
+    
 
     return reponseIA;
   } catch (error) {

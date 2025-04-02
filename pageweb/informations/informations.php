@@ -61,6 +61,7 @@
         echo '</div>';
     }
     ?>
+    <?php include '../chat-ia.php'; ?>
 </main>
 <footer>
     <p>&copy; 2024 Payspédia. Tous droits réservés.</p>

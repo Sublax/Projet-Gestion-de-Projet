@@ -76,6 +76,7 @@ include '../navbar.php';
     }
     ?>
 </section>
+<?php include '../chat-ia.php'; ?>
 </body>
 <footer>
     <p>&copy; 2024 Payspédia. Tous droits réservés.</p>

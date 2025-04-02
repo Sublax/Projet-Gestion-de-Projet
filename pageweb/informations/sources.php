@@ -103,6 +103,7 @@
                 </ul>
             </div>
         </section>
+        <?php include '../chat-ia.php'; ?>
     </main>
 
     <footer>

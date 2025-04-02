@@ -117,6 +117,6 @@ include '../navbar.php' ;
     }
             ?>
 
-
+<?php include '../chat-ia.php'; ?>
 </body>
 </html>
