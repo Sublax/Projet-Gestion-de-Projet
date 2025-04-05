@@ -12,13 +12,14 @@
 </head>
 <body>
 
-            <div id="selectedCountriesContainer">
-                <h3>Pays sélectionnés :</h3>
-            <ul id="selectedCountriesList"></ul>
+    <div id="selectedCountriesContainer">
+        <h3>Pays sélectionnés :</h3>
+        <ul id="selectedCountriesList"></ul>
     </div>
 
     <div>
-    <input type="text" id="searchBar" placeholder="Rechercher un pays..." />
+        <input type="text" id="searchBar" placeholder="✨ Rechercher un pays..." />
+        <p id="avertissementMessageFlag">⏳ Un temps de 10 secondes est prévu entre chaque requête, la première peut ne pas fonctionner.</p>
     </div>
     <div class="flag-container" id="flagContainer">Chargement...</div>
     <button id="sendButtonPays">Envoyer les pays sélectionnés</button>
@@ -31,14 +32,19 @@
     </div>
 
     <script>
-        //Fonction pour fermer la popup et l'ouvrir quand requete
         let popup = document.getElementById("popup");
         function closePopup(){
+            /*
+            Fonction pour fermer la popup et l'ouvrir quand requete
+            */
             popup.classList.remove("open-popup");
         }
 
-        // Fonction pour récupérer les pays depuis l'API REST Countries
+        // 
         async function fetchCountries() {
+            /*
+            Fonction pour récupérer les pays depuis l'API REST Countries (générée par IA et modifier)
+            */
             try {
                 const flagContainer = document.getElementById('flagContainer');
                 flagContainer.innerHTML = ''; // Vide le message de chargement
@@ -66,8 +72,11 @@
 
         let selectedCountries = [];
 
-    // Fonction pour afficher les drapeaux
+    
     function displayFlags(countries) {
+        /*
+        Fonction pour afficher les drapeaux (générée par IA)
+        */
         const searchQuery = document.getElementById('searchBar').value.toLowerCase();
         const filteredCountries = countries.filter(country => 
             country.name.common.toLowerCase().includes(searchQuery)
@@ -108,7 +117,12 @@
         });
     }
 
+    
     function updateSelectedList() {
+        /*
+        Fonction qui permet de mettre à jour la liste des sélections en haut de la page
+        (générée par IA puis modifier par la suite).
+        */
         const selectedList = document.getElementById("selectedCountriesList");
         selectedList.innerHTML = ""; // Vide la liste avant de la remplir
 
@@ -140,8 +154,12 @@
         }
 
 
-        // Fonction pour gérer la sélection/désélection d'un pays
+        
         function selectCountry(flagElement, country) {
+            /*
+            Fonction pour gérer la sélection/désélection d'un pays et accorde la limite pour l'utilisateur.
+
+            */
             if (selectedCountries.includes(country.name.common)) {
                 deselectCountry(country.name.common);
             } else {
@@ -157,6 +175,9 @@
 
 
         function sendSelectedCountries() {
+            /*
+            Fonction qui permet l'envoi de la requête au fichier python contenu dans railway
+            */
             if (selectedCountries.length < 3) {
                 alert("Veuillez sélectionner 3 pays avant d'envoyer.");
                 return;
@@ -206,15 +227,18 @@
             console.log("JSON envoyé :", JSON.stringify(data));
         }
 
-        // Fonction pour désélectionner un pays depuis la liste
         function deselectCountry(countryName) {
+            /*
+            Fonction qui désélectionne,un pays depuis la liste
+            */
             selectedCountries = selectedCountries.filter(c => c !== countryName);
             updateSelectedList();
             refreshFlagSelection();
         }
 
-        // Fonction pour mettre à jour l'affichage des drapeaux après une désélection
+        
         function refreshFlagSelection() {
+            // Fonction pour mettre à jour l'affichage des drapeaux après une désélection (générée par IA et modifier)
             document.querySelectorAll(".flag-item").forEach(flagElement => {
                 const countryName = flagElement.querySelector(".country-name").innerText;
                 if (selectedCountries.includes(countryName)) {
@@ -224,6 +248,7 @@
                 }
             });
         }
+
         // Appel de la fonction pour récupérer les pays et leurs drapeaux
         fetchCountries();
         // Fonction pour filtrer les pays en fonction de la recherche
@@ -231,7 +256,24 @@
             const cachedCountries = JSON.parse(localStorage.getItem('countriesFlags')) || [];
             displayFlags(cachedCountries);
         });
-        document.getElementById("sendButtonPays").addEventListener("click", sendSelectedCountries);
+
+        // On ajoute un timer afin d'éviter de multiples requêtes, et surtout,
+        // pour laisser le temps à la première requête de relancer l'hébergeur...
+        let bouttonEnvoi = document.getElementById("sendButtonPays");
+        let bouttonText = bouttonEnvoi.textContent;
+
+        bouttonEnvoi.addEventListener("click", () =>{
+            sendSelectedCountries();
+            bouttonEnvoi.disabled = true;
+            bouttonEnvoi.textContent = "Veuillez patienter...";
+
+            setTimeout(() => {
+                bouttonEnvoi.disabled = false;
+                bouttonEnvoi.textContent = bouttonText;
+            },10000);
+        });
+
+        
 
 </script>
 

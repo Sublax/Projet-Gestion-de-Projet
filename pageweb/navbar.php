@@ -38,3 +38,4 @@
         <p>Profil</p>
     </div>
     </header>
+    <link rel="icon" type="image/png" href="/images/logo_ico.png">
