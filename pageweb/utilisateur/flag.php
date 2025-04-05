@@ -18,7 +18,9 @@
 
     <div>
         <input type="text" id="searchBar" placeholder="✨ Rechercher un pays..." />
-        <p id="avertissementMessageFlag">⏳ Un temps de 10 secondes est prévu entre chaque requête, la première peut ne pas fonctionner.</p>
+        <p class="messageFlag">⏳ Un temps de 10 secondes est prévu entre chaque requête, la première peut ne pas fonctionner. Vous retrouverez les résultats sur votre profil !</p>
+        <p class="messageFlag"> Si vous souhaitez réinitialiser vos résultats,<a id="fermerSession"> cliquez-ici</a> !</p>
+        <p class="messageFlag" id="messageErreurFermetureSessions"><strong></strong></p>
     </div>
     <div class="flag-container" id="flagContainer">Chargement...</div>
     <button id="sendButtonPays">Envoyer les pays sélectionnés</button>
@@ -31,6 +33,23 @@
     </div>
 
     <script>
+        let bouttonFermeture = document.getElementById("fermerSession");
+        bouttonFermeture.addEventListener("click", () =>{
+            fetch("fermesession.php",{
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            .then(response => response.text())
+            .then(data => {
+            if(data.trim() === "0"){
+                document.getElementById("messageErreurFermetureSessions").textContent = "Erreur : La session n'existait pas.";
+            }else{
+                // Sinon, procédez normalement (par exemple, rediriger ou afficher un message de succès)
+                document.getElementById("messageErreurFermetureSessions").textContent = "La demande a été traité avec succès ! ";
+            }});
+        });
+
+
         let popup = document.getElementById("popup");
         function closePopup(){
             /*
@@ -195,21 +214,29 @@
             .then(response => response.json())
             .then(data => {
             console.log("Réponse du serveur :", data); // Réponse du serv
-
+            document.getElementById("errorPopup").innerHTML = ""; // On réinitialise le message...
             const paysPredis = document.getElementById("paysPredis");
             paysPredis.innerHTML = ""; //On efface la liste précédente
             //Si on a bien les pays prédis : 
             if(data.status =="success"){
                 var  messagePopup = "Voici les pays prédis :"
 
-
             //Ajouter les pays à la liste
             data.data.forEach(country => {
+                fetch("ajoutsession.php",{
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ country: country })
+                })
+                .then(response => response.json())
+                .then(data => {
+                console.log(data.message);
+                })
                 const liste = document.createElement("li");
                 liste.textContent = country; // Ajouter le pays à l'élément de la liste
                 paysPredis.appendChild(liste);
             });
-            }else{ // SInon erreur : 
+            }else{ // SInon erreur :
                 var messagePopup = "Désolé, il y a eu une erreur."
                 if(data.posCountry == "1"){
                     popup.querySelector("#errorPopup").textContent = "Veuillez changer le 1er pays.";
@@ -221,7 +248,7 @@
             }
             popup.querySelector("#popupMessage").textContent = messagePopup;
             popup.classList.add("open-popup"); //On affiche la popup
-            document.getElementById("errorPopup").innerHTML = ""; // On réinitialise le message...
+
             })
             console.log("JSON envoyé :", JSON.stringify(data));
         }

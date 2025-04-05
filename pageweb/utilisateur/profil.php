@@ -48,6 +48,7 @@ include '../navbar.php' ;
             echo "<div class='username'
                     <h1>". htmlspecialchars($_SESSION['username']) ."</h1>
                     </div>"; ?>
+<p> Si vous souhaitez prédire un pays selon vos goûts, <a href="./flag.php">cliquez-ici</a> !</p>
 <div class='stats'>
     <div class='stat-box'>
         <p>Posts</p>
@@ -89,6 +90,20 @@ include '../navbar.php' ;
     <div class='stat-box'>
         <p>Vient de : </p>
         <p><?php echo $_SESSION['location'] ?></p>
+    </div>
+    <div class='stat-box'>
+        <p>Pays prédis : </p>
+        <p><?php 
+        if(isset($_SESSION["pays_predis"])){
+            $pays_predis = $_SESSION["pays_predis"];
+            if(!empty($pays_predis)){
+                foreach($pays_predis as $key){
+                    echo "<p>" . $key . "</p>";
+                }
+            }else{
+                echo "Aucun";
+            }
+        }?></p>
     </div>
 </div>
 

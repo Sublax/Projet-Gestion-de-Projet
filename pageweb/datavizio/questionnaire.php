@@ -1,8 +1,3 @@
-<?php
-include 'navbar.php';
-?>
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -161,9 +156,7 @@ input[type="checkbox"]:checked + label {
     </div>
 
     <!-- Menu superieur -->
-    <header>
-        <div class="menu-bar">
-        <div class="menu-item">
+    <?php include '../navbar.php'; ?>
 
             <!-- QUESTIONNAIRE -->
     <div class="container">
