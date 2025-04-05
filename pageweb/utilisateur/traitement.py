@@ -3,11 +3,11 @@
 # -> Passer de R2 à Rn pour les variables (ttes les inclure) (DONE)
 # -> Faire le clustering qu'une seule fois et pas à chaque fois (DONE)
 # --> Le CSV oublie une ligne car il a été une fois sans Chili, il faudrait prendre tous les pays et enlever la ligne correspondant au pays sélectionné. (DONE)
-# --> Centrer la barre de recherche au milieu et représenter en haut, de la même manière qu'en bas
-# -> Renvoyer le résultat
+# --> Centrer la barre de recherche au milieu et représenter en haut, de la même manière qu'en bas DONE
+# -> Renvoyer le résultat DONE
 # -> Attention aux injections SQL
 # -> Ne plus passer par l'execution manuel du python mais plutôt par l'execution via le site web du script. Puis renvoyer le résultat.
-# -> Faire le barycentre des clusters pour le choix des trois pays et comparer à la moyenne des trois pays
+# -> Faire le barycentre des clusters pour le choix des trois pays et comparer à la moyenne des trois pays DONE
 # -> Faire en sorte que s'il n'y a pas 3 pays avec le même clusters bah qu'il le mette avec le cluster le plus proche
 #===================================
 import pymysql
@@ -227,7 +227,6 @@ def get_data_selected(df,pays):
         -data   : Données correspondantes à l'id_pays (list)
         -False  : en cas d'erreur
     """
-    print("salut artiste")
     cursor.execute("SELECT id_pays FROM pays WHERE pays.nom_pays = '" + pays + "'")
     id_pays_selected = cursor.fetchone()
     if id_pays_selected == None:

@@ -65,8 +65,6 @@ include '../navbar.php' ;
             $postCount = $stmt->fetchColumn();
             echo $postCount;
         }
-
-
         ?></p>
     </div>
     <div class='stat-box'>
