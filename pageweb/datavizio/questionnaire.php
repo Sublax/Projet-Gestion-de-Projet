@@ -160,10 +160,12 @@ input[type="checkbox"]:checked + label {
 
             <!-- QUESTIONNAIRE -->
     <div class="container">
-        <h2 id="form_beginning">Début du questionnaire</h2>
-        <p id="form_beginning">Le temps de réponse moyen est de <strong>- de 5 minutes</strong>.Vos réponses sont traitées <strong>anonymement</strong>, et vos résultats le seront aussi.
-        <br> Attention, vous ne pouvez pas stocker plusieurs tentatives dans votre profil. <strong>Une seule</strong> sera stockée.
-        <br>Si vous avez des questions n'hésitez pas à contacter <a href="mailto:corentin.labat-jarleton@etu.univ-montp3.fr">corentin.labat-jarleton@etu.univ-montp3.fr</a></p>
+        <div class="introductionQuestionnaire">
+            <h2 id="form_beginning">Début du questionnaire</h2>
+            <p id="form_beginning">Le temps de réponse moyen est de <strong>- de 5 minutes</strong>.Vos réponses sont traitées <strong>anonymement</strong>, et vos résultats le seront aussi.
+            <br> Attention, vous ne pouvez pas stocker plusieurs tentatives dans votre profil. <strong>Une seule</strong> sera stockée.
+            <br>En cas de questions n'hésitez pas à contacter <a href="mailto:corentin.labat-jarleton@etu.univ-montp3.fr">corentin.labat-jarleton@etu.univ-montp3.fr</a></p>
+        </div>
         <form action="run_generate_map.php" method="POST" id="questionnaireForm">
 
         

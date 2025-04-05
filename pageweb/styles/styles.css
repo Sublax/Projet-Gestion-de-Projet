@@ -11,6 +11,10 @@ header {
     font-weight: bold;
 }
 
+.introductionQuestionnaire{
+    text-align: center;
+}
+
 h1 {
     text-align: center;
     margin-top: 20px;
