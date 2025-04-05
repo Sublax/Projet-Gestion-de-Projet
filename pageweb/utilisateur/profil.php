@@ -105,7 +105,7 @@ include '../navbar.php' ;
     ?></textarea>
     <button id ="save" type="submit" name="save_biography" >Sauvegarder</button>
 </form>
-<button class='logout-button'> <a href="../connexion/deconnection.php">Déconnexion </a></button> 
+<button class='logout-button'> <a class="logout-button" href="../connexion/deconnection.php">Déconnexion </a></button> 
 </div>
 </div>
 </div>

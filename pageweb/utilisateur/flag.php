@@ -8,7 +8,6 @@
 </head>
 <?php include '../navbar.php'; ?>
     <title>Sélectionner un pays</title>
-
 </head>
 <body>
 

@@ -668,6 +668,11 @@ margin-top: 50px;
 background-color: #555;
 }
 
+.logout-button:link, .logout-button:visited{
+    color: white;
+    text-decoration: none;
+}
+
 .start-button {
 padding: 10px 20px;
 background-color: rgba(0, 128, 0, 0.7); /* Color de fondo del botón */
@@ -1065,10 +1070,7 @@ a.back-button:hover {
     font-weight: bold;
 }
 
-a:link, a:visited {
-    color: white;
-    text-decoration: none;
-}
+
 
 
 .creaprofil{

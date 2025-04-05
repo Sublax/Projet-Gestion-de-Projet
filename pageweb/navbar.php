@@ -4,7 +4,7 @@
     <div class="menu-item">
     <?php
         if (isset($_SESSION['client'])) {
-            echo '<a href="/dataviz/questionnaire.php">';
+            echo '<a href="/datavizio/questionnaire.php">';
         } else {
             echo '<a href="/connexion/login.php">';
         }
