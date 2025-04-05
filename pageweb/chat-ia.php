@@ -11,7 +11,7 @@
         <a href="ai_chat/chat.php">accédez au chat plus général ! </a></p>
       </p>
       <!-- image chatbot -->
-      <img src="./images/images_ced/chatbot-image.png" alt="ChatBot Assistant" class="chatbot-image">
+      <img src="/images/images_ced/chatbot-image.png" alt="ChatBot Assistant" class="chatbot-image">
       <button class="next-button" onclick="startChat()">Suivant</button>
     </div>
 

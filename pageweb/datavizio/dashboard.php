@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Tableau de bord intéractif</title>
+  <title>Tableau de bord interactif</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <!-- Google Fonts -->
@@ -402,7 +402,7 @@
   ?>
 
   <header>
-    <h1>Tableau de Bord Intéractif</h1>
+    <h1>Tableau de Bord Interactif</h1>
   </header>
   
   <div class="dashboard">
