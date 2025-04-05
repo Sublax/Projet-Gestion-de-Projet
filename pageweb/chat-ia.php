@@ -8,7 +8,7 @@
     <div class="chat-intro" id="chat-intro">
       <p>Bonjour, je suis <strong>ChatBot</strong> je vous aide à naviguer sur notre site. 
       Si vous avez des questions par rapport aux pays, n'hésitez pas. Sinon,
-        <a href="ai_chat/chat.php">accédez au chat plus général ! </a></p>
+        <a href="/ai_chat/chat.php">accédez au chat plus général ! </a></p>
       </p>
       <!-- image chatbot -->
       <img src="/images/images_ced/chatbot-image.png" alt="ChatBot Assistant" class="chatbot-image">
@@ -21,7 +21,7 @@
       <div id="chat-messages" class="chat-messages">
         <p class="bot-message"><strong>Bonjour, comment puis-je vous aider ?</strong>
         Si vous avez des questions par rapport aux pays, n'hésitez pas. Sinon,
-        <a href="ai_chat/chat.php">accédez au chat plus général ! </a></p>  
+        <a href="/ai_chat/chat.php">accédez au chat plus général ! </a></p>  
       </div>
     </div>
 

@@ -11,8 +11,8 @@ $(document).ready(function() {
             success: function(response){
                 if(response !== '1' && $(".messageErreur").length === 0){
                     $("#registerButton").after("<p class='messageErreur'> Les informations sont incorrectes.</p>")
-                }else{
-                    window.location.href = "../index.php";
+                }else if(response === '1'){
+                    window.location.href = "../utilisateur/flag.php";
                 }
             }
         });

@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <?php include '../navbar.php'; ?>
-    <title>Sélectionner un pays</title>
+    <title>Boule de cristal des pays</title>
 </head>
 <body>
-
+<h1 id="titreFlag"> 🔮 Prédiction des pays</h1>
     <div id="selectedCountriesContainer">
         <h3>Pays sélectionnés :</h3>
         <ul id="selectedCountriesList"></ul>
@@ -18,9 +18,11 @@
 
     <div>
         <input type="text" id="searchBar" placeholder="✨ Rechercher un pays..." />
-        <p class="messageFlag">⏳ Un temps de 10 secondes est prévu entre chaque requête, la première peut ne pas fonctionner. Vous retrouverez les résultats sur votre profil !</p>
-        <p class="messageFlag"> Si vous souhaitez réinitialiser vos résultats,<a id="fermerSession"> cliquez-ici</a> !</p>
-        <p class="messageFlag" id="messageErreurFermetureSessions"><strong></strong></p>
+        <p class="messageFlag">🌍 Sélectionnez 3 pays différents et des pays prédis apparaîtront !</p>
+        <p class="messageFlag">⏳ Un temps de 10 secondes est prévu entre chaque requête, la première peut ne pas fonctionner.</p>
+        <p class="messageFlag">📁 Vous retrouverez les résultats, et cette page sur <strong> votre profil !</strong></p>
+        <p class="messageFlag"> Si vous souhaitez <strong>réinitialiser vos résultats</strong>,<a id="fermerSession"> cliquez-ici</a> !</p>
+        <p class="messageFlag" id="messageErreurFermetureSessions"></p>
     </div>
     <div class="flag-container" id="flagContainer">Chargement...</div>
     <button id="sendButtonPays">Envoyer les pays sélectionnés</button>
@@ -45,7 +47,7 @@
                 document.getElementById("messageErreurFermetureSessions").textContent = "Erreur : La session n'existait pas.";
             }else{
                 // Sinon, procédez normalement (par exemple, rediriger ou afficher un message de succès)
-                document.getElementById("messageErreurFermetureSessions").textContent = "La demande a été traité avec succès ! ";
+                document.getElementById("messageErreurFermetureSessions").textContent = "La demande a été traitée avec succès ! ";
             }});
         });
 
