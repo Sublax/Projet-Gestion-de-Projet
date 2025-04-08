@@ -3,20 +3,53 @@ session_start();
 include "../bd.php";
 $bdd = getBD();
 
-if (isset($_GET['id_pays'])) {
-    $id_pays = (int)$_GET['id_pays'];
-    $stmt = $bdd->prepare("SELECT sentiment, COUNT(*) AS count FROM avis WHERE id_pays = :id_pays AND (sentiment = 'positif' OR sentiment = 'negatif') GROUP BY sentiment");
-    $stmt->execute([':id_pays' => $id_pays]);
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} else {
+if (!isset($_GET['id_pays'])) {
     die("Erreur d'ID");
 }
 
-$labels = [];
-$counts = [];
+$id_pays = (int)$_GET['id_pays'];
+
+// Récupérer tous les aspects distincts pour initialisation
+$stmt_aspects = $bdd->prepare("SELECT DISTINCT aspect FROM avis WHERE id_pays = :id_pays");
+$stmt_aspects->execute([':id_pays' => $id_pays]);
+$aspect_list = $stmt_aspects->fetchAll(PDO::FETCH_COLUMN);
+
+$aspects = [];
+$total_positif = 0;
+$total_negatif = 0;
+
+foreach ($aspect_list as $asp) {
+    $asp_clean = strtolower(trim($asp));
+    $aspects[$asp_clean] = ['positif' => 0, 'négatif' => 0];
+}
+
+// Récupérer les compteurs groupés
+$stmt = $bdd->prepare("
+    SELECT aspect, sentiment, COUNT(*) AS count
+    FROM avis
+    WHERE id_pays = :id_pays
+    GROUP BY aspect, sentiment
+");
+$stmt->execute([':id_pays' => $id_pays]);
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 foreach ($data as $row) {
-    $labels[] = ucfirst($row['sentiment']);
-    $counts[] = $row['count'];
+    $asp = strtolower(trim($row['aspect']));
+    $sent = strtolower(trim($row['sentiment']));
+    $sent = str_replace(['é','è','ê','ë'], 'e', $sent); 
+    $sent = str_replace(["\n", "\r", "\t", "\0", "\x0B"], '', $sent); 
+    $count = (int)$row['count'];
+
+    if (!isset($aspects[$asp])) {
+        $aspects[$asp] = ['positif' => 0, 'negatif' => 0];
+    }
+
+    if (in_array($sent, ['positif', 'negatif'])) {
+        $aspects[$asp][$sent] += $count;
+        if ($sent === 'positif') $total_positif += $count;
+        if ($sent === 'negatif') $total_negatif += $count;
+    }
 }
 ?>
 
@@ -33,84 +66,138 @@ foreach ($data as $row) {
 <body>
 <header>
     <div class="menu-bar">
-    <div class="menu-item">
-    <?php
-        if (isset($_SESSION['client'])) {
-            echo '<a href="../questionnaire.php">';
-        } else {
-            echo '<a href="../connexion/login.php">';
-        }
+        <div class="menu-item">
+        <?php
+            if (isset($_SESSION['client'])) {
+                echo '<a href="../questionnaire.php">';
+            } else {
+                echo '<a href="../connexion/login.php">';
+            }
         ?>
-        <img src="../images/images_ced/icone1.png" alt="Icone Questionnaire">
-        </a>
-        <p>Questionnaire</p>
+            <img src="../images/images_ced/icone1.png" alt="Icone Questionnaire">
+            </a>
+            <p>Questionnaire</p>
+        </div>
+        <div class="menu-item">
+        <a href="graph.php"><img src="../images/images_ced/icone2.png" alt="Icone Statistiques & Graphs"></a>
+            <p>Statistiques & Graphs</p>
+        </div>
+        <div class="menu-item">
+        <a href="forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
+            <p>Forum</p>
+        </div>
+        <div class="menu-item logo">
+        <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
+        </div>
+        <div class="menu-item">
+        <a href="../informations/informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
+            <p>Informations</p>
+        </div>
+        <div class="menu-item">
+        <a href="../informations/sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
+            <p>Sources données</p>
+        </div>
+        <div class="menu-item">
+        <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
+            <p>Profil</p>
+        </div>
     </div>
-    <div class="menu-item">
-    <a href="graph.php"><img src="../images/images_ced/icone2.png" alt="Icone Statistiques & Graphs"></a>
-        <p>Statistiques & Graphs</p>
-    </div>
-    <div class="menu-item">
-    <a href="forum.php"><img src="../images/images_ced/icone7.png" alt="Forum"></a>
-       <p>Forum</p>
-   </div>
-    <div class="menu-item logo">
-    <a href="../index.php"><img src="../images/images_ced/logo.png" alt="Logo"></a>
-        
-    </div>
-    <div class="menu-item">
-    <a href="../informations/informations.php"><img src="../images/images_ced/icone4.png" alt="Icone Informations"></a>
-        <p>Informations</p>
-    </div>
-    <div class="menu-item">
-    <a href="../informations/sources.php"><img src="../images/images_ced/icone5.png" alt="Icone Sources données"></a>
-        <p>Sources données</p>
-    </div>
-    <div class="menu-item">
-    <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
-        <p>Profil</p>
-    </div>
-    </header>
-    <h2 class='titre_graph'>Répartition des avis</h2>
-    <div class="chart-container">
-        <canvas id="pieChart"></canvas>
-    </div>
+</header>
 
-    <script>
-        const labels = <?php echo json_encode($labels); ?>;
-        const data = <?php echo json_encode($counts); ?>;
-        const total = data.reduce((acc, val) => acc + val, 0);
+<h2 class='titre_graph'>Répartition des avis par aspect</h2>
 
-        const ctx = document.getElementById('pieChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Répartition des avis',
-                    data: data,
-                    backgroundColor: ['#4CAF50', '#F44336'], // Vert pour positif, rouge pour négatif
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
+<p class="intro-texte">
+    Cette page montre la répartition des avis des utilisateurs classés par aspect. 
+    Chaque graphique représente la part d’avis positifs et négatifs, 
+    accompagnée du nombre total d’avis pour une meilleure interprétation.
+</p>
+
+<!-- Graphique global -->
+<?php if ($total_positif + $total_negatif > 0): ?>
+<div class="chart-card" style="max-width: 500px; margin: 0 auto;">
+    <h3>Vue globale des sentiments</h3>
+    <canvas id="chart_global"></canvas>
+</div>
+<script>
+    const ctxGlobal = document.getElementById('chart_global').getContext('2d');
+    const dataGlobal = [<?php echo $total_positif; ?>, <?php echo $total_negatif; ?>];
+    const totalGlobal = dataGlobal.reduce((a, b) => a + b, 0);
+
+    new Chart(ctxGlobal, {
+        type: 'pie',
+        data: {
+            labels: ['Positif', 'Négatif'],
+            datasets: [{
+                data: dataGlobal,
+                backgroundColor: ['#4CAF50', '#F44336']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                datalabels: {
+                    formatter: (value) => {
+                        const percentage = ((value / totalGlobal) * 100).toFixed(1);
+                        return percentage + '%\n(' + value + ' avis)';
                     },
-                    datalabels: {
-                        formatter: (value) => {
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return percentage + '%';
-                        },
-                        color: '#fff',
-                        font: {
-                            weight: 'bold'
+                    color: '#fff',
+                    font: { weight: 'bold' }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+</script>
+<?php endif; ?>
+
+<!--  Camemberts par aspect -->
+<div class="chart-grid">
+<?php foreach ($aspects as $aspect => $sentiments): ?>
+    <?php
+        $total = $sentiments['positif'] + $sentiments['negatif'];
+        if ($total === 0) continue;
+    ?>
+    <div class="chart-card">
+        <h3><?php echo ucfirst(htmlspecialchars($aspect)); ?></h3>
+        <canvas id="chart_<?php echo md5($aspect); ?>"></canvas>
+    </div>
+    <script>
+        (function() {
+            const labels = ['Positif', 'Négatif'];
+            const data = [<?php echo $sentiments['positif']; ?>, <?php echo $sentiments['negatif']; ?>];
+            const total = data.reduce((a, b) => a + b, 0);
+
+            const ctx = document.getElementById('chart_<?php echo md5($aspect); ?>').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#4CAF50', '#F44336']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            formatter: (value) => {
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return percentage + '%\n(' + value + ' avis)';
+                            },
+                            color: '#fff',
+                            font: { weight: 'bold' }
                         }
                     }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
+                },
+                plugins: [ChartDataLabels]
+            });
+        })();
     </script>
+<?php endforeach; ?>
+</div>
+
 </body>
 </html>

@@ -3,7 +3,7 @@ session_start();
 include "../bd.php";
 $bdd = getBD();
 if(isset($_GET['id_pays'])){
-    // On verif si l'ID donné en lien existe vraiment
+    // On verifie si l'ID donné en lien existe vraiment
     $id_pays = (int)$_GET['id_pays'];
     $stmt = $bdd->prepare('SELECT nom_pays FROM pays WHERE id_pays = ?');
     $stmt->execute([$id_pays]);
@@ -76,7 +76,7 @@ if(isset($_GET['id_pays'])){
 <h1> Bienvenue sur le forum <?php echo '' . $nom_pays .'' ?> </h1>   
 <div class="graph_avis">
     <a href="graph_avis.php?id_pays=<?php echo $id_pays; ?>">
-        <button>Voir la répartition des avis</button>
+        <button>Voir la répartition des avis de ce pays</button>
     </a>
 </div>
     <?php
@@ -92,12 +92,12 @@ if(isset($_GET['id_pays'])){
    }
    
    // -- Partie Insertion base de données
-// -- Partie Insertion base de données
+
 if (isset($_POST["commentaire"])) {
     $commentaire = htmlspecialchars($_POST['commentaire']);
 
-    // Appel API pour l'analyse de sentiment
-    $url = 'http://127.0.0.1:8000/analyser_avis/';
+    // Appel à l'API FastAPI pour sentiment et aspect
+    $apiUrl = 'http://127.0.0.1:8000/analyser';
     $data = json_encode(['texte' => $commentaire]);
 
     $options = [
@@ -108,49 +108,33 @@ if (isset($_POST["commentaire"])) {
         ],
     ];
     $context = stream_context_create($options);
-    $response = file_get_contents($url, false, $context);
-    $resultat = json_decode($response, true);
+    $response = file_get_contents($apiUrl, false, $context);
+    $result = json_decode($response, true);
 
-    // Appel API pour l'analyse d'aspect et d'opinion
-    $url_aspect = 'http://127.0.0.1:8002/analyser_aspect/';
-    $response_aspect = file_get_contents($url_aspect, false, $context);
-    $resultat_aspect = json_decode($response_aspect, true);
+    // Vérification de la toxicité    
+    if ($result['toxique']) {
+        echo '<p style="color: red;"> Ce commentaire a été bloqué car il contient un contenu inapproprié .</p>';
+        exit();
+    }
 
-    // Appel API pour l'analyse de toxicité
-    $url_toxicite = 'http://127.0.0.1:8001/detecter_toxicite/';
-    $context_toxicite = stream_context_create([
-        'http' => [
-            'header' => "Content-type: application/json\r\n",
-            'method' => 'POST',
-            'content' => $data,
-        ],
-    ]);
-    $response_toxicite = file_get_contents($url_toxicite, false, $context_toxicite);
-    $resultat_toxicite = json_decode($response_toxicite, true);
-
-    // Vérification de la toxicité
-    if ($resultat_toxicite['toxique']) {
-        echo '<p style="color: red;">Votre commentaire contient des propos inappropriés et n\'a pas été publié.</p>';
-    } else {
-        $sentiment = $resultat['label'] ?? "inconnu";
-        $aspect = $resultat_aspect['aspect'] ?? "inconnu";
-        $opinion = $resultat_aspect['opinion'] ?? "inconnu";
-
-        $stmt = $bdd->prepare("INSERT INTO avis (id_client, id_pays, avis, sentiment, aspect, opinion, date) VALUES (:id_client, :id_pays, :avis, :sentiment, :aspect, :opinion, NOW());");
+// Récupération des résultats de l'API
+    $sentiment = $result['sentiment'] ?? "inconnu";
+    $aspect = $result['aspect'] ?? "inconnu"; 
+        $stmt = $bdd->prepare("INSERT INTO avis (id_client, id_pays, avis, sentiment, aspect,  date) VALUES (:id_client, :id_pays, :avis, :sentiment, :aspect,  NOW());");
         $stmt->execute([
             ':id_client' => $id_client,
             ':id_pays' => $id_pays,
             ':avis' => $commentaire,
             ':sentiment' => $sentiment,
-            ':aspect' => $aspect,
-            ':opinion' => $opinion,
+            ':aspect' => $aspect
+            
         ]);
         echo '<p>Votre commentaire a été ajouté avec succès !</p>';
 
         header("Location: commentaires.php?id_pays=$id_pays");
         exit();
     }
-}
+
    
     // -- Partie Affichage des commentaires de la bdd :
     $stmt = $bdd -> prepare('SELECT avis.*, clients.nom_utilisateur, pays.id_pays FROM avis INNER JOIN clients ON clients.id_client = avis.id_client INNER JOIN pays ON pays.id_pays = avis.id_pays WHERE pays.id_pays = :id_pays ORDER BY id_avis DESC;');
