@@ -1,0 +1,4 @@
+pageweb/forum/model_sentiment/** filter=lfs diff=lfs merge=lfs -text
+pageweb/forum/model_aspect/** filter=lfs diff=lfs merge=lfs -text
+pageweb/forum/model/** filter=lfs diff=lfs merge=lfs -text
+pageweb/forum/train_pays.csv filter=lfs diff=lfs merge=lfs -text
