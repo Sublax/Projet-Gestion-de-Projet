@@ -65,17 +65,16 @@
             populateCountrySelect(countries);
         } else {
             //Sinon on appelle l'API : 
-            const apiUrl = 'https://restcountries.com/v3.1/all';
-
+            const apiUrl = 'https://restcountries.com/v3.1/all?fields=name';
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(countries => {
                     //Trie les pays par nom
                     countries.sort((a, b) => a.name.common.localeCompare(b.name.common));
-
-                    //On les stocke
+                    
+                    //On les stocke en cache pour prochaine fois
                     localStorage.setItem('countriesData', JSON.stringify(countries));
-
+                    
                     // Ajouter les pays au menu déroulant
                     populateCountrySelect(countries);
                 })
