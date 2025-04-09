@@ -76,7 +76,7 @@
                     displayFlags(JSON.parse(cachedFlags));
                 } else {
                     // Si pas en cache, on charge depuis l'API
-                    const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
+                    const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flag,cca2');
                     const countries = await response.json();
                     
                     // On enregistre les données dans le cache local
