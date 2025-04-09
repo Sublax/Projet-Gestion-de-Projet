@@ -25,5 +25,5 @@ app.post("/api/chat", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Servidor Node escuchando en http://localhost:${port}`);
+  console.log(`Server Node Running in http://localhost:${port}`);
 });
