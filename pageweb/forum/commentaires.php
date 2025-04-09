@@ -1,6 +1,6 @@
 <?php 
-session_start();
-include "../bd.php";
+include '../navbar.php';
+include '../bd.php';
 $bdd = getBD();
 if(isset($_GET['id_pays'])){
     // On verifie si l'ID donné en lien existe vraiment
@@ -45,7 +45,7 @@ if(isset($_GET['id_pays'])){
         </a>
         <p>Questionnaire</p>
     </div>
-    <div class="menu-item">
+    <!--<div class="menu-item">
     <a href="graph.php"><img src="../images/images_ced/icone2.png" alt="Icone Statistiques & Graphs"></a>
         <p>Statistiques & Graphs</p>
     </div>
@@ -69,7 +69,7 @@ if(isset($_GET['id_pays'])){
     <a href="../profil.php"><img src="../images/images_ced/icone6.png" alt="Icone Options"></a>
         <p>Profil</p>
     </div>
-    </header>
+    </header>-->
 
 
 <section class="forum">
