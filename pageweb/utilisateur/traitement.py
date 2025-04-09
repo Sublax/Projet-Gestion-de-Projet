@@ -256,7 +256,7 @@ def create_visu(DATA_ENT,nbre_clusters):
         - Graphique coude
     
     """
-
+    print("Création des plots en cours...")
     #On créer le plot de la méth du coude + silhouette
     inertias = []
     for i in range(2,40):
@@ -283,6 +283,7 @@ def create_data():
     Sortie : 
         - DataFrame enregistré en .csv de toutes les données complétés et centrées/réduites.
     """
+    print("Création des données en cours...")
     cursor.execute(REQUEST_TABLE + JOINT_TABLE)
     
     #On prend les DATA ENTières (elles nous serviront de complétion par moyenne)
@@ -300,8 +301,8 @@ def create_data():
     df = pd.DataFrame(DATA_ENT, columns=columns)
     #On les applique ici sur toutes nos colonnes sauf la première qui sera l'id du pays
     #À changer à l'avenir car ça ne permet pas d'être très "scalable" pour l'avenir.
-    df.iloc[:,2:18]  = imputer.fit_transform(df.iloc[:,2:18])
-    df.iloc[:,2:18] = scaler.fit_transform(df.iloc[:,2:18])
+    df.iloc[:,2:19]  = imputer.fit_transform(df.iloc[:,2:19])
+    df.iloc[:,2:19] = scaler.fit_transform(df.iloc[:,2:19])
     #Sauvegarde le DataFrame dans un fichier CSV
     df.to_csv('./REQUETE_ENT.csv', index=False)
 
