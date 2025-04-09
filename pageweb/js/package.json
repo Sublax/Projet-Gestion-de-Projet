@@ -4,6 +4,7 @@
   "type": "module",
   "main": "chat-ia.js",
   "scripts": {
+    "start": "node pageweb/js/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
