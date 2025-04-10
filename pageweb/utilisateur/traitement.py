@@ -23,7 +23,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 import random
 from sklearn.decomposition import PCA
-
+from sklearn.metrics.pairwise import euclidean_distances
 
 connection = pymysql.connect(host="nozomi.proxy.rlwy.net", user="root", port=20808,passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
 #Méthode donnée par StackOverflow+ doc, pour reconnecter la BDD après une longue période
@@ -102,14 +102,13 @@ def receive_json():
 
     #On reprend les données traitées (complétions + standardisation): 
     DATA_ENT = pd.read_csv(req)
-    DATA_FIN = DATA_ENT
     #DATA_ENT = np.array(DATA_ENT)
     
     # /////////////////////////////////////////////////////////////////////////////////////
     # /////////////////////////////////// VISUALISATION ///////////////////////////////////
     # /////////////////////////////////////////////////////////////////////////////////////
     #Ici on renseigne le nombre de cluster voulu (en référence avec le graph du coude + le calcul de silhouette)
-    nbre_clusters = 6
+    nbre_clusters = 5
     
     #Create visu permet de créer les graphes permettant de visualiser graph coude et calcul silhouette
     #create_visu(DATA_ENT,nbre_clusters)
@@ -142,7 +141,8 @@ def receive_json():
     id_pays_selected = [first_req[0],sec_req[0],third_req[0]]
     for i in range(len(id_pays_selected)):
         DATA_ENT = (DATA_ENT[DATA_ENT.id_pays != id_pays_selected[i]])
-    
+    DATA_FIN = DATA_ENT
+
     # On retire la colonne id_pays
     DATA_ENT = DATA_ENT.loc[:,DATA_ENT.columns != 'id_pays'].to_numpy()
     
@@ -166,10 +166,11 @@ def receive_json():
     cluster = kmeans.predict(requete)
     print("Cluster trouvé : ",cluster)
     print(kmeans.labels_)
+
     #On extrait les coordonnées des pts du même cluster :
     indices_cluster = np.where(kmeans.labels_ == cluster[0])[0]
     print("INDICES CLUSTER :", indices_cluster)
-    
+
     #On sélectionne 3 pays aléatoirement dans ce cluster : 
     random_selected = random.sample(list(indices_cluster),3)
     pays_predicted = []
@@ -183,9 +184,9 @@ def receive_json():
         #et on l'ajoute à notre liste
         pays_predicted.append(cursor.fetchone())
     print("Country predicted : ",pays_predicted)
-    #get_PCA(DATA_ENT,requete,kmeans)
+    get_PCA(DATA_ENT,requete,kmeans)
     #On fait un retour positif au serveur !
-    return jsonify({"status": "success", "message": "Données reçues avec succès","posCountry": "-1", "data": pays_predicted}), 200
+    return jsonify({"status": "successed", "message": "Données reçues avec succès !","posCountry": "-1", "data": pays_predicted}), 200
 
 
 def get_PCA(data,requete,kmeans):
@@ -215,7 +216,7 @@ def get_PCA(data,requete,kmeans):
     plt.ylabel('Axe 2 (' + str(round(variance_expl[1],2)) + '%)')
     plt.title('PCA')
     plt.grid(True)
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/final/PCA_Clustered.png")
+    plt.savefig(f"./PCA_Clustered_test.png")
     plt.close()
 
 
@@ -259,18 +260,23 @@ def create_visu(DATA_ENT,nbre_clusters):
     print("Création des plots en cours...")
     #On créer le plot de la méth du coude + silhouette
     inertias = []
+    tmp_score = []
     for i in range(2,40):
         kmeans = KMeans(n_clusters=i)
         kmeans.fit(DATA_ENT)
         inertias.append(kmeans.inertia_)
         score = silhouette_score(np.array(DATA_ENT), kmeans.labels_)
         print(f"Score silhouette pour k={i}: {score:.4f}") #score: .4f permet d'éviter le round()
-    plt.plot(range(2,40), inertias, marker='o')
-    plt.title(f'Elbow method Xfinal')
-    plt.xlabel('Number of clusters')
-    plt.ylabel('Inertie')
-    plt.savefig(f"/home/sublax/Documents/L3_MIASHS/S2/GestionProjet/final/coude_final_{nbre_clusters}.png")
-    plt.close() 
+        tmp_score.append(round(score,4))
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(2, 40), tmp_score, marker='x', color='green')
+    plt.title("Évolution score silhouette")
+    plt.xlabel("Nombre cluster (k)")
+    plt.ylabel("Score silhouette")
+
+    # Sauvegarde de la figure
+    plt.savefig("score_silhouette.png")
+
 
 
     
