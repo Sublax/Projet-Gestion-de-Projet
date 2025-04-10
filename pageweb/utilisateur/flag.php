@@ -298,7 +298,7 @@
             setTimeout(() => {
                 bouttonEnvoi.disabled = false;
                 bouttonEnvoi.textContent = bouttonText;
-            },10000);
+            },7000);
         });
 
         
