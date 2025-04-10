@@ -20,8 +20,8 @@ import re
 app = FastAPI()
 
 # Chargement des modèles pré-entrainés
-pipe_sent = pipeline("text-classification", model="./model_sentiment", tokenizer="./model_sentiment")
-pipe_asp = pipeline("text-classification", model="./model_aspect", tokenizer="./model_aspect")
+pipe_sent = pipeline("text-classification", model="hypebenz/model-sentiment-payspedia", tokenizer="hypebenz/model-sentiment-payspedia")
+pipe_asp = pipeline("text-classification", model="hypebenz/model-aspect-payspedia", tokenizer="hypebenz/model-aspect-payspedia")
 pipe_tox = pipeline("text-classification", model="unitary/toxic-bert")
 
 # Dictionnaire des différents aspects
