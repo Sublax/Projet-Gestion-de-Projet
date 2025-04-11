@@ -20,7 +20,7 @@
     <?php
     if (isset($_SESSION['client'])) {
         echo '<div class="hero">';
-        echo '<a href="dataviz/questionnaire.php" class="start-button">Essaye le questionnaire !</a>';
+        echo '<a href="datavizio/questionnaire.php" class="start-button">Essaye le questionnaire !</a>';
         echo '</div>';
     } else {
         echo '<div class="hero">';

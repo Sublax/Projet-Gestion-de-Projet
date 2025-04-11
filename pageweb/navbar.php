@@ -4,7 +4,7 @@
     <div class="menu-item">
     <?php
         if (isset($_SESSION['client'])) {
-            echo '<a href="/datavizio/questionnaire.php">';
+            echo '<a href="https://map-system-production.up.railway.app/questionnaire.php">';
         } else {
             echo '<a href="/connexion/login.php">';
         }

@@ -23,7 +23,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 import random
 from sklearn.decomposition import PCA
-from sklearn.metrics.pairwise import euclidean_distances
 
 connection = pymysql.connect(host="nozomi.proxy.rlwy.net", user="root", port=20808,passwd="SWUPODeSJpxDMznBKVTueEcRiYtmoOjN", database="railway")
 #Méthode donnée par StackOverflow+ doc, pour reconnecter la BDD après une longue période
@@ -184,9 +183,9 @@ def receive_json():
         #et on l'ajoute à notre liste
         pays_predicted.append(cursor.fetchone())
     print("Country predicted : ",pays_predicted)
-    get_PCA(DATA_ENT,requete,kmeans)
+    #get_PCA(DATA_ENT,requete,kmeans)
     #On fait un retour positif au serveur !
-    return jsonify({"status": "successed", "message": "Données reçues avec succès !","posCountry": "-1", "data": pays_predicted}), 200
+    return jsonify({"status": "success", "message": "Données reçues avec succès.","posCountry": "-1", "data": pays_predicted}), 200
 
 
 def get_PCA(data,requete,kmeans):
