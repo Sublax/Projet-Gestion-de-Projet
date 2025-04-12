@@ -95,7 +95,7 @@
     
     function displayFlags(countries) {
         /*
-        Fonction pour afficher les drapeaux (générée par IA)
+        Fonction pour afficher les drapeaux (générée par IA puis modifier)
         */
         const searchQuery = document.getElementById('searchBar').value.toLowerCase();
         const filteredCountries = countries.filter(country => 
@@ -266,7 +266,7 @@
 
         
         function refreshFlagSelection() {
-            // Fonction pour mettre à jour l'affichage des drapeaux après une désélection (générée par IA et modifier)
+            // Fonction pour mettre à jour l'affichage des drapeaux après une désélection (générée par IA puis modifier)
             document.querySelectorAll(".flag-item").forEach(flagElement => {
                 const countryName = flagElement.querySelector(".country-name").innerText;
                 if (selectedCountries.includes(countryName)) {

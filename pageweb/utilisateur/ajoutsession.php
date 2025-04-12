@@ -1,4 +1,5 @@
 <?php
+// Permet d'ouvrir une session afin d'avoir les pays prédis stockés sur la session
 session_start();
 // Si aucune sessions active on en créer une : 
 if (!isset($_SESSION["pays_predis"])) {
