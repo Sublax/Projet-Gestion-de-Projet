@@ -1,3 +1,4 @@
+<!-- Ce fichier a été créé avec l'aide d'une IA générative (ChatGPT) et du site API d'OpenAI. -->
 <!-- chatbot.php -->
 <div class="chatbot-container">
   <button class="chatbot-button" onclick="toggleChat()">💬</button>

@@ -1,3 +1,5 @@
+// Ce fichier a été créé avec l'aide d'une IA générative (ChatGPT) et du site API d'OpenAI.
+
 import "dotenv/config";
 import OpenAI from "openai";
 import fs from "fs";
