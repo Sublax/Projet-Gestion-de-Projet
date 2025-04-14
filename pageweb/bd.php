@@ -1,6 +1,6 @@
 <?php
 function getBD(){
-        $bdd = new PDO('mysql:host=mysql-payspedia.alwaysdata.net;dbname=payspedia_bdprojet;charset=utf8', 'payspedia_admin', 'payspedia1234!');
+        $bdd = new PDO('mysql:host=localhost;dbname=bdprojet;charset=utf8', 'root', 'root');
         return $bdd;
 }
 
