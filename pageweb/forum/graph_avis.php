@@ -1,6 +1,6 @@
 <?php
-include "../navbar.php";
-include "../bd.php";
+include '../../navbar.php';
+include '../../bd.php';
 $bdd = getBD();
 
 if (!isset($_GET['id_pays'])) {
@@ -19,7 +19,7 @@ $total_positif = 0;
 $total_negatif = 0;
 
 foreach ($aspect_list as $asp) {
-    $asp_clean = strtolower(trim($asp));
+    $asp_clean = strtolower(trim($asp ?? ''));
     $aspects[$asp_clean] = ['positif' => 0, 'négatif' => 0];
 }
 
@@ -35,8 +35,8 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 foreach ($data as $row) {
-    $asp = strtolower(trim($row['aspect']));
-    $sent = strtolower(trim($row['sentiment']));
+    $asp = strtolower(trim($row['aspect'] ?? ''));
+    $sent = strtolower(trim($row['sentiment'] ?? ''));
     $sent = str_replace(['é','è','ê','ë'], 'e', $sent); 
     $sent = str_replace(["\n", "\r", "\t", "\0", "\x0B"], '', $sent); 
     $count = (int)$row['count'];
@@ -116,7 +116,7 @@ foreach ($data as $row) {
 <div class="chart-grid">
 <?php foreach ($aspects as $aspect => $sentiments): ?>
     <?php
-        $total = $sentiments['positif'] + $sentiments['negatif'];
+        $total = ($sentiments['positif'] ?? 0) + ($sentiments['negatif'] ?? 0);
         if ($total === 0) continue;
     ?>
     <div class="chart-card">
