@@ -30,8 +30,8 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             
             echo "1";
             exit;
-            //header("Location: ../index.php"); // Rediriger vers la page d'accueil
-            //exit();
+            header("Location: ../index.php"); // Rediriger vers la page d'accueil
+            exit();
         } else {
             // Mot de passe incorrect
             echo "Mot de passe incorrect.";
