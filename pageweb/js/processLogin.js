@@ -12,7 +12,7 @@ $(document).ready(function() {
                 if(response !== '1' && $(".messageErreur").length === 0){
                     $("#registerButton").after("<p class='messageErreur'> Les informations sont incorrectes.</p>")
                 }else if(response === '1'){
-                    window.location.href = "..index.php";
+                    window.location.href = "../index.php";
                 }
             }
         });
