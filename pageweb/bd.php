@@ -1,6 +1,6 @@
 <?php 
 function getBD(): PDO {
-  $url = getenv('DATABASE_URL');
+  $url = getenv('DATABASE_URL') ?: getenv('MYSQL_URL');
   if (!$url) {
     throw new RuntimeException('DATABASE_URL not set');
   }
