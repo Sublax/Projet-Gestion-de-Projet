@@ -14,7 +14,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // Préparer la requête SQL pour vérifier les informations de l'utilisateur (soit username soit mail)
     $sql = "SELECT * FROM clients WHERE nom_utilisateur = :u OR mail = :m";
     $stmt = $conn->prepare($sql);
-    $stmt->execute(['u' => $username, 'm' => $username]]);
+    $stmt->execute(['u' => $username, 'm' => $username]);
 
     // Vérifier si l'utilisateur existe
     if ($stmt->rowCount() > 0) {
